@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+
+
 // --- ITEMS ---
 /// id: The item's unique id.
 /// deleted: true if the item is deleted.
@@ -17,20 +21,20 @@
 
 class Item {
   late int id;
-  late bool deleted;
-  late String type;
-  late String by;
-  late int time;
-  late String text;
-  late bool dead;
-  late int parent;
-  late int poll;
-  late int kids;
-  late String url;
-  late int score;
-  late String title;
-  late int parts;
-  late int descendants;
+  bool? deleted;
+  String? type;
+  String? by;
+  int? time;
+  String? text;
+  bool? dead;
+  int? parent;
+  int? poll;
+  int? kids;
+  String? url;
+  int? score;
+  String? title;
+  int? parts;
+  int? descendants;
 }
 
 /* 
@@ -177,39 +181,15 @@ class Pollopt {
   late String type;
 }
 
-// --- USERS ---
-/// id: The user's unique username. Case-sensitive. Required.
-/// created: Creation date of the user, in Unix Time.
-/// karma: The user's karma.
-/// about: The user's optional self-description. HTML.
-/// submitted: List of the user's stories, polls and comments.
-class User {
-  late String about;
-  late int created;
-  late int delay;
-  late String id;
-  late int karma;
-  late List<int> submitted;
-}
-
-/* 
-{
-  "items" : [ 8423305, 8420805, 8423379, 8422504, 8423178, 8423336, 8422717, 8417484, 8423378, 8423238, 8423353, 8422395, 8423072, 8423044, 8423344, 8423374, 8423015, 8422428, 8423377, 8420444, 8423300, 8422633, 8422599, 8422408, 8422928, 8394339, 8421900, 8420902, 8422087 ],
-  "profiles" : [ "thefox", "mdda", "plinkplonk", "GBond", "rqebmm", "neom", "arram", "mcmancini", "metachris", "DubiousPusher", "dochtman", "kstrauser", "biren34", "foobarqux", "mkehrt", "nathanm412", "wmblaettler", "JoeAnzalone", "rcconf", "johndbritton", "msie", "cktsai", "27182818284", "kevinskii", "wildwood", "mcherm", "naiyt", "matthewmcg", "joelhaus", "tshtf", "MrZongle2", "Bogdanp" ]
-}
- */
-class Updates {
-  late List<int> items;
-  late List<String> profiles;
-}
 
 // -- HackerNews APIClient --
 
-class HackerNewsEndpoint {
+class HackerNewsURI {
+  static const String base = 'https://hacker-news.firebaseio.com';
   static const String item = '/v0/item/<id>';
   static const String user = '/v0/user/';
   static const String maxitem = '/v0/maxitem';
-  static const String topstorie = '/v0/topstorie';
+  static const String topstories = '/v0/topstories';
   static const String newstories = '/v0/newstories';
   static const String beststories = '/v0/beststories';
   static const String askstories = '/v0/askstories';
@@ -219,33 +199,130 @@ class HackerNewsEndpoint {
 }
 
 abstract class HackerNewsClient {
-  // /v0/item/<id>
   Future<Item> item(int id);
-
-  // /v0/user/
   Future<User> user();
-
-  // /v0/maxitem
   Future<int> maxitem();
-
-  // /v0/topstorie
-  Future<List<int>> topstorie();
-
-  // /v0/newstories
+  Future<List<int>> topstories();
   Future<List<int>> newstories();
-
-  // /v0/beststories
   Future<List<int>> beststories();
-
-  // /v0/askstories
   Future<List<int>> askstories();
-
-  // /v0/showstories
   Future<List<int>> showstories();
-
-  // /v0/jobstories
   Future<List<int>> jobstories();
-
-  // /v0/updates
   Future<Future<Updates>> updates();
+}
+
+class HackerNewsClientImpl implements HackerNewsClient {
+  final Client client;
+
+  HackerNewsClientImpl(this.client);
+
+  @override
+  Future<List<int>> askstories() async {
+    final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.askstories);
+    final response = await client.get(uri);
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body) as List<int>;
+    } else {
+      throw Exception('failed to load askstories');
+    }
+  }
+
+  @override
+  Future<List<int>> beststories() async {
+    final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.beststories);
+    final response = await client.get(uri);
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body) as List<int>;
+    } else {
+      throw Exception('failed to load askstories');
+    }
+  }
+
+  @override
+  Future<List<int>> jobstories() async {
+    final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.jobstories);
+    final response = await client.get(uri);
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body) as List<int>;
+    } else {
+      throw Exception('failed to load askstories');
+    }
+  }
+
+  @override
+  Future<List<int>> newstories() async {
+    final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.newstories);
+    final response = await client.get(uri);
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body) as List<int>;
+    } else {
+      throw Exception('failed to load askstories');
+    }
+  }
+
+  @override
+  Future<List<int>> showstories() async {
+    final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.showstories);
+    final response = await client.get(uri);
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body) as List<int>;
+    } else {
+      throw Exception('failed to load askstories');
+    }
+  }
+
+  @override
+  Future<List<int>> topstories() async {
+    final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.topstories);
+    final response = await client.get(uri);
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body) as List<int>;
+    } else {
+      throw Exception('failed to load askstories');
+    }
+  }
+
+  @override
+  Future<Item> item(int id)  async {
+    final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.topstories);
+    final response = await client.get(uri);
+    if (response.statusCode == 200) {
+      return Item.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('failed to load askstories');
+    }
+  }
+
+  @override
+  Future<int> maxitem()  async {
+    final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.topstories);
+    final response = await client.get(uri);
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body) as int;
+    } else {
+      throw Exception('failed to load askstories');
+    }
+  }
+
+  @override
+  Future<Updates> updates() async {
+    final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.topstories);
+    final response = await client.get(uri);
+    if (response.statusCode == 200) {
+      return Updates.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('failed to load askstories');
+    }
+  }
+
+  @override
+  Future<User> user()  async {
+    final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.topstories);
+    final response = await client.get(uri);
+    if (response.statusCode == 200) {
+      return User.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('failed to load askstories');
+    }
+  }
 }
