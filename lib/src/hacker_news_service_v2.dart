@@ -1,90 +1,18 @@
 import 'dart:convert';
 
-import 'package:http/http.dart' show Client, Response;
+import 'package:http/http.dart' show Client;
 
-import 'cache.dart';
 import 'item_v2.dart';
 import 'updates.dart';
 import 'user.dart';
 
-String _e(String s) => Uri.encodeComponent(s);
-
-class HackerNewsURI {
-  static const String base = 'https://hacker-news.firebaseio.com';
-  static String item(int id) => '/v0/item/$id.json?print=pretty';
-  static String user(String name) => '/v0/user/${_e(name)}.json?print=pretty';
-  static const String maxitem = '/v0/maxitem.json?print=pretty';
-  static const String topstories = '/v0/topstories.json?print=pretty';
-  static const String newstories = '/v0/newstories.json?print=pretty';
-  static const String beststories = '/v0/beststories.json?print=pretty';
-  static const String askstories = '/v0/askstories.json?print=pretty';
-  static const String showstories = '/v0/showstories.json?print=pretty';
-  static const String jobstories = '/v0/jobstories.json?print=pretty';
-  static const String updates = '/v0/updates.json?print=pretty';
-}
-
-abstract class HackerNewsApi {
-  Future<Item> item(int id, int limit);
-  Future<User> user(String name);
-  Future<int> maxitem();
-  Future<List<Item>> topstories(int limit);
-  Future<List<Item>> newstories(int limit);
-  Future<List<Item>> beststories(int limit);
-  Future<List<Item>> askstories(int limit);
-  Future<List<Item>> showstories(int limit);
-  Future<List<Item>> jobstories(int limit);
-  Future<Updates> updates();
-}
-
-Future<T> retry<T>(Future<T> Function() fn, [int tryN = 1]) async {
-  Exception? exception;
-  for (int t = 0; t < tryN; t++) {
-    try {
-      return await fn();
-    } on Exception catch (e) {
-      exception = e;
-    }
-  }
-
-  throw (exception ?? Exception('failed to try'));
-}
-
 // TODO: retry
-class HackerNewsApiImpl implements HackerNewsApi {
-  final Client client;
-  final Cache cache;
+class HackerNewsService {
+  final HackerNewsApi client;
 
-  HackerNewsApiImpl(this.client, this.cache);
+  HackerNewsService(this.api);
 
-  // Future<String> _get(Uri uri, {bool useCache=true, int tryN=1}) async {
-  //   final cachedResponse = await cache.get(uri.toString());
-  //   if (cachedResponse != null) {
-  //     return cachedResponse;
-  //   }
-
-  //   final response = await client.get(uri);
-  //   if (response.statusCode != 200) {
-  //     throw Exception('failed to load stories');
-  //   }
-  //   await cache.put(uri.toString(), response.body, Duration(seconds: 1));
-
-  //   return response.body;
-  // }
-
-  Future<Response> _tryGet(Uri uri, [int tryN = 1]) async {
-    for (int t = 0; t < tryN; t++) {
-      final response = await client.get(uri);
-      if (response.statusCode != 200) {
-        // throw Exception('failed to load stories');
-        continue;
-      }
-    }
-
-    throw Exception('failed to load: $uri');
-  }
-
-  Future<List<Item>> _stories(String uriStr, int limit,
-      [int offset = 0]) async {
+  Future<List<Item>> _stories(String uriStr, int limit, [int offset=0]) async {
     final uri = Uri.parse(uriStr);
     final response = await client.get(uri);
     if (response.statusCode != 200) {
@@ -101,8 +29,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
       //   items.add(await item(item_id, 0));
       // }
       // return items;
-      return await Future.wait(
-          items_ids.skip(offset).take(limit).map((id) => item(id, 0)));
+      return await Future.wait(items_ids.skip(offset).take(limit).map((id) => item(id, 0)));
     } on Exception catch (_) {
       print(response.body);
       rethrow;

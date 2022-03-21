@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'item_v2.g.dart';
@@ -30,7 +31,7 @@ part 'item_v2.g.dart';
 } */
 
 @JsonSerializable()
-class Item {
+class Item extends Equatable {
   final int id;
   final bool? deleted;
   final String? type;
@@ -72,4 +73,25 @@ class Item {
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);
 
   Map<String, dynamic> toJson() => _$ItemToJson(this);
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [
+        id,
+        deleted,
+        type,
+        by,
+        time,
+        text,
+        dead,
+        parent,
+        poll,
+        kids,
+        url,
+        score,
+        title,
+        parts,
+        descendants,
+        kidsItems,
+      ];
 }
