@@ -30,7 +30,7 @@ abstract class HackerNewsApi {
   Future<List<int>> askstories();
   Future<List<int>> showstories();
   Future<List<int>> jobstories();
-  Future<Future<Updates>> updates();
+  Future<Updates> updates();
 }
 
 class HackerNewsApiImpl implements HackerNewsApi {

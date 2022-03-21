@@ -1,14 +1,34 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'user.g.dart';
+
 // --- USERS ---
 /// id: The user's unique username. Case-sensitive. Required.
 /// created: Creation date of the user, in Unix Time.
 /// karma: The user's karma.
 /// about: The user's optional self-description. HTML.
 /// submitted: List of the user's stories, polls and comments.
+
+@JsonSerializable()
 class User {
-  late String id;
-  late int created;
-  late int karma;
-  String? about;
-  int? delay;
-  List<int>? submitted;
+  final String id;
+  final int created;
+  final int karma;
+  final String? about;
+  final int? delay;
+  final List<int>? submitted;
+
+  User({
+    required this.id,
+    required this.created,
+    required this.karma,
+    this.about,
+    this.delay,
+    this.submitted,
+  });
+
+  // ignore: sort_constructors_first
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UserToJson(this);
 }

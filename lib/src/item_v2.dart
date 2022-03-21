@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 
-part 'item.g.dart';
+part 'item_v2.g.dart';
 
 /// ITEMS
 /// id: The item's unique id.
@@ -47,6 +47,8 @@ class Item {
   final int? parts;
   final int? descendants;
 
+  List<Item>? kidsItems;
+
   Item({
     required this.id,
     this.deleted,
@@ -63,6 +65,7 @@ class Item {
     this.title,
     this.parts,
     this.descendants,
+    this.kidsItems,
   });
 
   // ignore: sort_constructors_first
