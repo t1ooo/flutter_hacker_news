@@ -1,12 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'locator.dart';
 import 'logger.dart';
 import 'src/ui.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   configureLogger(kDebugMode);
+  await initLocator();
   runApp(const MyApp());
 }
 

@@ -1,7 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it_mixin/get_it_mixin.dart';
 import 'package:url_launcher/link.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../locator.dart';
+import 'hacker_news_notifier.dart';
+import 'item.dart';
 import 'style/style.dart';
 
 class TopstoriesView extends StatelessWidget {
@@ -18,30 +23,112 @@ class TopstoriesView extends StatelessWidget {
   }
 }
 
-class ItemList extends StatelessWidget {
-  const ItemList({Key? key}) : super(key: key);
+class ItemList extends StatelessWidget with GetItMixin {
+  ItemList({Key? key}) : super(key: key);
+
+  // final hnNotifier = locator<HackerNewsNotifier>()..loadBeststories();
 
   @override
   Widget build(BuildContext context) {
+    // final hnNotifier = watchOnly((HackerNewsNotifier v) => v);
+    // final hnNotifier = locator.get<HackerNewsNotifier>();
+    // final hnNotifier = watch<ValueListenable<HackerNewsNotifier>, HackerNewsNotifier>();
+
+    final error = watchOnly((HackerNewsNotifier v) => v.error);
+    final data = watchOnly((HackerNewsNotifier v) => v.beststories);
+
+    print('rebuild');
+
+    // final error = hnNotifier.error;
+    if (error != null) {
+      onError(context, error);
+    }
+
+    // final data = hnNotifier.beststories;
+    if (data != null) {
+      return onData(context, data);
+    }
+
+    return onLoading(context);
+
+    // return ListView(
+    //   children: [
+    //     ItemTile(),
+    //     ItemTile(),
+    //     ItemTile(),
+    //     ItemTile(),
+    //     ItemTile(),
+    //   ],
+    // );
+  }
+
+  void onError(BuildContext context, Object? error) {
+    // navigationService.showSnackBarPostFrame(
+    //   error.tr(appLocalizations(context)),
+    // );
+    // TODO
+  }
+
+  Widget onLoading(BuildContext context) {
+    return Center(child: CircularProgressIndicator());
+  }
+
+  // Widget build(BuildContext context) {
+  Widget onData(BuildContext context, List<int> data) {
+    print(data);
+
     return ListView(
       children: [
-        ItemTile(),
-        ItemTile(),
-        ItemTile(),
-        ItemTile(),
-        ItemTile(),
+        for (final id in data) ItemTile(id: id),
+        // ItemTile(),
+        // ItemTile(),
+        // ItemTile(),
+        // ItemTile(),
       ],
     );
   }
 }
 
-class ItemTile extends StatelessWidget {
-  ItemTile({Key? key, this.showLeading = true}) : super(key: key);
+class ItemTile extends StatelessWidget with GetItMixin {
+  ItemTile({Key? key, required this.id, this.showLeading = true})
+      : super(key: key);
 
-  bool showLeading;
+  final int id;
+  final bool showLeading;
 
   @override
   Widget build(BuildContext context) {
+    final notifier = get<HackerNewsItemNotifier>(param1: id);
+
+    // final error = watchOnly((HackerNewsNotifier v) => v.error);
+    // final data = watchOnly((HackerNewsNotifier v) => v.beststories);
+
+    final error = notifier.error;
+    if (error != null) {
+      onError(context, error);
+    }
+
+    final data = notifier.item;
+    if (data != null) {
+      return onData(context, data);
+    }
+
+    return onLoading(context);
+  }
+
+  void onError(BuildContext context, Object? error) {
+    // navigationService.showSnackBarPostFrame(
+    //   error.tr(appLocalizations(context)),
+    // );
+    // TODO
+  }
+
+  Widget onLoading(BuildContext context) {
+    return Center(child: CircularProgressIndicator());
+  }
+
+  // Widget build(BuildContext context) {
+  Widget onData(BuildContext context, Item data) {
     return ListTile(
       contentPadding: EdgeInsets.all(0),
       leading: showLeading ? Text('1.') : null,
@@ -54,7 +141,8 @@ class ItemTile extends StatelessWidget {
           //       return Text('How Zillow\'s homebuying scheme lost \$881M');
           //     }),
           InkWell(
-            child: Text('How Zillow\'s homebuying scheme lost \$881M'),
+            // child: Text('How Zillow\'s homebuying scheme lost \$881M'),
+            child: Text(data.title ?? ''),
             onTap: () {
               launch(
                   'https://fullstackeconomics.com/why-zillow-is-like-my-bad-fantasy-football-team/');
@@ -108,19 +196,19 @@ class ItemView extends StatelessWidget {
       appBar: AppBar(
         title: Text('ItemView'),
       ),
-      body: Padding(padding: pagePadding, child: Item()),
+      body: Padding(padding: pagePadding, child: ItemWidget()),
     );
   }
 }
 
-class Item extends StatelessWidget {
-  const Item({Key? key}) : super(key: key);
+class ItemWidget extends StatelessWidget {
+  const ItemWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListView(
       children: [
-        ItemTile(showLeading: false),
+        ItemTile(id: 0, showLeading: false),
         TextField(
           maxLines: 8,
           decoration: InputDecoration(

@@ -6,23 +6,38 @@ import 'item.dart';
 import 'updates.dart';
 import 'user.dart';
 
+String _e(String s) => Uri.encodeComponent(s);
+
+Future<T> retry<T>(Future<T> Function() fn, [int tryN = 1]) async {
+  Exception? exception;
+  for (int t = 0; t < tryN; t++) {
+    try {
+      return await fn();
+    } on Exception catch (e) {
+      exception = e;
+    }
+  }
+
+  throw (exception ?? Exception('failed to try'));
+}
+
 class HackerNewsURI {
   static const String base = 'https://hacker-news.firebaseio.com';
-  static const String item = '/v0/item/<id>';
-  static const String user = '/v0/user/';
-  static const String maxitem = '/v0/maxitem';
-  static const String topstories = '/v0/topstories';
-  static const String newstories = '/v0/newstories';
-  static const String beststories = '/v0/beststories';
-  static const String askstories = '/v0/askstories';
-  static const String showstories = '/v0/showstories';
-  static const String jobstories = '/v0/jobstories';
-  static const String updates = '/v0/updates';
+  static String item(int id) => '/v0/item/$id.json?print=pretty';
+  static String user(String name) => '/v0/user/${_e(name)}.json?print=pretty';
+  static const String maxitem = '/v0/maxitem.json?print=pretty';
+  static const String topstories = '/v0/topstories.json?print=pretty';
+  static const String newstories = '/v0/newstories.json?print=pretty';
+  static const String beststories = '/v0/beststories.json?print=pretty';
+  static const String askstories = '/v0/askstories.json?print=pretty';
+  static const String showstories = '/v0/showstories.json?print=pretty';
+  static const String jobstories = '/v0/jobstories.json?print=pretty';
+  static const String updates = '/v0/updates.json?print=pretty';
 }
 
 abstract class HackerNewsApi {
   Future<Item> item(int id);
-  Future<User> user();
+  Future<User> user(String name);
   Future<int> maxitem();
   Future<List<int>> topstories();
   Future<List<int>> newstories();
@@ -33,6 +48,8 @@ abstract class HackerNewsApi {
   Future<Updates> updates();
 }
 
+// TODO: retry
+// TODO: cache
 class HackerNewsApiImpl implements HackerNewsApi {
   final Client client;
 
@@ -54,7 +71,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
     final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.beststories);
     final response = await client.get(uri);
     if (response.statusCode == 200) {
-      return jsonDecode(response.body) as List<int>;
+      return (jsonDecode(response.body) as List).map((v) => v as int).toList();
     } else {
       throw Exception('failed to load askstories');
     }
@@ -105,8 +122,8 @@ class HackerNewsApiImpl implements HackerNewsApi {
   }
 
   @override
-  Future<Item> item(int id)  async {
-    final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.topstories);
+  Future<Item> item(int id) async {
+    final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.item(id));
     final response = await client.get(uri);
     if (response.statusCode == 200) {
       return Item.fromJson(jsonDecode(response.body));
@@ -116,8 +133,8 @@ class HackerNewsApiImpl implements HackerNewsApi {
   }
 
   @override
-  Future<int> maxitem()  async {
-    final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.topstories);
+  Future<int> maxitem() async {
+    final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.maxitem);
     final response = await client.get(uri);
     if (response.statusCode == 200) {
       return jsonDecode(response.body) as int;
@@ -128,7 +145,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
 
   @override
   Future<Updates> updates() async {
-    final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.topstories);
+    final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.updates);
     final response = await client.get(uri);
     if (response.statusCode == 200) {
       return Updates.fromJson(jsonDecode(response.body));
@@ -138,8 +155,8 @@ class HackerNewsApiImpl implements HackerNewsApi {
   }
 
   @override
-  Future<User> user()  async {
-    final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.topstories);
+  Future<User> user(String name) async {
+    final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.user(name));
     final response = await client.get(uri);
     if (response.statusCode == 200) {
       return User.fromJson(jsonDecode(response.body));
