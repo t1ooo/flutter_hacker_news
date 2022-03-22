@@ -4,6 +4,7 @@ import 'package:http/http.dart' show Client, Response;
 
 import 'cache.dart';
 import 'item_v2.dart';
+import 'logging/logging.dart';
 import 'updates.dart';
 import 'user.dart';
 
@@ -53,6 +54,9 @@ Future<T> retry<T>(Future<T> Function() fn, [int tryN = 1]) async {
 class HackerNewsApiImpl implements HackerNewsApi {
   final Client client;
   final Cache cache;
+  static const int _tryN = 3;
+  static const _storiesCacheDuration = Duration(seconds: 60);
+  static final _log = Logger('HackerNewsApiImpl');
 
   HackerNewsApiImpl(this.client, this.cache);
 
@@ -71,40 +75,68 @@ class HackerNewsApiImpl implements HackerNewsApi {
   //   return response.body;
   // }
 
-  Future<Response> _tryGet(Uri uri, [int tryN = 1]) async {
-    for (int t = 0; t < tryN; t++) {
-      final response = await client.get(uri);
+  // Future<Response> _tryGet(Uri uri, [int tryN = 1]) async {
+  //   for (int t = 0; t < tryN; t++) {
+  //     final response = await client.get(uri);
+  //     if (response.statusCode != 200) {
+  //       // throw Exception('failed to load stories');
+  //       continue;
+  //     }
+  //   }
+
+  //   throw Exception('failed to load: $uri');
+  // }
+
+  // Future<List<Item>> _stories(String uriStr, int limit,
+  //     [int offset = 0]) async {
+  //   final uri = Uri.parse(uriStr);
+  //   final response = await client.get(uri);
+  //   if (response.statusCode != 200) {
+  //     throw Exception('failed to load stories');
+  //   }
+  //   try {
+  //     final items_ids =
+  //         (jsonDecode(response.body) as List).map((v) => v as int).toList();
+  //     // final items = <Item>[];
+  //     // for (final item_id in items_ids) {
+  //     //   if (items.length >= limit) {
+  //     //     break;
+  //     //   }
+  //     //   items.add(await item(item_id, 0));
+  //     // }
+  //     // return items;
+  //     return await Future.wait(
+  //         items_ids.skip(offset).take(limit).map((id) => item(id, 0)));
+  //   } on Exception catch (_) {
+  //     print(response.body);
+  //     rethrow;
+  //   }
+  // }
+
+  Future<List<Item>> _stories(String uri, int limit, [int offset = 0]) async {
+    String? body = await cache.get(uri);
+    if (body == null) {
+      final response = await client.get(Uri.parse(uri));
       if (response.statusCode != 200) {
-        // throw Exception('failed to load stories');
-        continue;
+        throw Exception('failed to load stories');
       }
+
+      try {
+        await cache.put(uri, response.body, _storiesCacheDuration);
+      } on Exception catch (e) {
+        _log.error(e);
+      }
+
+      body = response.body;
     }
 
-    throw Exception('failed to load: $uri');
-  }
-
-  Future<List<Item>> _stories(String uriStr, int limit,
-      [int offset = 0]) async {
-    final uri = Uri.parse(uriStr);
-    final response = await client.get(uri);
-    if (response.statusCode != 200) {
-      throw Exception('failed to load stories');
-    }
     try {
       final items_ids =
-          (jsonDecode(response.body) as List).map((v) => v as int).toList();
-      // final items = <Item>[];
-      // for (final item_id in items_ids) {
-      //   if (items.length >= limit) {
-      //     break;
-      //   }
-      //   items.add(await item(item_id, 0));
-      // }
-      // return items;
+          (jsonDecode(body) as List).map((v) => v as int).toList();
       return await Future.wait(
           items_ids.skip(offset).take(limit).map((id) => item(id, 0)));
     } on Exception catch (_) {
-      print(response.body);
+      print(body);
       rethrow;
     }
   }

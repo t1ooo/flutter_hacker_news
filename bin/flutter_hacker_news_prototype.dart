@@ -1,9 +1,13 @@
+import 'package:flutter_hacker_news_prototype/logger.dart';
+import 'package:flutter_hacker_news_prototype/src/cache.dart';
 import 'package:flutter_hacker_news_prototype/src/hacker_news_api_v2.dart';
 import 'package:http/http.dart';
 
 Future<void> main() async {
+  configureLogger(true);
   final client = Client();
-  final api = HackerNewsApiImpl(client);
+  final cache = CacheImpl();
+  final api = HackerNewsApiImpl(client, cache);
   {
     final limit = 5;
     final items = await api.topstories(limit);
@@ -23,7 +27,7 @@ Future<void> main() async {
     print(items.toJson());
     // print(item);
     // items.forEach((v) {
-      // print(v.toJson());
+    // print(v.toJson());
     // });
   }
 }
