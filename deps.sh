@@ -8,6 +8,7 @@ flutter pub add logging
 flutter pub add flutter_cache_manager
 flutter pub add provider
 flutter pub add flutter_html
+flutter pub add retry
 
 flutter pub add build_runner --dev
 flutter pub add json_serializable --dev

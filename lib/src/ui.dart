@@ -11,6 +11,7 @@ import 'hacker_news_api.dart';
 import 'hacker_news_notifier.dart';
 import 'item.dart';
 import 'style/style.dart';
+import 'user.dart';
 
 class TopstoriesView extends StatelessWidget {
   const TopstoriesView({Key? key}) : super(key: key);
@@ -33,26 +34,45 @@ class ItemList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hnNotifier = context.watch<HackerNewsNotifier>();
-    // final hnNotifier = locator.get<HackerNewsNotifier>();
-    // final hnNotifier = watch<ValueListenable<HackerNewsNotifier>, HackerNewsNotifier>();
+    final notifier = context.watch<HackerNewsNotifier>();
 
-    // final error = watchOnly((HackerNewsNotifier v) => v.error);
-    // final data = watchOnly((HackerNewsNotifier v) => v.beststories);
+    return FutureBuilder(
+      future: notifier.beststories(10, 0),
+      builder: (BuildContext _, AsyncSnapshot<List<int>> snap) {
+        final error = snap.error;
+        if (error != null) {
+          onError(context, error);
+        }
 
-    print('rebuild');
+        final data = snap.data;
+        if (data != null) {
+          return onData(context, data);
+        }
 
-    final error = hnNotifier.error;
-    if (error != null) {
-      onError(context, error);
-    }
+        return onLoading(context);
+      },
+    );
 
-    final data = hnNotifier.beststories;
-    if (data != null) {
-      return onData(context, data);
-    }
+    // final hnNotifier = context.watch<HackerNewsNotifier>();
+    // // final hnNotifier = locator.get<HackerNewsNotifier>();
+    // // final hnNotifier = watch<ValueListenable<HackerNewsNotifier>, HackerNewsNotifier>();
 
-    return onLoading(context);
+    // // final error = watchOnly((HackerNewsNotifier v) => v.error);
+    // // final data = watchOnly((HackerNewsNotifier v) => v.beststories);
+
+    // print('rebuild');
+
+    // final error = hnNotifier.error;
+    // if (error != null) {
+    //   onError(context, error);
+    // }
+
+    // final data = hnNotifier.beststories;
+    // if (data != null) {
+    //   return onData(context, data);
+    // }
+
+    // return onLoading(context);
 
     // return ListView(
     //   children: [
@@ -66,6 +86,7 @@ class ItemList extends StatelessWidget {
   }
 
   void onError(BuildContext context, Object? error) {
+    print(error);
     // navigationService.showSnackBarPostFrame(
     //   error.tr(appLocalizations(context)),
     // );
@@ -82,12 +103,7 @@ class ItemList extends StatelessWidget {
 
     return ListView(
       children: [
-        for (final id in data)
-          ChangeNotifierProvider(
-            create: (_) => HackerNewsItemNotifier(context.read<HackerNewsApi>())
-              ..loadItem(id),
-            child: ItemTile(/* id: id */),
-          )
+        for (final id in data) ItemTile(id: id),
         // ItemTile(),
         // ItemTile(),
         // ItemTile(),
@@ -98,30 +114,54 @@ class ItemList extends StatelessWidget {
 }
 
 class ItemTile extends StatelessWidget {
-  ItemTile({Key? key, /* required this.id, */ this.showLeading = true})
+  ItemTile(
+      {Key? key,
+      required this.id,
+      this.showLeading = true,
+      this.showText = false})
       : super(key: key);
 
-  // final int id;
+  final int id;
   final bool showLeading;
+  final bool showText;
 
   @override
   Widget build(BuildContext context) {
-    final notifier = context.watch<HackerNewsItemNotifier>();
+    final notifier = context.watch<HackerNewsNotifier>();
 
-    // final error = watchOnly((HackerNewsNotifier v) => v.error);
-    // final data = watchOnly((HackerNewsNotifier v) => v.beststories);
+    return FutureBuilder(
+      future: notifier.item(id),
+      builder: (BuildContext _, AsyncSnapshot<Item> snap) {
+        final error = snap.error;
+        if (error != null) {
+          onError(context, error);
+        }
 
-    final error = notifier.error;
-    if (error != null) {
-      onError(context, error);
-    }
+        final data = snap.data;
+        if (data != null) {
+          return onData(context, data);
+        }
 
-    final data = notifier.item;
-    if (data != null) {
-      return onData(context, data);
-    }
+        return onLoading(context);
+      },
+    );
 
-    return onLoading(context);
+    // final notifier = context.watch<HackerNewsNotifier>();
+
+    // // final error = watchOnly((HackerNewsNotifier v) => v.error);
+    // // final data = watchOnly((HackerNewsNotifier v) => v.beststories);
+
+    // final error = notifier.error;
+    // if (error != null) {
+    //   onError(context, error);
+    // }
+
+    // final data = notifier.item;
+    // if (data != null) {
+    //   return onData(context, data);
+    // }
+
+    // return onLoading(context);
   }
 
   void onError(BuildContext context, Object? error) {
@@ -137,83 +177,93 @@ class ItemTile extends StatelessWidget {
 
   // Widget build(BuildContext context) {
   Widget onData(BuildContext context, Item data) {
-    return ListTile(
-      contentPadding: EdgeInsets.all(0),
-      leading: showLeading ? Text('1.') : null,
-      title: Wrap(
-        children: [
-          // Link(
-          //     uri: Uri.parse(
-          //         'https://fullstackeconomics.com/why-zillow-is-like-my-bad-fantasy-football-team/'),
-          //     builder: (_, __) {
-          //       return Text('How Zillow\'s homebuying scheme lost \$881M');
-          //     }),
-          InkWell(
-            // child: Text('How Zillow\'s homebuying scheme lost \$881M'),
-            child: Text(data.title ?? ''),
-            // onTap: () {
-            //   launch(
-            //       'https://fullstackeconomics.com/why-zillow-is-like-my-bad-fantasy-football-team/');
-            // },
-            onTap: data.url == null ? null : () => launch(data.url!),
+    return Column(
+      children: [
+        ListTile(
+          contentPadding: EdgeInsets.all(0),
+          leading: showLeading ? Text('1.') : null,
+          title: data.title == null ? Text('-') : Wrap(
+            children: [
+              // Link(
+              //     uri: Uri.parse(
+              //         'https://fullstackeconomics.com/why-zillow-is-like-my-bad-fantasy-football-team/'),
+              //     builder: (_, __) {
+              //       return Text('How Zillow\'s homebuying scheme lost \$881M');
+              //     }),
+              InkWell(
+                // child: Text('How Zillow\'s homebuying scheme lost \$881M'),
+                // child: Text(data.title ?? ''),
+                child: Text(data.title!),
+                // onTap: () {
+                //   launch(
+                //       'https://fullstackeconomics.com/why-zillow-is-like-my-bad-fantasy-football-team/');
+                // },
+                onTap: data.url == null ? null : () => launch(data.url!),
+              ),
+              if (data.url != null) ...[
+                Text(' ('),
+                Text(Uri.parse(data.url!).host),
+                // InkWell(
+                //   child: Text('fullstackeconomics.com'),
+                //   onTap: () {
+                //     launch('https://fullstackeconomics.com/why-zillow-is-like-my-bad-fantasy-football-team/');
+                //   },
+                // ),
+                Text(')'),
+              ],
+            ],
           ),
-          if (data.url != null) ...[
-            Text(' ('),
-            Text(Uri.parse(data.url!).host),
-            // InkWell(
-            //   child: Text('fullstackeconomics.com'),
-            //   onTap: () {
-            //     launch('https://fullstackeconomics.com/why-zillow-is-like-my-bad-fantasy-football-team/');
-            //   },
-            // ),
-            Text(')'),
-          ],
-        ],
-      ),
-      subtitle: Wrap(
-        children: [
-          if (data.score != null) Text('${data.score} points'),
-          if (data.by != null) ...[
-            Text(' by '),
-            InkWell(
-              child: Text(data.by!),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => UserView()),
-                );
-              },
-            ),
-          ],
-          if (data.time != null) ...[
-            Text(' '),
-            Text(' ${formatItemTime(data.time!)}'),
-            // Text(' ${DateTime.fromMillisecondsSinceEpoch(data.time! * 1000)}'),
-            // Text(' 2 hours ago'),
-            Text(' | '),
-          ],
-          InkWell(
-            child: Text('${data.descendants ?? 0} comments'),
-            // child: Text('comments'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (_) =>
-                        // ItemView()),
-                        ChangeNotifierProvider(
-                          create: (_) => HackerNewsItemNotifier(
-                              context.read<HackerNewsApi>())
-                            ..loadItem(data.id),
-                          child: ItemView(/* id: id */),
-                        )),
-              );
+          subtitle: Wrap(
+            children: [
+              if (data.score != null) Text('${data.score} points'),
+              if (data.by != null) ...[
+                Text(' by '),
+                InkWell(
+                  child: Text(data.by!),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => UserView(name: data.by!)),
+                    );
+                  },
+                ),
+              ],
+              if (data.time != null) ...[
+                Text(' '),
+                Text(' ${formatItemTime(data.time!)}'),
+                // Text(' ${DateTime.fromMillisecondsSinceEpoch(data.time! * 1000)}'),
+                // Text(' 2 hours ago'),
+                Text(' | '),
+              ],
+              InkWell(
+                child: Text('${data.descendants ?? 0} comments'),
+                // child: Text('comments'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => ItemView(id: data.id)),
+                  );
+                },
+              ),
+            ],
+          ),
+
+          // trailing: Text('1'),
+        ),
+        if (showText && data.text != null) ...[
+          // SizedBox(height: 5),
+          Html(
+            data: data.text!,
+            style: {
+              "body": Style(
+                padding: EdgeInsets.zero,
+                margin: EdgeInsets.zero,
+              ),
             },
           ),
         ],
-      ),
-
-      // trailing: Text('1'),
+      ],
     );
   }
 }
@@ -233,7 +283,9 @@ String formatItemTime(int unixTimeS) {
 }
 
 class ItemView extends StatelessWidget {
-  const ItemView({Key? key}) : super(key: key);
+  const ItemView({Key? key, required this.id}) : super(key: key);
+
+  final int id;
 
   @override
   Widget build(BuildContext context) {
@@ -241,32 +293,53 @@ class ItemView extends StatelessWidget {
       appBar: AppBar(
         title: Text('ItemView'),
       ),
-      body: Padding(padding: pagePadding, child: ItemWidget()),
+      body: Padding(padding: pagePadding, child: ItemWidget(id: id)),
     );
   }
 }
 
 class ItemWidget extends StatelessWidget {
-  ItemWidget({Key? key}) : super(key: key);
+  ItemWidget({Key? key, required this.id}) : super(key: key);
+
+  final int id;
 
   @override
   Widget build(BuildContext context) {
-    final notifier = context.watch<HackerNewsItemNotifier>();
+    final notifier = context.watch<HackerNewsNotifier>();
 
-    // final error = watchOnly((HackerNewsNotifier v) => v.error);
-    // final data = watchOnly((HackerNewsNotifier v) => v.beststories);
+    return FutureBuilder(
+      future: notifier.item(id),
+      builder: (BuildContext _, AsyncSnapshot<Item> snap) {
+        final error = snap.error;
+        if (error != null) {
+          onError(context, error);
+        }
 
-    final error = notifier.error;
-    if (error != null) {
-      onError(context, error);
-    }
+        final data = snap.data;
+        if (data != null) {
+          return onData(context, data);
+        }
 
-    final data = notifier.item;
-    if (data != null) {
-      return onData(context, data);
-    }
+        return onLoading(context);
+      },
+    );
 
-    return onLoading(context);
+    // final notifier = context.watch<HackerNewsItemNotifier>();
+
+    // // final error = watchOnly((HackerNewsNotifier v) => v.error);
+    // // final data = watchOnly((HackerNewsNotifier v) => v.beststories);
+
+    // final error = notifier.error;
+    // if (error != null) {
+    //   onError(context, error);
+    // }
+
+    // final data = notifier.item;
+    // if (data != null) {
+    //   return onData(context, data);
+    // }
+
+    // return onLoading(context);
   }
 
   void onError(BuildContext context, Object? error) {
@@ -284,7 +357,8 @@ class ItemWidget extends StatelessWidget {
   Widget onData(BuildContext context, Item data) {
     return ListView(
       children: [
-        ItemTile(/* id: 0, */ showLeading: false),
+        // TODO: fix: item load twice
+        ItemTile(id: data.id, showLeading: false),
         SizedBox(height: 20),
         // TextField(
         //   maxLines: 8,
@@ -309,54 +383,57 @@ class ItemWidget extends StatelessWidget {
         // crossAxisAlignment: CrossAxisAlignment.start,
         // children: [
 
-        for (final id in data.kids ?? [])
-          ChangeNotifierProvider(
-            create: (_) => HackerNewsItemNotifier(context.read<HackerNewsApi>())
-              ..loadItem(id),
-            child: Comment(/* id: id */),
-          )
-        // Comment(),
-        // Comment(),
-        // Comment(),
-        // Comment(),
-        // Comment(),
-        // Comment(),
-        // Comment(),
-        // Comment(),
-        // Comment(),
-        // Comment(),
-        // Comment(),
-        // Comment(),
-        // ]),
+        for (final id in data.kids ?? []) Comment(id: id),
       ],
     );
   }
 }
 
+// TODO: MAYBE: sptit to CommentLoader and Comment
 class Comment extends StatelessWidget {
-  const Comment({Key? key, this.depth = 0}) : super(key: key);
+  const Comment({Key? key, required this.id, this.depth = 0}) : super(key: key);
 
+  final int id;
   final int depth;
   static const maxDepth = 5;
 
   @override
   Widget build(BuildContext context) {
-    final notifier = context.watch<HackerNewsItemNotifier>();
+    final notifier = context.watch<HackerNewsNotifier>();
 
-    // final error = watchOnly((HackerNewsNotifier v) => v.error);
-    // final data = watchOnly((HackerNewsNotifier v) => v.beststories);
+    return FutureBuilder(
+      future: notifier.item(id),
+      builder: (BuildContext _, AsyncSnapshot<Item> snap) {
+        final error = snap.error;
+        if (error != null) {
+          onError(context, error);
+        }
 
-    final error = notifier.error;
-    if (error != null) {
-      onError(context, error);
-    }
+        final data = snap.data;
+        if (data != null) {
+          return onData(context, data);
+        }
 
-    final data = notifier.item;
-    if (data != null) {
-      return onData(context, data);
-    }
+        return onLoading(context);
+      },
+    );
 
-    return onLoading(context);
+    // final notifier = context.watch<HackerNewsItemNotifier>();
+
+    // // final error = watchOnly((HackerNewsNotifier v) => v.error);
+    // // final data = watchOnly((HackerNewsNotifier v) => v.beststories);
+
+    // final error = notifier.error;
+    // if (error != null) {
+    //   onError(context, error);
+    // }
+
+    // final data = notifier.item;
+    // if (data != null) {
+    //   return onData(context, data);
+    // }
+
+    // return onLoading(context);
   }
 
   void onError(BuildContext context, Object? error) {
@@ -372,12 +449,13 @@ class Comment extends StatelessWidget {
 
   // Widget build(BuildContext context) {
   Widget onData(BuildContext context, Item data) {
-    final leftPadding = min(depth, maxDepth) * 20.0;
+    final leftPadding = min(depth, maxDepth) * 30.0;
+    final textStyle = TextStyle(color: Colors.grey);
 
     return Container(
       child: Padding(
         // padding: const EdgeInsets.symmetric(vertical: 8.0),
-        padding: EdgeInsets.only(left: leftPadding, top: 10, bottom: 10),
+        padding: EdgeInsets.only(left: leftPadding, top: 5, bottom: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -385,11 +463,12 @@ class Comment extends StatelessWidget {
               children: [
                 if (data.by != null) ...[
                   InkWell(
-                    child: Text(data.by!),
+                    child: Text(data.by!, style: textStyle),
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => UserView()),
+                        MaterialPageRoute(
+                            builder: (_) => UserView(name: data.by!)),
                       );
                     },
                   ),
@@ -404,7 +483,7 @@ class Comment extends StatelessWidget {
                 // Text(' '),
                 if (data.time != null) ...[
                   Text(' '),
-                  Text(' ${formatItemTime(data.time!)}'),
+                  Text(' ${formatItemTime(data.time!)}', style: textStyle),
                   // Text(' ${DateTime.fromMillisecondsSinceEpoch(data.time! * 1000)}'),
                   // Text(' 2 hours ago'),
                   Text(' | '),
@@ -417,9 +496,9 @@ class Comment extends StatelessWidget {
                 //   },
                 // ),
                 // Text(' | '),
-                Text('prev'),
-                Text(' | '),
-                Text('next [–]'),
+                Text('prev', style: textStyle),
+                Text(' | ', style: textStyle),
+                Text('next [–]', style: textStyle),
               ],
             ),
 
@@ -431,7 +510,7 @@ class Comment extends StatelessWidget {
             // ),
 
             if (data.text != null) ...[
-              SizedBox(height: 10),
+              // SizedBox(height: 5),
               Html(
                 data: data.text!,
                 style: {
@@ -447,14 +526,7 @@ class Comment extends StatelessWidget {
             //     'What are the benefits of running (open)BSD on a workstation? Especially a laptop?'),
             // Text(
             //     'Edit: this could of course also be used for running a server on a M1 mini! '),
-            for (final id in data.kids ?? [])
-              ChangeNotifierProvider(
-                create: (context) =>
-                    HackerNewsItemNotifier(context.read<HackerNewsApi>())
-                      ..loadItem(id),
-                child: CommentBorder(
-                    child: Comment(/* id: id */ depth: depth + 1)),
-              )
+            for (final id in data.kids ?? []) Comment(id: id, depth: depth + 1)
           ],
         ),
       ),
@@ -484,7 +556,9 @@ class CommentBorder extends StatelessWidget {
 }
 
 class UserView extends StatelessWidget {
-  const UserView({Key? key}) : super(key: key);
+  const UserView({Key? key, required this.name}) : super(key: key);
+
+  final String name;
 
   @override
   Widget build(BuildContext context) {
@@ -492,16 +566,68 @@ class UserView extends StatelessWidget {
       appBar: AppBar(
         title: Text('UserView'),
       ),
-      body: Padding(padding: pagePadding, child: User()),
+      body: Padding(padding: pagePadding, child: UserWidget(name: name)),
     );
   }
 }
 
-class User extends StatelessWidget {
-  const User({Key? key}) : super(key: key);
+class UserWidget extends StatelessWidget {
+  UserWidget({Key? key, required this.name}) : super(key: key);
+
+  final String name;
 
   @override
   Widget build(BuildContext context) {
+    final notifier = context.watch<HackerNewsNotifier>();
+
+    return FutureBuilder(
+      future: notifier.user(name),
+      builder: (BuildContext _, AsyncSnapshot<User> snap) {
+        final error = snap.error;
+        if (error != null) {
+          onError(context, error);
+        }
+
+        final data = snap.data;
+        if (data != null) {
+          return onData(context, data);
+        }
+
+        return onLoading(context);
+      },
+    );
+
+    // final notifier = context.watch<HackerNewsItemNotifier>();
+
+    // // final error = watchOnly((HackerNewsNotifier v) => v.error);
+    // // final data = watchOnly((HackerNewsNotifier v) => v.beststories);
+
+    // final error = notifier.error;
+    // if (error != null) {
+    //   onError(context, error);
+    // }
+
+    // final data = notifier.item;
+    // if (data != null) {
+    //   return onData(context, data);
+    // }
+
+    // return onLoading(context);
+  }
+
+  void onError(BuildContext context, Object? error) {
+    // navigationService.showSnackBarPostFrame(
+    //   error.tr(appLocalizations(context)),
+    // );
+    // TODO
+  }
+
+  Widget onLoading(BuildContext context) {
+    return Center(child: CircularProgressIndicator());
+  }
+
+  // Widget build(BuildContext context) {
+  Widget onData(BuildContext context, User data) {
     // return ListView(
     //   children: [
     //     Text('user:	brynet'),
@@ -536,71 +662,77 @@ class User extends StatelessWidget {
         TableRow(
           children: [
             Text('user:'),
-            Text('brynet'),
+            Text(data.id),
           ],
         ),
         TableRow(
           children: [
             Text('created:'),
-            Text('May 18, 2013'),
+            Text(DateTime.fromMillisecondsSinceEpoch(data.created * 1000)
+                .toString()),
           ],
         ),
         TableRow(
           children: [
             Text('karma:'),
-            Text('1804'),
+            Text('${data.karma}'),
           ],
         ),
         TableRow(
           children: [
             Text('about:'),
-            Text(
-                'I occasionally hack on OpenBSD and ramble on twitter @canadianbryan.'),
+            Text((data.about ?? '') + "\n"),
           ],
         ),
-        TableRow(
-          children: [
-            Text(''),
-            InkWell(
-              child: Text('submissions'),
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => SubmissionsView()));
-              },
-            ),
-          ],
-        ),
-        TableRow(
-          children: [
-            Text(''),
-            InkWell(
-              child: Text('comments'),
-              onTap: () {
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (_) => CommentsView()));
-              },
-            ),
-          ],
-        ),
-        TableRow(
-          children: [
-            Text(''),
-            InkWell(
-              child: Text('favorites'),
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => FavoritesView()));
-              },
-            ),
-          ],
-        ),
+        if (data.submitted != null)
+          TableRow(
+            children: [
+              Text(''),
+              InkWell(
+                child: Text('submissions'),
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) =>
+                              SubmissionsView(submitted: data.submitted!)));
+                },
+              ),
+            ],
+          ),
+        // TableRow(
+        //   children: [
+        //     Text(''),
+        //     InkWell(
+        //       child: Text('comments'),
+        //       onTap: () {
+        //         Navigator.push(
+        //             context, MaterialPageRoute(builder: (_) => CommentsView()));
+        //       },
+        //     ),
+        //   ],
+        // ),
+        // TableRow(
+        //   children: [
+        //     Text(''),
+        //     InkWell(
+        //       child: Text('favorites'),
+        //       onTap: () {
+        //         Navigator.push(context,
+        //             MaterialPageRoute(builder: (_) => FavoritesView()));
+        //       },
+        //     ),
+        //   ],
+        // ),
       ],
     );
   }
 }
 
 class SubmissionsView extends StatelessWidget {
-  const SubmissionsView({Key? key}) : super(key: key);
+  SubmissionsView({Key? key, required this.submitted}) : super(key: key);
+
+  List<int> submitted;
 
   @override
   Widget build(BuildContext context) {
@@ -608,38 +740,58 @@ class SubmissionsView extends StatelessWidget {
       appBar: AppBar(
         title: Text('SubmissionsView'),
       ),
-      body: Padding(padding: pagePadding, child: TodoWidget()),
+      body: Padding(
+          padding: pagePadding, child: Submissions(submitted: submitted)),
     );
   }
 }
 
-class CommentsView extends StatelessWidget {
-  const CommentsView({Key? key}) : super(key: key);
+class Submissions extends StatelessWidget {
+  Submissions({Key? key, required this.submitted}) : super(key: key);
+
+  List<int> submitted;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('CommentsView'),
-      ),
-      body: Padding(padding: pagePadding, child: TodoWidget()),
+    return ListView(
+      children: [
+        for (final id in submitted) ItemTile(id: id, showLeading: false, showText:true),
+        // ItemTile(),
+        // ItemTile(),
+        // ItemTile(),
+        // ItemTile(),
+      ],
     );
   }
 }
 
-class FavoritesView extends StatelessWidget {
-  const FavoritesView({Key? key}) : super(key: key);
+// class CommentsView extends StatelessWidget {
+//   const CommentsView({Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('FavoritesView'),
-      ),
-      body: Padding(padding: pagePadding, child: TodoWidget()),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('CommentsView'),
+//       ),
+//       body: Padding(padding: pagePadding, child: TodoWidget()),
+//     );
+//   }
+// }
+
+// class FavoritesView extends StatelessWidget {
+//   const FavoritesView({Key? key}) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('FavoritesView'),
+//       ),
+//       body: Padding(padding: pagePadding, child: TodoWidget()),
+//     );
+//   }
+// }
 
 class TodoWidget extends StatelessWidget {
   const TodoWidget({Key? key}) : super(key: key);

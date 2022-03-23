@@ -1,6 +1,8 @@
 import 'dart:convert';
 
-import 'package:http/http.dart' show Client;
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' show Client, Response;
+import 'package:retry/retry.dart';
 
 import 'item.dart';
 import 'updates.dart';
@@ -8,18 +10,18 @@ import 'user.dart';
 
 String _e(String s) => Uri.encodeComponent(s);
 
-Future<T> retry<T>(Future<T> Function() fn, [int tryN = 1]) async {
-  Exception? exception;
-  for (int t = 0; t < tryN; t++) {
-    try {
-      return await fn();
-    } on Exception catch (e) {
-      exception = e;
-    }
-  }
+// Future<T> retry<T>(Future<T> Function() fn, [int tryN = 1]) async {
+//   Exception? exception;
+//   for (int t = 0; t < tryN; t++) {
+//     try {
+//       return await fn();
+//     } on Exception catch (e) {
+//       exception = e;
+//     }
+//   }
 
-  throw (exception ?? Exception('failed to try'));
-}
+//   throw (exception ?? Exception('failed to try'));
+// }
 
 class HackerNewsURI {
   static const String base = 'https://hacker-news.firebaseio.com';
@@ -55,10 +57,14 @@ class HackerNewsApiImpl implements HackerNewsApi {
 
   HackerNewsApiImpl(this.client);
 
+  Future<Response> _get(Uri uri) async {
+    return await retry(() => client.get(uri));
+  }
+
   @override
   Future<List<int>> askstories() async {
     final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.askstories);
-    final response = await client.get(uri);
+    final response = await _get(uri);
     if (response.statusCode == 200) {
       return jsonDecode(response.body) as List<int>;
     } else {
@@ -69,7 +75,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
   @override
   Future<List<int>> beststories() async {
     final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.beststories);
-    final response = await client.get(uri);
+    final response = await _get(uri);
     if (response.statusCode == 200) {
       return (jsonDecode(response.body) as List).map((v) => v as int).toList();
     } else {
@@ -80,7 +86,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
   @override
   Future<List<int>> jobstories() async {
     final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.jobstories);
-    final response = await client.get(uri);
+    final response = await _get(uri);
     if (response.statusCode == 200) {
       return jsonDecode(response.body) as List<int>;
     } else {
@@ -91,7 +97,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
   @override
   Future<List<int>> newstories() async {
     final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.newstories);
-    final response = await client.get(uri);
+    final response = await _get(uri);
     if (response.statusCode == 200) {
       return jsonDecode(response.body) as List<int>;
     } else {
@@ -102,7 +108,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
   @override
   Future<List<int>> showstories() async {
     final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.showstories);
-    final response = await client.get(uri);
+    final response = await _get(uri);
     if (response.statusCode == 200) {
       return jsonDecode(response.body) as List<int>;
     } else {
@@ -113,7 +119,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
   @override
   Future<List<int>> topstories() async {
     final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.topstories);
-    final response = await client.get(uri);
+    final response = await _get(uri);
     if (response.statusCode == 200) {
       return (jsonDecode(response.body) as List).map((v) => v as int).toList();
     } else {
@@ -124,7 +130,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
   @override
   Future<Item> item(int id) async {
     final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.item(id));
-    final response = await client.get(uri);
+    final response = await _get(uri);
     if (response.statusCode == 200) {
       return Item.fromJson(jsonDecode(response.body));
     } else {
@@ -135,7 +141,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
   @override
   Future<int> maxitem() async {
     final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.maxitem);
-    final response = await client.get(uri);
+    final response = await _get(uri);
     if (response.statusCode == 200) {
       return jsonDecode(response.body) as int;
     } else {
@@ -146,7 +152,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
   @override
   Future<Updates> updates() async {
     final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.updates);
-    final response = await client.get(uri);
+    final response = await _get(uri);
     if (response.statusCode == 200) {
       return Updates.fromJson(jsonDecode(response.body));
     } else {
@@ -157,7 +163,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
   @override
   Future<User> user(String name) async {
     final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.user(name));
-    final response = await client.get(uri);
+    final response = await _get(uri);
     if (response.statusCode == 200) {
       return User.fromJson(jsonDecode(response.body));
     } else {

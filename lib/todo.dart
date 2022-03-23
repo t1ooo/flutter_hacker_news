@@ -1,1 +1,2 @@
-// TODO: prototype topstories view
+// TODO: reload button
+// TODO: item number

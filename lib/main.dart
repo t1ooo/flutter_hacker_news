@@ -13,8 +13,7 @@ Future<void> main() async {
   configureLogger(kDebugMode);
 
   final hackerNewsApi = HackerNewsApiImpl(Client());
-  final hackerNewsNotifier = HackerNewsNotifier(hackerNewsApi)
-    ..loadBeststories(5, 0);
+  final hackerNewsNotifier = HackerNewsNotifier(hackerNewsApi);
   // HackerNewsItemNotifier(hackerNewsApi)..loadItem(id),
 
   runApp(
