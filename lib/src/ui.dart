@@ -35,9 +35,11 @@ class ItemList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final notifier = context.watch<HackerNewsNotifier>();
+    final limit = 10;
+    final offset = 0;
 
     return FutureBuilder(
-      future: notifier.beststories(10, 0),
+      future: notifier.beststories(limit, offset),
       builder: (BuildContext _, AsyncSnapshot<List<int>> snap) {
         final error = snap.error;
         if (error != null) {
@@ -46,7 +48,7 @@ class ItemList extends StatelessWidget {
 
         final data = snap.data;
         if (data != null) {
-          return onData(context, data);
+          return onData(context, data, offset+1);
         }
 
         return onLoading(context);
@@ -76,11 +78,11 @@ class ItemList extends StatelessWidget {
 
     // return ListView(
     //   children: [
-    //     ItemTile(),
-    //     ItemTile(),
-    //     ItemTile(),
-    //     ItemTile(),
-    //     ItemTile(),
+    //     StoryTile(),
+    //     StoryTile(),
+    //     StoryTile(),
+    //     StoryTile(),
+    //     StoryTile(),
     //   ],
     // );
   }
@@ -98,32 +100,30 @@ class ItemList extends StatelessWidget {
   }
 
   // Widget build(BuildContext context) {
-  Widget onData(BuildContext context, List<int> data) {
+  Widget onData(BuildContext context, List<int> data, int rank) {
     print(data);
 
     return ListView(
       children: [
-        for (final id in data) ItemTile(id: id),
-        // ItemTile(),
-        // ItemTile(),
-        // ItemTile(),
-        // ItemTile(),
+        // for (final id in data)  StoryTile(id: id, rank: rank)
+        for (int i=0; i<data.length; i++)  StoryTile(id: data[i], rank: rank+i)
+          
+        // StoryTile(),
+        // StoryTile(),
+        // StoryTile(),
+        // StoryTile(),
       ],
     );
   }
 }
 
-class ItemTile extends StatelessWidget {
-  ItemTile(
-      {Key? key,
-      required this.id,
-      this.showLeading = true,
-      this.showText = false})
+class StoryTile extends StatelessWidget {
+  StoryTile({Key? key, required this.id, required this.rank, this.showLeading = true})
       : super(key: key);
 
   final int id;
+  final int rank;
   final bool showLeading;
-  final bool showText;
 
   @override
   Widget build(BuildContext context) {
@@ -177,93 +177,156 @@ class ItemTile extends StatelessWidget {
 
   // Widget build(BuildContext context) {
   Widget onData(BuildContext context, Item data) {
-    return Column(
-      children: [
-        ListTile(
-          contentPadding: EdgeInsets.all(0),
-          leading: showLeading ? Text('1.') : null,
-          title: data.title == null ? Text('-') : Wrap(
-            children: [
-              // Link(
-              //     uri: Uri.parse(
-              //         'https://fullstackeconomics.com/why-zillow-is-like-my-bad-fantasy-football-team/'),
-              //     builder: (_, __) {
-              //       return Text('How Zillow\'s homebuying scheme lost \$881M');
-              //     }),
-              InkWell(
-                // child: Text('How Zillow\'s homebuying scheme lost \$881M'),
-                // child: Text(data.title ?? ''),
-                child: Text(data.title!),
-                // onTap: () {
-                //   launch(
-                //       'https://fullstackeconomics.com/why-zillow-is-like-my-bad-fantasy-football-team/');
-                // },
-                onTap: data.url == null ? null : () => launch(data.url!),
-              ),
-              if (data.url != null) ...[
-                Text(' ('),
-                Text(Uri.parse(data.url!).host),
-                // InkWell(
-                //   child: Text('fullstackeconomics.com'),
-                //   onTap: () {
-                //     launch('https://fullstackeconomics.com/why-zillow-is-like-my-bad-fantasy-football-team/');
-                //   },
-                // ),
-                Text(')'),
-              ],
-            ],
+    return ListTile(
+      contentPadding: EdgeInsets.all(0),
+      leading: showLeading ? Text('$rank.') : null,
+      title: Wrap(
+        children: [
+          // Link(
+          //     uri: Uri.parse(
+          //         'https://fullstackeconomics.com/why-zillow-is-like-my-bad-fantasy-football-team/'),
+          //     builder: (_, __) {
+          //       return Text('How Zillow\'s homebuying scheme lost \$881M');
+          //     }),
+          InkWell(
+            // child: Text('How Zillow\'s homebuying scheme lost \$881M'),
+            child: Text(data.title ?? ''),
+            // onTap: () {
+            //   launch(
+            //       'https://fullstackeconomics.com/why-zillow-is-like-my-bad-fantasy-football-team/');
+            // },
+            onTap: data.url == null ? null : () => launch(data.url!),
           ),
-          subtitle: Wrap(
-            children: [
-              if (data.score != null) Text('${data.score} points'),
-              if (data.by != null) ...[
-                Text(' by '),
-                InkWell(
-                  child: Text(data.by!),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => UserView(name: data.by!)),
-                    );
-                  },
-                ),
-              ],
-              if (data.time != null) ...[
-                Text(' '),
-                Text(' ${formatItemTime(data.time!)}'),
-                // Text(' ${DateTime.fromMillisecondsSinceEpoch(data.time! * 1000)}'),
-                // Text(' 2 hours ago'),
-                Text(' | '),
-              ],
-              InkWell(
-                child: Text('${data.descendants ?? 0} comments'),
-                // child: Text('comments'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => ItemView(id: data.id)),
-                  );
-                },
-              ),
-            ],
-          ),
-
-          // trailing: Text('1'),
-        ),
-        if (showText && data.text != null) ...[
-          // SizedBox(height: 5),
-          Html(
-            data: data.text!,
-            style: {
-              "body": Style(
-                padding: EdgeInsets.zero,
-                margin: EdgeInsets.zero,
-              ),
+          if (data.url != null) ...[
+            Text(' ('),
+            Text(Uri.parse(data.url!).host),
+            // InkWell(
+            //   child: Text('fullstackeconomics.com'),
+            //   onTap: () {
+            //     launch('https://fullstackeconomics.com/why-zillow-is-like-my-bad-fantasy-football-team/');
+            //   },
+            // ),
+            Text(')'),
+          ],
+        ],
+      ),
+      subtitle: Wrap(
+        children: [
+          if (data.score != null) Text('${data.score} points'),
+          if (data.by != null) ...[
+            Text(' by '),
+            InkWell(
+              child: Text(data.by!),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => UserView(name: data.by!)),
+                );
+              },
+            ),
+          ],
+          if (data.time != null) ...[
+            Text(' '),
+            Text(' ${formatItemTime(data.time!)}'),
+            // Text(' ${DateTime.fromMillisecondsSinceEpoch(data.time! * 1000)}'),
+            // Text(' 2 hours ago'),
+            Text(' | '),
+          ],
+          InkWell(
+            child: Text('${data.descendants ?? 0} comments'),
+            // child: Text('comments'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => ItemView(id: data.id)),
+              );
             },
           ),
         ],
-      ],
+      ),
+
+      // trailing: Text('1'),
+    );
+  }
+}
+
+class _StoryTile extends StatelessWidget {
+  _StoryTile({Key? key, required this.item, this.showLeading = true})
+      : super(key: key);
+
+  final Item item;
+  final bool showLeading;
+
+  Widget build(BuildContext context) {
+    return ListTile(
+      contentPadding: EdgeInsets.all(0),
+      leading: showLeading ? Text('1.') : null,
+      title: Wrap(
+        children: [
+          // Link(
+          //     uri: Uri.parse(
+          //         'https://fullstackeconomics.com/why-zillow-is-like-my-bad-fantasy-football-team/'),
+          //     builder: (_, __) {
+          //       return Text('How Zillow\'s homebuying scheme lost \$881M');
+          //     }),
+          InkWell(
+            // child: Text('How Zillow\'s homebuying scheme lost \$881M'),
+            child: Text(item.title ?? ''),
+            // onTap: () {
+            //   launch(
+            //       'https://fullstackeconomics.com/why-zillow-is-like-my-bad-fantasy-football-team/');
+            // },
+            onTap: item.url == null ? null : () => launch(item.url!),
+          ),
+          if (item.url != null) ...[
+            Text(' ('),
+            Text(Uri.parse(item.url!).host),
+            // InkWell(
+            //   child: Text('fullstackeconomics.com'),
+            //   onTap: () {
+            //     launch('https://fullstackeconomics.com/why-zillow-is-like-my-bad-fantasy-football-team/');
+            //   },
+            // ),
+            Text(')'),
+          ],
+        ],
+      ),
+      subtitle: Wrap(
+        children: [
+          if (item.score != null) Text('${item.score} points'),
+          if (item.by != null) ...[
+            Text(' by '),
+            InkWell(
+              child: Text(item.by!),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => UserView(name: item.by!)),
+                );
+              },
+            ),
+          ],
+          if (item.time != null) ...[
+            Text(' '),
+            Text(' ${formatItemTime(item.time!)}'),
+            // Text(' ${DateTime.fromMillisecondsSinceEpoch(item.time! * 1000)}'),
+            // Text(' 2 hours ago'),
+            Text(' | '),
+          ],
+          InkWell(
+            child: Text('${item.descendants ?? 0} comments'),
+            // child: Text('comments'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => ItemView(id: item.id)),
+              );
+            },
+          ),
+        ],
+      ),
+
+      // trailing: Text('1'),
     );
   }
 }
@@ -358,7 +421,7 @@ class ItemWidget extends StatelessWidget {
     return ListView(
       children: [
         // TODO: fix: item load twice
-        ItemTile(id: data.id, showLeading: false),
+        StoryTile(id: data.id, rank:0, showLeading: false),
         SizedBox(height: 20),
         // TextField(
         //   maxLines: 8,
@@ -384,6 +447,19 @@ class ItemWidget extends StatelessWidget {
         // children: [
 
         for (final id in data.kids ?? []) Comment(id: id),
+        // Comment(),
+        // Comment(),
+        // Comment(),
+        // Comment(),
+        // Comment(),
+        // Comment(),
+        // Comment(),
+        // Comment(),
+        // Comment(),
+        // Comment(),
+        // Comment(),
+        // Comment(),
+        // ]),
       ],
     );
   }
@@ -527,6 +603,104 @@ class Comment extends StatelessWidget {
             // Text(
             //     'Edit: this could of course also be used for running a server on a M1 mini! '),
             for (final id in data.kids ?? []) Comment(id: id, depth: depth + 1)
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _Comment extends StatelessWidget {
+  const _Comment(
+      {Key? key, required this.item, this.showNested = true, this.depth = 0})
+      : super(key: key);
+
+  final Item item;
+  final bool showNested;
+  final int depth;
+  static const maxDepth = 5;
+
+  @override
+  Widget build(BuildContext context) {
+    final leftPadding = min(depth, maxDepth) * 30.0;
+    final textStyle = TextStyle(color: Colors.grey);
+
+    return Container(
+      child: Padding(
+        // padding: const EdgeInsets.symmetric(vertical: 8.0),
+        padding: EdgeInsets.only(left: leftPadding, top: 5, bottom: 10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Wrap(
+              children: [
+                if (item.by != null) ...[
+                  InkWell(
+                    child: Text(item.by!, style: textStyle),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => UserView(name: item.by!)),
+                      );
+                    },
+                  ),
+                ],
+                // InkWell(
+                //   child: Text('spockz'),
+                //   onTap: () {
+                //     Navigator.push(
+                //         context, MaterialPageRoute(builder: (_) => ItemView()));
+                //   },
+                // ),
+                // Text(' '),
+                if (item.time != null) ...[
+                  Text(' '),
+                  Text(' ${formatItemTime(item.time!)}', style: textStyle),
+                  // Text(' ${DateTime.fromMillisecondsSinceEpoch(item.time! * 1000)}'),
+                  // Text(' 2 hours ago'),
+                  Text(' | '),
+                ],
+                // InkWell(
+                //   child: Text('11 minutes ago'),
+                //   onTap: () {
+                //     Navigator.push(
+                //         context, MaterialPageRoute(builder: (_) => ItemView()));
+                //   },
+                // ),
+                // Text(' | '),
+                Text('prev', style: textStyle),
+                Text(' | ', style: textStyle),
+                Text('next [–]', style: textStyle),
+              ],
+            ),
+
+            // if (item.text != null) Align(
+            //   alignment: Alignment.topLeft,
+            //   child:
+            //     Html(item: item.text),
+
+            // ),
+
+            if (item.text != null) ...[
+              // SizedBox(height: 5),
+              Html(
+                data: item.text!,
+                style: {
+                  "body": Style(
+                    padding: EdgeInsets.zero,
+                    margin: EdgeInsets.zero,
+                  ),
+                },
+              ),
+            ],
+            // Text('spockz 11 minutes ago | next [–]'),
+            // Text(
+            //     'What are the benefits of running (open)BSD on a workstation? Especially a laptop?'),
+            // Text(
+            //     'Edit: this could of course also be used for running a server on a M1 mini! '),
+            if (showNested && item.kids != null)
+              for (final id in item.kids!) Comment(id: id, depth: depth + 1)
           ],
         ),
       ),
@@ -695,23 +869,26 @@ class UserWidget extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                           builder: (_) =>
-                              SubmissionsView(submitted: data.submitted!)));
+                              UserSubmissionsView(submitted: data.submitted!)));
                 },
               ),
             ],
           ),
-        // TableRow(
-        //   children: [
-        //     Text(''),
-        //     InkWell(
-        //       child: Text('comments'),
-        //       onTap: () {
-        //         Navigator.push(
-        //             context, MaterialPageRoute(builder: (_) => CommentsView()));
-        //       },
-        //     ),
-        //   ],
-        // ),
+        TableRow(
+          children: [
+            Text(''),
+            InkWell(
+              child: Text('comments'),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) =>
+                            UserCommentsView(submitted: data.submitted!)));
+              },
+            ),
+          ],
+        ),
         // TableRow(
         //   children: [
         //     Text(''),
@@ -729,8 +906,8 @@ class UserWidget extends StatelessWidget {
   }
 }
 
-class SubmissionsView extends StatelessWidget {
-  SubmissionsView({Key? key, required this.submitted}) : super(key: key);
+class UserSubmissionsView extends StatelessWidget {
+  UserSubmissionsView({Key? key, required this.submitted}) : super(key: key);
 
   List<int> submitted;
 
@@ -741,43 +918,127 @@ class SubmissionsView extends StatelessWidget {
         title: Text('SubmissionsView'),
       ),
       body: Padding(
-          padding: pagePadding, child: Submissions(submitted: submitted)),
+          padding: pagePadding, child: UserSubmissions(submitted: submitted)),
     );
   }
 }
 
-class Submissions extends StatelessWidget {
-  Submissions({Key? key, required this.submitted}) : super(key: key);
+class UserSubmissions extends StatelessWidget {
+  UserSubmissions({Key? key, required this.submitted}) : super(key: key);
 
   List<int> submitted;
 
   @override
   Widget build(BuildContext context) {
+    final notifier = context.watch<HackerNewsNotifier>();
+
     return ListView(
       children: [
-        for (final id in submitted) ItemTile(id: id, showLeading: false, showText:true),
-        // ItemTile(),
-        // ItemTile(),
-        // ItemTile(),
-        // ItemTile(),
+        for (final id in submitted)
+          // Comment(id: id),
+          FutureBuilder(
+            future: notifier.item(id),
+            builder: (BuildContext _, AsyncSnapshot<Item> snap) {
+              final error = snap.error;
+              if (error != null) {
+                onError(context, error);
+              }
+
+              final data = snap.data;
+              if (data != null) {
+                if (data.type != 'comment') {
+                  return _StoryTile(item: data);
+                } else {
+                  return Container();
+                }
+              }
+
+              return onLoading(context);
+            },
+          ),
       ],
+    );
+  }
+
+  void onError(BuildContext context, Object? error) {
+    print(error);
+    // navigationService.showSnackBarPostFrame(
+    //   error.tr(appLocalizations(context)),
+    // );
+    // TODO
+  }
+
+  Widget onLoading(BuildContext context) {
+    return Center(child: CircularProgressIndicator());
+  }
+}
+
+class UserCommentsView extends StatelessWidget {
+  UserCommentsView({Key? key, required this.submitted}) : super(key: key);
+
+  List<int> submitted;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('CommentsView'),
+      ),
+      body: Padding(
+          padding: pagePadding, child: UserComments(submitted: submitted)),
     );
   }
 }
 
-// class CommentsView extends StatelessWidget {
-//   const CommentsView({Key? key}) : super(key: key);
+class UserComments extends StatelessWidget {
+  UserComments({Key? key, required this.submitted}) : super(key: key);
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('CommentsView'),
-//       ),
-//       body: Padding(padding: pagePadding, child: TodoWidget()),
-//     );
-//   }
-// }
+  List<int> submitted;
+
+  @override
+  Widget build(BuildContext context) {
+    final notifier = context.watch<HackerNewsNotifier>();
+
+    return ListView(
+      children: [
+        for (final id in submitted)
+          // Comment(id: id),
+          FutureBuilder(
+            future: notifier.item(id),
+            builder: (BuildContext _, AsyncSnapshot<Item> snap) {
+              final error = snap.error;
+              if (error != null) {
+                onError(context, error);
+              }
+
+              final data = snap.data;
+              if (data != null) {
+                if (data.type == 'comment') {
+                  return _Comment(item: data, showNested: false,);
+                } else {
+                  return Container();
+                }
+              }
+
+              return onLoading(context);
+            },
+          ),
+      ],
+    );
+  }
+
+  void onError(BuildContext context, Object? error) {
+    print(error);
+    // navigationService.showSnackBarPostFrame(
+    //   error.tr(appLocalizations(context)),
+    // );
+    // TODO
+  }
+
+  Widget onLoading(BuildContext context) {
+    return Center(child: CircularProgressIndicator());
+  }
+}
 
 // class FavoritesView extends StatelessWidget {
 //   const FavoritesView({Key? key}) : super(key: key);
