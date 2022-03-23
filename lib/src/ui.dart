@@ -13,14 +13,14 @@ import 'item.dart';
 import 'style/style.dart';
 import 'user.dart';
 
-class TopstoriesView extends StatelessWidget {
-  const TopstoriesView({Key? key}) : super(key: key);
+class TopstoriesScreen extends StatelessWidget {
+  const TopstoriesScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('TopstoriesView'),
+        title: Text('TopstoriesScreen'),
       ),
       body: Padding(padding: pagePadding, child: ItemList()),
     );
@@ -220,7 +220,7 @@ class StoryTile extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => UserView(name: data.by!)),
+                  MaterialPageRoute(builder: (_) => UserScreen(name: data.by!)),
                 );
               },
             ),
@@ -238,7 +238,7 @@ class StoryTile extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => ItemView(id: data.id)),
+                MaterialPageRoute(builder: (_) => ItemScreen(id: data.id)),
               );
             },
           ),
@@ -301,7 +301,7 @@ class _StoryTile extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => UserView(name: item.by!)),
+                  MaterialPageRoute(builder: (_) => UserScreen(name: item.by!)),
                 );
               },
             ),
@@ -319,7 +319,7 @@ class _StoryTile extends StatelessWidget {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => ItemView(id: item.id)),
+                MaterialPageRoute(builder: (_) => ItemScreen(id: item.id)),
               );
             },
           ),
@@ -345,8 +345,8 @@ String formatItemTime(int unixTimeS) {
   return '${diff.inMinutes} minutes ago';
 }
 
-class ItemView extends StatelessWidget {
-  const ItemView({Key? key, required this.id}) : super(key: key);
+class ItemScreen extends StatelessWidget {
+  const ItemScreen({Key? key, required this.id}) : super(key: key);
 
   final int id;
 
@@ -354,7 +354,7 @@ class ItemView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('ItemView'),
+        title: Text('ItemScreen'),
       ),
       body: Padding(padding: pagePadding, child: ItemWidget(id: id)),
     );
@@ -544,7 +544,7 @@ class Comment extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (_) => UserView(name: data.by!)),
+                            builder: (_) => UserScreen(name: data.by!)),
                       );
                     },
                   ),
@@ -553,7 +553,7 @@ class Comment extends StatelessWidget {
                 //   child: Text('spockz'),
                 //   onTap: () {
                 //     Navigator.push(
-                //         context, MaterialPageRoute(builder: (_) => ItemView()));
+                //         context, MaterialPageRoute(builder: (_) => ItemScreen()));
                 //   },
                 // ),
                 // Text(' '),
@@ -568,7 +568,7 @@ class Comment extends StatelessWidget {
                 //   child: Text('11 minutes ago'),
                 //   onTap: () {
                 //     Navigator.push(
-                //         context, MaterialPageRoute(builder: (_) => ItemView()));
+                //         context, MaterialPageRoute(builder: (_) => ItemScreen()));
                 //   },
                 // ),
                 // Text(' | '),
@@ -641,7 +641,7 @@ class _Comment extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (_) => UserView(name: item.by!)),
+                            builder: (_) => UserScreen(name: item.by!)),
                       );
                     },
                   ),
@@ -650,7 +650,7 @@ class _Comment extends StatelessWidget {
                 //   child: Text('spockz'),
                 //   onTap: () {
                 //     Navigator.push(
-                //         context, MaterialPageRoute(builder: (_) => ItemView()));
+                //         context, MaterialPageRoute(builder: (_) => ItemScreen()));
                 //   },
                 // ),
                 // Text(' '),
@@ -665,7 +665,7 @@ class _Comment extends StatelessWidget {
                 //   child: Text('11 minutes ago'),
                 //   onTap: () {
                 //     Navigator.push(
-                //         context, MaterialPageRoute(builder: (_) => ItemView()));
+                //         context, MaterialPageRoute(builder: (_) => ItemScreen()));
                 //   },
                 // ),
                 // Text(' | '),
@@ -729,8 +729,8 @@ class CommentBorder extends StatelessWidget {
   }
 }
 
-class UserView extends StatelessWidget {
-  const UserView({Key? key, required this.name}) : super(key: key);
+class UserScreen extends StatelessWidget {
+  const UserScreen({Key? key, required this.name}) : super(key: key);
 
   final String name;
 
@@ -738,7 +738,7 @@ class UserView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('UserView'),
+        title: Text('UserScreen'),
       ),
       body: Padding(padding: pagePadding, child: UserWidget(name: name)),
     );
@@ -815,7 +815,7 @@ class UserWidget extends StatelessWidget {
     //   ],
     // );
 
-    // return GridView.count(
+    // return GridScreen.count(
     //   // Create a grid with 2 columns. If you change the scrollDirection to
     //   // horizontal, this produces 2 rows.
     //   crossAxisCount: 2,
@@ -869,7 +869,7 @@ class UserWidget extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                           builder: (_) =>
-                              UserSubmissionsView(submitted: data.submitted!)));
+                              UserSubmissionsScreen(submitted: data.submitted!)));
                 },
               ),
             ],
@@ -884,7 +884,7 @@ class UserWidget extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (_) =>
-                            UserCommentsView(submitted: data.submitted!)));
+                            UserCommentsScreen(submitted: data.submitted!)));
               },
             ),
           ],
@@ -896,7 +896,7 @@ class UserWidget extends StatelessWidget {
         //       child: Text('favorites'),
         //       onTap: () {
         //         Navigator.push(context,
-        //             MaterialPageRoute(builder: (_) => FavoritesView()));
+        //             MaterialPageRoute(builder: (_) => FavoritesScreen()));
         //       },
         //     ),
         //   ],
@@ -906,8 +906,8 @@ class UserWidget extends StatelessWidget {
   }
 }
 
-class UserSubmissionsView extends StatelessWidget {
-  UserSubmissionsView({Key? key, required this.submitted}) : super(key: key);
+class UserSubmissionsScreen extends StatelessWidget {
+  UserSubmissionsScreen({Key? key, required this.submitted}) : super(key: key);
 
   List<int> submitted;
 
@@ -915,7 +915,7 @@ class UserSubmissionsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('SubmissionsView'),
+        title: Text('SubmissionsScreen'),
       ),
       body: Padding(
           padding: pagePadding, child: UserSubmissions(submitted: submitted)),
@@ -973,8 +973,8 @@ class UserSubmissions extends StatelessWidget {
   }
 }
 
-class UserCommentsView extends StatelessWidget {
-  UserCommentsView({Key? key, required this.submitted}) : super(key: key);
+class UserCommentsScreen extends StatelessWidget {
+  UserCommentsScreen({Key? key, required this.submitted}) : super(key: key);
 
   List<int> submitted;
 
@@ -982,7 +982,7 @@ class UserCommentsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('CommentsView'),
+        title: Text('CommentsScreen'),
       ),
       body: Padding(
           padding: pagePadding, child: UserComments(submitted: submitted)),
@@ -1040,14 +1040,14 @@ class UserComments extends StatelessWidget {
   }
 }
 
-// class FavoritesView extends StatelessWidget {
-//   const FavoritesView({Key? key}) : super(key: key);
+// class FavoritesScreen extends StatelessWidget {
+//   const FavoritesScreen({Key? key}) : super(key: key);
 
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
 //       appBar: AppBar(
-//         title: Text('FavoritesView'),
+//         title: Text('FavoritesScreen'),
 //       ),
 //       body: Padding(padding: pagePadding, child: TodoWidget()),
 //     );
