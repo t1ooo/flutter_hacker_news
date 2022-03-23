@@ -115,7 +115,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
     final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.topstories);
     final response = await client.get(uri);
     if (response.statusCode == 200) {
-      return jsonDecode(response.body) as List<int>;
+      return (jsonDecode(response.body) as List).map((v) => v as int).toList();
     } else {
       throw Exception('failed to load askstories');
     }

@@ -6,8 +6,8 @@ flutter pub add json_annotation
 flutter pub add equatable
 flutter pub add logging
 flutter pub add flutter_cache_manager
-flutter pub add get_it
-flutter pub add get_it_mixin
+flutter pub add provider
+flutter pub add flutter_html
 
 flutter pub add build_runner --dev
 flutter pub add json_serializable --dev

@@ -20,7 +20,7 @@ class HackerNewsNotifier extends ChangeNotifier {
   }
 
   Future<void> loadBeststories(int limit, int offset) async {
-    _beststories = (await api.beststories()).skip(offset).take(limit).toList();
+    _beststories = (await api.topstories()).skip(offset).take(limit).toList();
     notifyListeners();
   }
 
@@ -49,7 +49,7 @@ class HackerNewsItemNotifier extends ChangeNotifier {
 
   @override
   void dispose() {
-    _log.info('dispose');
+    _log.info('dispose: ${_item?.id}');
     super.dispose();
   }
 
@@ -60,6 +60,7 @@ class HackerNewsItemNotifier extends ChangeNotifier {
   }
 
   Future<void> loadItem(int id) async {
+    _log.info('load: $id');
     _item = await api.item(id);
     notifyListeners();
   }

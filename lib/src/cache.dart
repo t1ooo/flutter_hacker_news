@@ -9,6 +9,8 @@ abstract class Cache {
   Future<void> put(String key, String value, Duration maxAge);
 }
 
+
+// TODO: use key value storage
 class CacheImpl implements Cache {
   static final _log = Logger('CacheImpl');
 
