@@ -7,11 +7,11 @@ import 'package:url_launcher/link.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_html/flutter_html.dart';
 
-import 'hacker_news_api.dart';
-import 'hacker_news_notifier.dart';
-import 'item.dart';
-import 'style/style.dart';
-import 'user.dart';
+import '../hacker_news_api.dart';
+import '../hacker_news_notifier.dart';
+import '../item.dart';
+import '../style/style.dart';
+import '../user.dart';
 
 class TopstoriesScreen extends StatelessWidget {
   const TopstoriesScreen({Key? key}) : super(key: key);
@@ -96,7 +96,7 @@ class ItemList extends StatelessWidget {
   }
 
   Widget onLoading(BuildContext context) {
-    return Center(child: CircularProgressIndicator());
+    return LoadIndicator();
   }
 
   // Widget build(BuildContext context) {
@@ -172,7 +172,7 @@ class StoryTile extends StatelessWidget {
   }
 
   Widget onLoading(BuildContext context) {
-    return Center(child: CircularProgressIndicator());
+    return LoadIndicator();
   }
 
   // Widget build(BuildContext context) {
@@ -413,7 +413,7 @@ class ItemWidget extends StatelessWidget {
   }
 
   Widget onLoading(BuildContext context) {
-    return Center(child: CircularProgressIndicator());
+    return LoadIndicator();
   }
 
   // Widget build(BuildContext context) {
@@ -421,7 +421,7 @@ class ItemWidget extends StatelessWidget {
     return ListView(
       children: [
         // TODO: fix: item load twice
-        StoryTile(id: data.id, rank:0, showLeading: false),
+        StoryTile(id: data.id, showLeading: false),
         SizedBox(height: 20),
         // TextField(
         //   maxLines: 8,
@@ -520,7 +520,7 @@ class Comment extends StatelessWidget {
   }
 
   Widget onLoading(BuildContext context) {
-    return Center(child: CircularProgressIndicator());
+    return LoadIndicator();
   }
 
   // Widget build(BuildContext context) {
@@ -797,7 +797,7 @@ class UserWidget extends StatelessWidget {
   }
 
   Widget onLoading(BuildContext context) {
-    return Center(child: CircularProgressIndicator());
+    return LoadIndicator();
   }
 
   // Widget build(BuildContext context) {
@@ -969,7 +969,7 @@ class UserSubmissions extends StatelessWidget {
   }
 
   Widget onLoading(BuildContext context) {
-    return Center(child: CircularProgressIndicator());
+    return LoadIndicator();
   }
 }
 
@@ -1036,7 +1036,7 @@ class UserComments extends StatelessWidget {
   }
 
   Widget onLoading(BuildContext context) {
-    return Center(child: CircularProgressIndicator());
+    return LoadIndicator();
   }
 }
 

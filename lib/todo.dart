@@ -1,2 +1,2 @@
 // TODO: reload button
-// TODO: item number
+// TODO: buttons  new | past | comments | ask | show | jobs | submit |

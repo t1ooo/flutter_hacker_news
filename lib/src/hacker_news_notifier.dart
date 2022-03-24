@@ -32,12 +32,13 @@ class HackerNewsNotifier extends ChangeNotifier {
   }
 
   Future<Item> item(int id) async {
-    _log.info('load item: $id');
-    return await api.item(id);
+    // _log.info('load item: $id');
+    // return await api.item(id);
+    return Future.delayed(Duration(seconds: 1), () => api.item(id));
   }
 
   Future<User> user(String name) async {
-    _log.info('load user: $name');
+    // _log.info('load user: $name');
     return await api.user(name);
   }
 

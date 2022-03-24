@@ -4,15 +4,20 @@ import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
 import 'logger.dart';
+import 'src/cache.dart';
+import 'src/clock/clock.dart';
 import 'src/hacker_news_api.dart';
 import 'src/hacker_news_notifier.dart';
-import 'src/ui.dart';
+import 'src/ui/topstories_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   configureLogger(kDebugMode);
 
-  final hackerNewsApi = HackerNewsApiImpl(Client());
+  final clock = Clock();
+  // final cache = InMemoryCache(clock);
+  final cache = FileCache(clock);
+  final hackerNewsApi = HackerNewsApiImpl(Client(), cache);
   final hackerNewsNotifier = HackerNewsNotifier(hackerNewsApi);
   // HackerNewsItemNotifier(hackerNewsApi)..loadItem(id),
 
@@ -20,7 +25,8 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         Provider<HackerNewsApi>.value(value: hackerNewsApi),
-        ChangeNotifierProvider<HackerNewsNotifier>.value(value: hackerNewsNotifier),
+        ChangeNotifierProvider<HackerNewsNotifier>.value(
+            value: hackerNewsNotifier),
         // RepositoryProvider.value(value: timerRepo),
         // RepositoryProvider.value(value: notificationService),
       ],
@@ -41,7 +47,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: TopstoriesView(),
+      home: TopstoriesScreen(),
     );
   }
 }

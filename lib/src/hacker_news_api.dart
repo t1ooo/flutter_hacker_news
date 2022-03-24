@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' show Client, Response;
 import 'package:retry/retry.dart';
 
+import 'cache.dart';
 import 'item.dart';
 import 'updates.dart';
 import 'user.dart';
@@ -53,34 +54,63 @@ abstract class HackerNewsApi {
 // TODO: retry
 // TODO: cache
 class HackerNewsApiImpl implements HackerNewsApi {
-  final Client client;
+  HackerNewsApiImpl(this.client, [this.cache]);
 
-  HackerNewsApiImpl(this.client);
+  final Client client;
+  final Cache? cache;
+  static const _itemCacheMaxAge = Duration(hours:24);
+  static const _storyCacheMaxAge = Duration(minutes:5);
 
   Future<Response> _get(Uri uri) async {
     return await retry(() => client.get(uri));
   }
 
+  Future<String> _getBody(Uri uri, Duration maxAge) async {
+    // return await retry(() => client.get(uri));
+
+    // if (cache != null) {
+    //   final body = await cache!.get(uri.toString());
+    //   if (body != null) {
+    //     return body;
+    //   }
+    // }
+
+    final body = await cache?.get(uri.toString());
+    if (body != null) {
+      return body;
+    }
+
+    return await retry(() async {
+      final response = await client.get(uri);
+      if (response.statusCode == 200) {
+        await cache?.put(uri.toString(), response.body, maxAge);
+        // if (cache != null) {
+        // await cache!.put(uri.toString(), response.body, Duration(minutes: 5));
+        // }
+        return response.body;
+      }
+      throw Exception('statusCode != 200');
+    });
+  }
+
   @override
   Future<List<int>> askstories() async {
     final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.askstories);
-    final response = await _get(uri);
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body) as List<int>;
-    } else {
-      throw Exception('failed to load askstories');
-    }
+    final body = await _getBody(uri, _storyCacheMaxAge);
+    return jsonDecode(body) as List<int>;
   }
 
   @override
   Future<List<int>> beststories() async {
     final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.beststories);
-    final response = await _get(uri);
-    if (response.statusCode == 200) {
-      return (jsonDecode(response.body) as List).map((v) => v as int).toList();
-    } else {
-      throw Exception('failed to load askstories');
-    }
+    final body = await _getBody(uri, _storyCacheMaxAge);
+    return (jsonDecode(body) as List).map((v) => v as int).toList();
+    // final response = await _get(uri);
+    // if (response.statusCode == 200) {
+    // return (jsonDecode(response.body) as List).map((v) => v as int).toList();
+    // } else {
+    // throw Exception('failed to load askstories');
+    // }
   }
 
   @override
@@ -119,23 +149,27 @@ class HackerNewsApiImpl implements HackerNewsApi {
   @override
   Future<List<int>> topstories() async {
     final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.topstories);
-    final response = await _get(uri);
-    if (response.statusCode == 200) {
-      return (jsonDecode(response.body) as List).map((v) => v as int).toList();
-    } else {
-      throw Exception('failed to load askstories');
-    }
+    final body = await _getBody(uri, _storyCacheMaxAge);
+    return (jsonDecode(body) as List).map((v) => v as int).toList();
+    // final response = await _get(uri);
+    // if (response.statusCode == 200) {
+    //   return (jsonDecode(response.body) as List).map((v) => v as int).toList();
+    // } else {
+    //   throw Exception('failed to load askstories');
+    // }
   }
 
   @override
   Future<Item> item(int id) async {
     final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.item(id));
-    final response = await _get(uri);
-    if (response.statusCode == 200) {
-      return Item.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception('failed to load askstories');
-    }
+    final body = await _getBody(uri, _itemCacheMaxAge);
+    return Item.fromJson(jsonDecode(body));
+    // final response = await _get(uri);
+    // if (response.statusCode == 200) {
+    //   return Item.fromJson(jsonDecode(response.body));
+    // } else {
+    //   throw Exception('failed to load askstories');
+    // }
   }
 
   @override
