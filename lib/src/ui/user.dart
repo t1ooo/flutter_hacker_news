@@ -48,7 +48,7 @@ class UserInfoLoader extends StatelessWidget {
       builder: (BuildContext _, AsyncSnapshot<User> snap) {
         final error = snap.error;
         if (error != null) {
-          onError(context, error);
+          return onError(context, error, snap.stackTrace);
         }
 
         final data = snap.data;
@@ -61,8 +61,10 @@ class UserInfoLoader extends StatelessWidget {
     );
   }
 
-  void onError(BuildContext context, Object? error) {
-    // TODO
+  Widget onError(BuildContext context, Object? error, StackTrace? st) {
+     print(error);
+    print(st);
+    return Text('fail to load');
   }
 
   Widget onLoading(BuildContext context) {
@@ -298,7 +300,7 @@ class UserActivityList extends StatelessWidget {
     //         builder: (BuildContext _, AsyncSnapshot<Item> snap) {
     //           final error = snap.error;
     //           if (error != null) {
-    //             onError(context, error);
+    //             return onError(context, error, snap.stackTrace);
     //           }
 
     //           final data = snap.data;
@@ -313,7 +315,7 @@ class UserActivityList extends StatelessWidget {
     // );
   }
 
-  void onError(BuildContext context, Object? error) {
+  void onError(BuildContext context, Object? error, StackTrace? st) {
     print(error);
   }
 
@@ -354,7 +356,7 @@ class UserActivityLoader extends StatelessWidget {
       builder: (BuildContext _, AsyncSnapshot<Item> snap) {
         final error = snap.error;
         if (error != null) {
-          onError(context, error);
+          return onError(context, error, snap.stackTrace);
         }
 
         final data = snap.data;
@@ -367,8 +369,10 @@ class UserActivityLoader extends StatelessWidget {
     );
   }
 
-  void onError(BuildContext context, Object? error) {
-    // TODO
+  Widget onError(BuildContext context, Object? error, StackTrace? st) {
+     print(error);
+    print(st);
+    return Text('fail to load');
   }
 
   Widget onLoading(BuildContext context) {
@@ -425,7 +429,7 @@ class UserActivityLoader extends StatelessWidget {
 //             builder: (BuildContext _, AsyncSnapshot<Item> snap) {
 //               final error = snap.error;
 //               if (error != null) {
-//                 onError(context, error);
+//                 return onError(context, error, snap.stackTrace);
 //               }
 
 //               final data = snap.data;
@@ -444,7 +448,7 @@ class UserActivityLoader extends StatelessWidget {
 //     );
 //   }
 
-//   void onError(BuildContext context, Object? error) {
+//   Widget onError(BuildContext context, Object? error, StackTrace? st) {
 //     print(error);
 //     // navigationService.showSnackBarPostFrame(
 //     //   error.tr(appLocalizations(context)),
@@ -492,7 +496,7 @@ class UserActivityLoader extends StatelessWidget {
 //             builder: (BuildContext _, AsyncSnapshot<Item> snap) {
 //               final error = snap.error;
 //               if (error != null) {
-//                 onError(context, error);
+//                 return onError(context, error, snap.stackTrace);
 //               }
 
 //               final data = snap.data;
@@ -514,7 +518,7 @@ class UserActivityLoader extends StatelessWidget {
 //     );
 //   }
 
-//   void onError(BuildContext context, Object? error) {
+//   Widget onError(BuildContext context, Object? error, StackTrace? st) {
 //     print(error);
 //     // navigationService.showSnackBarPostFrame(
 //     //   error.tr(appLocalizations(context)),

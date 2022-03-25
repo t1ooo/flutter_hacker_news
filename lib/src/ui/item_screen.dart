@@ -46,7 +46,7 @@ class ItemWidget extends StatelessWidget {
       builder: (BuildContext _, AsyncSnapshot<Item> snap) {
         final error = snap.error;
         if (error != null) {
-          onError(context, error);
+          return onError(context, error, snap.stackTrace);
         }
 
         final data = snap.data;
@@ -76,11 +76,10 @@ class ItemWidget extends StatelessWidget {
     // return onLoading(context);
   }
 
-  void onError(BuildContext context, Object? error) {
-    // navigationService.showSnackBarPostFrame(
-    //   error.tr(appLocalizations(context)),
-    // );
-    // TODO
+  Widget onError(BuildContext context, Object? error, StackTrace? st ) {
+     print(error);
+    print(st);
+    return Text('fail to load');
   }
 
   Widget onLoading(BuildContext context) {

@@ -43,7 +43,7 @@ class ItemList extends StatelessWidget {
       builder: (BuildContext _, AsyncSnapshot<List<int>> snap) {
         final error = snap.error;
         if (error != null) {
-          onError(context, error);
+          return onError(context, error, snap.stackTrace);
         }
 
         final data = snap.data;
@@ -87,7 +87,7 @@ class ItemList extends StatelessWidget {
     // );
   }
 
-  void onError(BuildContext context, Object? error) {
+  Widget onError(BuildContext context, Object? error, StackTrace? st) {
     print(error);
     // navigationService.showSnackBarPostFrame(
     //   error.tr(appLocalizations(context)),
@@ -134,7 +134,7 @@ class StoryTile extends StatelessWidget {
       builder: (BuildContext _, AsyncSnapshot<Item> snap) {
         final error = snap.error;
         if (error != null) {
-          onError(context, error);
+          return onError(context, error, snap.stackTrace);
         }
 
         final data = snap.data;
@@ -164,7 +164,7 @@ class StoryTile extends StatelessWidget {
     // return onLoading(context);
   }
 
-  void onError(BuildContext context, Object? error) {
+  Widget onError(BuildContext context, Object? error, StackTrace? st) {
     // navigationService.showSnackBarPostFrame(
     //   error.tr(appLocalizations(context)),
     // );
@@ -375,7 +375,7 @@ class ItemWidget extends StatelessWidget {
       builder: (BuildContext _, AsyncSnapshot<Item> snap) {
         final error = snap.error;
         if (error != null) {
-          onError(context, error);
+          return onError(context, error, snap.stackTrace);
         }
 
         final data = snap.data;
@@ -405,7 +405,7 @@ class ItemWidget extends StatelessWidget {
     // return onLoading(context);
   }
 
-  void onError(BuildContext context, Object? error) {
+  Widget onError(BuildContext context, Object? error, StackTrace? st) {
     // navigationService.showSnackBarPostFrame(
     //   error.tr(appLocalizations(context)),
     // );
@@ -482,7 +482,7 @@ class Comment extends StatelessWidget {
       builder: (BuildContext _, AsyncSnapshot<Item> snap) {
         final error = snap.error;
         if (error != null) {
-          onError(context, error);
+          return onError(context, error, snap.stackTrace);
         }
 
         final data = snap.data;
@@ -512,7 +512,7 @@ class Comment extends StatelessWidget {
     // return onLoading(context);
   }
 
-  void onError(BuildContext context, Object? error) {
+  Widget onError(BuildContext context, Object? error, StackTrace? st) {
     // navigationService.showSnackBarPostFrame(
     //   error.tr(appLocalizations(context)),
     // );
@@ -759,7 +759,7 @@ class UserWidget extends StatelessWidget {
       builder: (BuildContext _, AsyncSnapshot<User> snap) {
         final error = snap.error;
         if (error != null) {
-          onError(context, error);
+          return onError(context, error, snap.stackTrace);
         }
 
         final data = snap.data;
@@ -789,7 +789,7 @@ class UserWidget extends StatelessWidget {
     // return onLoading(context);
   }
 
-  void onError(BuildContext context, Object? error) {
+  Widget onError(BuildContext context, Object? error, StackTrace? st) {
     // navigationService.showSnackBarPostFrame(
     //   error.tr(appLocalizations(context)),
     // );
@@ -941,7 +941,7 @@ class UserSubmissions extends StatelessWidget {
             builder: (BuildContext _, AsyncSnapshot<Item> snap) {
               final error = snap.error;
               if (error != null) {
-                onError(context, error);
+                return onError(context, error, snap.stackTrace);
               }
 
               final data = snap.data;
@@ -960,7 +960,7 @@ class UserSubmissions extends StatelessWidget {
     );
   }
 
-  void onError(BuildContext context, Object? error) {
+  Widget onError(BuildContext context, Object? error, StackTrace? st) {
     print(error);
     // navigationService.showSnackBarPostFrame(
     //   error.tr(appLocalizations(context)),
@@ -1008,7 +1008,7 @@ class UserComments extends StatelessWidget {
             builder: (BuildContext _, AsyncSnapshot<Item> snap) {
               final error = snap.error;
               if (error != null) {
-                onError(context, error);
+                return onError(context, error, snap.stackTrace);
               }
 
               final data = snap.data;
@@ -1027,7 +1027,7 @@ class UserComments extends StatelessWidget {
     );
   }
 
-  void onError(BuildContext context, Object? error) {
+  Widget onError(BuildContext context, Object? error, StackTrace? st) {
     print(error);
     // navigationService.showSnackBarPostFrame(
     //   error.tr(appLocalizations(context)),

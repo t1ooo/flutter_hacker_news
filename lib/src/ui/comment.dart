@@ -39,7 +39,7 @@ class CommentLoader extends StatelessWidget {
       builder: (BuildContext _, AsyncSnapshot<Item> snap) {
         final error = snap.error;
         if (error != null) {
-          onError(context, error);
+          return onError(context, error, snap.stackTrace);
         }
 
         final data = snap.data;
@@ -52,8 +52,10 @@ class CommentLoader extends StatelessWidget {
     );
   }
 
-  void onError(BuildContext context, Object? error) {
-    // TODO
+  Widget onError(BuildContext context, Object? error, StackTrace? st) {
+    print(error);
+    print(st);
+    return Text('fail to load');
   }
 
   Widget onLoading(BuildContext context) {
@@ -73,19 +75,24 @@ class CommentLoader extends StatelessWidget {
 }
 
 class CommentController extends ChangeNotifier {
-  bool _showNested = false;
+  bool _showNested = true;
 
   bool get showNested => _showNested;
 
-  void show() {
-    _showNested = false;
+  void toggle() {
+    _showNested = !_showNested;
     notifyListeners();
   }
 
-  void hide() {
-    _showNested = true;
-    notifyListeners();
-  }
+  // void show() {
+  //   _showNested = false;
+  //   notifyListeners();
+  // }
+
+  // void hide() {
+  //   _showNested = true;
+  //   notifyListeners();
+  // }
 }
 
 class Comment extends StatelessWidget {
@@ -102,17 +109,16 @@ class Comment extends StatelessWidget {
   final int depth;
   final bool activeUserLink;
 
-  Widget foo(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     return ChangeNotifierBuilder(
       notifier: CommentController(),
-      builder: (_, notifier) {
-        return Container();
-      },
+      builder: builder,
     );
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget builder(BuildContext context, CommentController controller) {
     final leftPadding = min(depth, commentMaxDepth) * 30.0;
     final textStyle = TextStyle(color: Colors.grey);
 
@@ -148,19 +154,11 @@ class Comment extends StatelessWidget {
               // Text('next', style: textStyle),
               // Text(' [–]', style: textStyle),
               Text(' '),
-              InkWell(
-                child: Text('[–]', style: textStyle),
-                onTap: activeUserLink
-                    ? () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => UserScreen(name: item.by!),
-                          ),
-                        );
-                      }
-                    : null,
-              ),
+              if (showNested)
+                InkWell(
+                  child: Text(controller.showNested ? '[-]' : '[+]', style: textStyle),
+                  onTap: () => controller.toggle(),
+                ),
             ],
           ),
           if (item.text != null) ...[
@@ -179,7 +177,7 @@ class Comment extends StatelessWidget {
             // ),
             HtmlText(html: item.text!),
           ],
-          if (showNested && item.kids != null)
+          if (showNested && controller.showNested && item.kids != null)
             for (final id in item.kids!)
               CommentLoader(
                   id: id, depth: depth + 1, activeUserLink: activeUserLink)
