@@ -33,6 +33,6 @@ class Result<V, E> {
   Result(this.value, this.error);
 
   factory Result.empty() => Result(null, null);
-  factory Result.value(value) => Result(value, null);
-  factory Result.error(error) => Result(null, error);
+  factory Result.value(V value) => Result(value, null);
+  factory Result.error(E error) => Result(null, error);
 }

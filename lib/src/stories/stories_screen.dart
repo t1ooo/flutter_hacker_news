@@ -8,23 +8,12 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 import '../hacker_news_api.dart';
-import '../hacker_news_notifier.dart';
-import '../item.dart';
 import '../style/style.dart';
-import '../user.dart';
-import 'item_list.dart';
+import 'stories.dart';
+import 'stories_controller.dart';
 
 class StoriesScreen extends StatelessWidget {
   const StoriesScreen({Key? key}) : super(key: key);
-
-  // static const _tabs = [
-  //   'top ',
-  //   'new',
-  //   'bests',
-  //   'ask',
-  //   'show',
-  //   'job',
-  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +34,14 @@ class StoriesScreen extends StatelessWidget {
         body: TabBarView(
           children: [
             for (final storyType in StoryType.values)
-              Padding(padding: pagePadding, child: ItemList(storyType: storyType))
+              Padding(
+                padding: pagePadding,
+                child: ChangeNotifierProvider(
+                    create: (BuildContext context) =>
+                        StoriesController(context.read<HackerNewsApi>())
+                          ..loadStoryIds(storyType),
+                    child: Stories(storyType: storyType)),
+              )
           ],
           // ),
         ),

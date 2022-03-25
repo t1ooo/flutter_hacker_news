@@ -30,9 +30,9 @@ class ItemNotifier extends ChangeNotifier {
 
   Future<void> loadItem(int id) async {
     // print('load: $id');
-    _items[id] = await Future.delayed(Duration(seconds: delay), () {
+    _items[id] = await Future.delayed(Duration(seconds: delay), () async {
       try {
-        final item = api.item(id);
+        final item = await api.item(id);
         return ItemResult.value(item);
       } on Exception catch (e, st) {
         _log.error(e, st);
