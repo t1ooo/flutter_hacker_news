@@ -5,6 +5,7 @@ import 'item.dart';
 import 'logging/logging.dart';
 import 'user.dart';
 
+
 class HackerNewsNotifier extends ChangeNotifier {
   HackerNewsNotifier(this.api);
 
@@ -27,6 +28,12 @@ class HackerNewsNotifier extends ChangeNotifier {
   // }
 
   final int delay = 1;
+
+  Future<List<int>>  stories(StoryType storyType, int limit, int offset) {
+    return Future.delayed(Duration(seconds: delay),
+        () async => (await api.stories(storyType)).skip(offset).take(limit).toList());
+  
+  }
 
   // TODO: rename beststories -> topstories
   Future<List<int>> beststories(int limit, int offset) async {

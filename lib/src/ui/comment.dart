@@ -84,7 +84,7 @@ class CommentController extends ChangeNotifier {
     print('CommentController dispose');
     super.dispose();
   }
-  
+
   bool _isVisible = true;
 
   bool get isVisible => _isVisible;
@@ -104,6 +104,8 @@ class CommentController extends ChangeNotifier {
   //   notifyListeners();
   // }
 }
+
+const _commentPadding = 15.0;
 
 class Comment extends StatelessWidget {
   Comment({
@@ -133,7 +135,11 @@ class Comment extends StatelessWidget {
     final textStyle = TextStyle(color: Colors.grey);
 
     return Padding(
-      padding: EdgeInsets.only(left: leftPadding, top: 15, bottom: 15),
+      padding: EdgeInsets.only(
+        left: leftPadding,
+        top: _commentPadding,
+        bottom: _commentPadding,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -234,11 +240,15 @@ class CommentPlaceholder extends StatelessWidget {
       backgroundColor: Colors.white,
     );
 
-    return Padding(
-      padding: EdgeInsets.only(left: leftPadding, top: 5, bottom: 10),
-      child: Shimmer.fromColors(
-        baseColor: Colors.grey[300]!,
-        highlightColor: Colors.grey[100]!,
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: leftPadding,
+          top: _commentPadding,
+          bottom: _commentPadding,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

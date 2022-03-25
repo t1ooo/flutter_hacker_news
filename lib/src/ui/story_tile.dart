@@ -91,15 +91,20 @@ class StoryTilePlaceholder extends StatelessWidget {
     return Shimmer.fromColors(
       baseColor: Colors.grey[300]!,
       highlightColor: Colors.grey[100]!,
-      child: ListTile(
-        contentPadding: EdgeInsets.all(0),
-        leading: showLeading ? Text('   ', style: textStyle) : null,
-        title: Text('_' * 60, style: textStyle),
-        subtitle: Text('_' * 40, style: textStyle),
+      child: Padding(
+        padding: EdgeInsets.only(top: _storyTilePadding, bottom: _storyTilePadding),
+        child: ListTile(
+          contentPadding: EdgeInsets.all(0),
+          leading: showLeading ? Text('   ', style: textStyle) : null,
+          title: Text('_' * 60, style: textStyle),
+          subtitle: Text('_' * 40, style: textStyle),
+        ),
       ),
     );
   }
 }
+
+const _storyTilePadding = 15.0;
 
 class StoryTile extends StatelessWidget {
   StoryTile({
@@ -120,64 +125,67 @@ class StoryTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final title = (item.deleted == true) ? '[deleted]' : (item.title ?? '');
 
-    return ListTile(
-      contentPadding: EdgeInsets.all(0),
-      leading: showLeading ? Text('$rank.') : null,
-      // trailing: Wrap(children: [Icon(Icons.comment), Text('${item.descendants ?? 0}')]),
-      // trailing: Icon(Icons.comment),
-      title: Wrap(
-        children: [
-          InkWell(
-            child: Tooltip(child: Text(title, textScaleFactor:1.6), message: item.url ?? '-'),
-            onTap: item.url == null ? null : () => launch(item.url!),
-          ),
-          // if (item.url != null) ...[
-          //   Text(' ('),
-          //   Text(Uri.parse(item.url!).host),
-          //   Text(')'),
-          // ],
-        ],
-      ),
-      subtitle: Wrap(
-        children: [
-          if (item.score != null) ...[
-            Text('${item.score} points'),
-            Text(' '),
-          ],
-          if (item.by != null) ...[
-            Text('by '),
+    return Padding(
+      padding: EdgeInsets.only(top: _storyTilePadding, bottom: _storyTilePadding),
+      child: ListTile(
+        contentPadding: EdgeInsets.all(0),
+        leading: showLeading ? Text('$rank.') : null,
+        // trailing: Wrap(children: [Icon(Icons.comment), Text('${item.descendants ?? 0}')]),
+        // trailing: Icon(Icons.comment),
+        title: Wrap(
+          children: [
             InkWell(
-              child: Text(item.by!),
-              onTap: activeUserLink ? () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => UserScreen(name: item.by!)),
-                );
-              } : null,
+              child: Tooltip(child: Text(title, textScaleFactor:1.6), message: item.url ?? '-'),
+              onTap: item.url == null ? null : () => launch(item.url!),
             ),
-            Text(' '),
+            // if (item.url != null) ...[
+            //   Text(' ('),
+            //   Text(Uri.parse(item.url!).host),
+            //   Text(')'),
+            // ],
           ],
-          if (item.time != null) ...[
-            Text(formatItemTime(item.time!)),
-            Text(' | '),
+        ),
+        subtitle: Wrap(
+          children: [
+            if (item.score != null) ...[
+              Text('${item.score} points'),
+              Text(' '),
+            ],
+            if (item.by != null) ...[
+              Text('by '),
+              InkWell(
+                child: Text(item.by!),
+                onTap: activeUserLink ? () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => UserScreen(name: item.by!)),
+                  );
+                } : null,
+              ),
+              Text(' '),
+            ],
+            if (item.time != null) ...[
+              Text(formatItemTime(item.time!)),
+              Text(' | '),
+            ],
+            InkWell(
+              child: Text('${item.descendants ?? 0} comments'),
+              // child: Text('comments'),
+              onTap: activeCommentsLink
+                  ? () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => ItemScreen(id: item.id)),
+                      );
+                    }
+                  : null,
+            ),
           ],
-          InkWell(
-            child: Text('${item.descendants ?? 0} comments'),
-            // child: Text('comments'),
-            onTap: activeCommentsLink
-                ? () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => ItemScreen(id: item.id)),
-                    );
-                  }
-                : null,
-          ),
-        ],
-      ),
+        ),
 
-      // trailing: Text('1'),
+        // trailing: Text('1'),
+      ),
     );
   }
 }

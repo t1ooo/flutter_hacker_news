@@ -17,7 +17,9 @@ import 'load_indicator.dart';
 import 'story_tile.dart';
 
 class ItemList extends StatelessWidget {
-  ItemList({Key? key}) : super(key: key);
+  ItemList({Key? key, required this.storyType}) : super(key: key);
+
+  StoryType storyType;
 
   // final hnNotifier = locator<HackerNewsNotifier>()..loadBeststories();
 
@@ -28,7 +30,8 @@ class ItemList extends StatelessWidget {
     final offset = 0;
 
     return FutureBuilder(
-      future: notifier.beststories(limit, offset),
+      // future: notifier.beststories(limit, offset),
+      future: notifier.stories(storyType, limit, offset),
       builder: (BuildContext _, AsyncSnapshot<List<int>> snap) {
         final error = snap.error;
         if (error != null) {

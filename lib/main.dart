@@ -8,7 +8,7 @@ import 'src/cache.dart';
 import 'src/clock/clock.dart';
 import 'src/hacker_news_api.dart';
 import 'src/hacker_news_notifier.dart';
-import 'src/ui/topstories_screen.dart';
+import 'src/ui/stories_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: TopstoriesScreen(),
+      home: StoriesScreen(),
     );
   }
 }

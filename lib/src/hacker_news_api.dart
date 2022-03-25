@@ -9,6 +9,21 @@ import 'item.dart';
 import 'updates.dart';
 import 'user.dart';
 
+enum StoryType {
+  top,
+  new_,
+  best,
+  ask,
+  show,
+  job,
+}
+
+extension StoryTypeToText on StoryType {
+  String toText() {
+    return this.toString().split('.').last.replaceAll('_', '');
+  }
+}
+
 String _e(String s) => Uri.encodeComponent(s);
 
 // Future<T> retry<T>(Future<T> Function() fn, [int tryN = 1]) async {
@@ -49,6 +64,7 @@ abstract class HackerNewsApi {
   Future<List<int>> showstories();
   Future<List<int>> jobstories();
   Future<Updates> updates();
+  Future<List<int>> stories(StoryType storyType);
 }
 
 // TODO: retry
@@ -58,8 +74,8 @@ class HackerNewsApiImpl implements HackerNewsApi {
 
   final Client client;
   final Cache? cache;
-  static const _itemCacheMaxAge = Duration(hours:24);
-  static const _storyCacheMaxAge = Duration(minutes:5);
+  static const _itemCacheMaxAge = Duration(hours: 24);
+  static const _storyCacheMaxAge = Duration(minutes: 5);
 
   Future<Response> _get(Uri uri) async {
     return await retry(() => client.get(uri));
@@ -91,6 +107,30 @@ class HackerNewsApiImpl implements HackerNewsApi {
       }
       throw Exception('statusCode != 200');
     });
+  }
+
+  @override
+  Future<List<int>> stories(StoryType storyType) async {
+    final uri = Uri.parse(HackerNewsURI.base + _storyPath(storyType));
+    final body = await _getBody(uri, _storyCacheMaxAge);
+    return (jsonDecode(body) as List).map((v) => v as int).toList();
+  }
+
+  String _storyPath(StoryType storyType) {
+    switch (storyType) {
+      case StoryType.top:
+        return HackerNewsURI.topstories;
+      case StoryType.new_:
+        return HackerNewsURI.newstories;
+      case StoryType.best:
+        return HackerNewsURI.beststories;
+      case StoryType.ask:
+        return HackerNewsURI.askstories;
+      case StoryType.show:
+        return HackerNewsURI.showstories;
+      case StoryType.job:
+        return HackerNewsURI.jobstories;
+    }
   }
 
   @override
