@@ -1,0 +1,65 @@
+// class Result<T, E> {
+//   final T? value;
+//   final E? error;
+
+//   Result(this.value, this.error);
+
+//   factory Result.value(T value) => ResultValue<T,E>(value);
+//   factory Result.error(E error) => ResultError<T,E>(error);
+// }
+
+// class ResultValue<T,E> extends Result<T,E> {
+//   ResultValue(T value) : super(value, null);
+// }
+
+// class ResultError<T,E> extends Result<T,E> {
+//   ResultError(E error) : super(null, error);
+// }
+
+// void foo() {
+//   final r = Result<int, Object>.value(1);
+//   if (r is ResultValue) {
+//     print(r.value);
+//   }
+// }
+
+class Result<V,E> {
+  // static Result value(V value) => ResultValue(value);
+  // static Result error(E error) => ResultValue(error);
+  Result(this._value, this._error);
+  factory Result.value(V value) => ResultValue(value);
+  factory Result.error(E error) => ResultError(error);
+
+  final V? _value;
+  final E? _error;
+}
+
+class ResultValue<V,E> extends Result<V,E> {
+  // final V value;
+  ResultValue(V value) : super(value, null);
+
+  V get value => _value!;
+}
+
+class ResultError<V,E> extends Result<V,E> {
+  // final E error;
+  ResultError(E error) : super(null, error);
+
+  E get error => _error!;
+}
+
+
+Result<int, String> boo() {
+  return Result<int, String>.value(1);
+}
+
+void foo() {
+  // final r = Result.value<int>(1);
+  final r = boo();
+  if (r is ResultValue) {
+    print((r as ResultValue).value);
+  }
+  if (r is ResultError) {
+    print((r as ResultError).error);
+  }
+}
