@@ -27,9 +27,10 @@ class ChangeNotifierBuilder<T extends ChangeNotifier> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-        animation: notifier,
-        builder: (BuildContext context, _) {
-          return builder(context, notifier);
-        });
+      animation: notifier,
+      builder: (BuildContext context, _) {
+        return builder(context, notifier);
+      },
+    );
   }
 }

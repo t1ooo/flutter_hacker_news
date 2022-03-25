@@ -75,22 +75,32 @@ class CommentLoader extends StatelessWidget {
 }
 
 class CommentController extends ChangeNotifier {
-  bool _showNested = true;
+  CommentController() {
+    print('CommentController');
+  }
 
-  bool get showNested => _showNested;
+  @override
+  void dispose() {
+    print('CommentController dispose');
+    super.dispose();
+  }
+  
+  bool _isVisible = true;
 
-  void toggle() {
-    _showNested = !_showNested;
+  bool get isVisible => _isVisible;
+
+  void toggleVisibility() {
+    _isVisible = !_isVisible;
     notifyListeners();
   }
 
   // void show() {
-  //   _showNested = false;
+  //   _show = false;
   //   notifyListeners();
   // }
 
   // void hide() {
-  //   _showNested = true;
+  //   _show = true;
   //   notifyListeners();
   // }
 }
@@ -154,33 +164,36 @@ class Comment extends StatelessWidget {
               // Text('next', style: textStyle),
               // Text(' [–]', style: textStyle),
               Text(' '),
-              if (showNested)
-                InkWell(
-                  child: Text(controller.showNested ? '[-]' : '[+]', style: textStyle),
-                  onTap: () => controller.toggle(),
-                ),
+
+              InkWell(
+                child: Text(controller.isVisible ? '[-]' : '[+]',
+                    style: textStyle),
+                onTap: () => controller.toggleVisibility(),
+              ),
             ],
           ),
-          if (item.text != null) ...[
-            // TODO: bug:
-            //  exception when fast scroll with mouse
-            //  bug reproduced on user activity
-            // Html(
-            //   data: item.text!,
-            //   style: {
-            //     "body": Style(
-            //       padding: EdgeInsets.zero,
-            //       margin: EdgeInsets.zero,
-            //     ),
-            //   },
-            //   shrinkWrap: true,
-            // ),
-            HtmlText(html: item.text!),
+          if (controller.isVisible) ...[
+            if (item.text != null) ...[
+              // TODO: bug:
+              //  exception when fast scroll with mouse
+              //  bug reproduced on user activity
+              // Html(
+              //   data: item.text!,
+              //   style: {
+              //     "body": Style(
+              //       padding: EdgeInsets.zero,
+              //       margin: EdgeInsets.zero,
+              //     ),
+              //   },
+              //   shrinkWrap: true,
+              // ),
+              HtmlText(html: item.text!),
+            ],
+            if (showNested && item.kids != null)
+              for (final id in item.kids!)
+                CommentLoader(
+                    id: id, depth: depth + 1, activeUserLink: activeUserLink)
           ],
-          if (showNested && controller.showNested && item.kids != null)
-            for (final id in item.kids!)
-              CommentLoader(
-                  id: id, depth: depth + 1, activeUserLink: activeUserLink)
         ],
       ),
     );
