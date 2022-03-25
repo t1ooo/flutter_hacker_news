@@ -20,11 +20,13 @@ class CommentLoader extends StatelessWidget {
     required this.id,
     this.showNested = true,
     this.depth = 0,
+    this.activeUserLink = true,
   }) : super(key: key);
 
   final int id;
   final int depth;
   final bool showNested;
+  final bool activeUserLink;
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +66,7 @@ class CommentLoader extends StatelessWidget {
       item: item,
       showNested: showNested,
       depth: depth,
+      activeUserLink: activeUserLink,
     );
   }
 }
@@ -74,11 +77,13 @@ class Comment extends StatelessWidget {
     required this.item,
     this.showNested = true,
     this.depth = 0,
+    this.activeUserLink = true,
   }) : super(key: key);
 
   final Item item;
   final bool showNested;
   final int depth;
+  final bool activeUserLink;
 
   @override
   Widget build(BuildContext context) {
@@ -95,24 +100,26 @@ class Comment extends StatelessWidget {
               if (item.by != null) ...[
                 InkWell(
                   child: Text(item.by!, style: textStyle),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => UserScreen(name: item.by!),
-                      ),
-                    );
-                  },
+                  onTap: activeUserLink
+                      ? () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => UserScreen(name: item.by!),
+                            ),
+                          );
+                        }
+                      : null,
                 ),
               ],
               if (item.time != null) ...[
                 Text(' '),
                 Text(' ${formatItemTime(item.time!)}', style: textStyle),
-                Text(' | '),
+                // Text(' | '),
               ],
-              Text('prev', style: textStyle),
-              Text(' | ', style: textStyle),
-              Text('next [–]', style: textStyle),
+              // Text('prev', style: textStyle),
+              // Text(' | ', style: textStyle),
+              // Text('next [–]', style: textStyle),
             ],
           ),
           if (item.text != null) ...[
@@ -132,7 +139,9 @@ class Comment extends StatelessWidget {
             HtmlText(html: item.text!),
           ],
           if (showNested && item.kids != null)
-            for (final id in item.kids!) CommentLoader(id: id, depth: depth + 1)
+            for (final id in item.kids!)
+              CommentLoader(
+                  id: id, depth: depth + 1, activeUserLink: activeUserLink)
         ],
       ),
     );
@@ -159,9 +168,6 @@ class Comment extends StatelessWidget {
 //     );
 //   }
 // }
-
-/* Expanded(
-    //     child: Shimmer.fromColors( */
 
 class CommentPlaceholder extends StatelessWidget {
   CommentPlaceholder({Key? key, required this.depth}) : super(key: key);

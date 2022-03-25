@@ -84,7 +84,15 @@ class ItemWidget extends StatelessWidget {
   }
 
   Widget onLoading(BuildContext context) {
-    return LoadIndicator();
+    return ListView(
+      children: [
+        // TODO: fix: item load twice
+        StoryTilePlaceholder(showLeading: false),
+        SizedBox(height: 20),
+        // for (final id in data.kids ?? []) CommentLoader(id: id),
+        for (int i = 0; i < 20; i++) CommentPlaceholder(depth: 0)
+      ],
+    );
   }
 
   // Widget build(BuildContext context) {
@@ -92,7 +100,11 @@ class ItemWidget extends StatelessWidget {
     return ListView(
       children: [
         // TODO: fix: item load twice
-        StoryTileLoader(id: data.id, rank:0, showLeading: false, activeCommentsLink:false),
+        StoryTileLoader(
+            id: data.id,
+            rank: 0,
+            showLeading: false,
+            activeCommentsLink: false),
         SizedBox(height: 20),
         // TextField(
         //   maxLines: 8,

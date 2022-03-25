@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/link.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -65,7 +66,8 @@ class UserInfoLoader extends StatelessWidget {
   }
 
   Widget onLoading(BuildContext context) {
-    return LoadIndicator();
+    return UserInfoPlaceholder();
+    // return Container();
   }
 
   // Widget build(BuildContext context) {
@@ -128,7 +130,7 @@ class UserInfo extends StatelessWidget {
             children: [
               Text(''),
               Padding(
-                padding: const EdgeInsets.only(top:20),
+                padding: const EdgeInsets.only(top: 20),
                 child: InkWell(
                   child: Text('activity'),
                   onTap: () {
@@ -184,6 +186,64 @@ class UserInfo extends StatelessWidget {
   }
 }
 
+class UserInfoPlaceholder extends StatelessWidget {
+  UserInfoPlaceholder({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final textStyle = TextStyle(
+      color: Colors.white,
+      backgroundColor: Colors.white,
+    );
+
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Table(
+        columnWidths: const <int, TableColumnWidth>{
+          0: IntrinsicColumnWidth(flex: 0.15),
+          1: FlexColumnWidth(),
+        },
+        children: [
+          TableRow(
+            children: [
+              Text('user:'),
+              Text('_' * 10, style: textStyle),
+            ],
+          ),
+          TableRow(
+            children: [
+              Text('created:'),
+              Text('_' * 10, style: textStyle),
+            ],
+          ),
+          TableRow(
+            children: [
+              Text('karma:'),
+              Text('_' * 10, style: textStyle),
+            ],
+          ),
+          TableRow(
+            children: [
+              Text('about:'),
+              Text('_' * 10, style: textStyle),
+            ],
+          ),
+          TableRow(
+            children: [
+              Text(''),
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: Text('_' * 10, style: textStyle),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class UserActivityScreen extends StatelessWidget {
   UserActivityScreen({Key? key, required this.submitted}) : super(key: key);
 
@@ -196,42 +256,61 @@ class UserActivityScreen extends StatelessWidget {
         title: Text('UserActivityScreen'),
       ),
       body: Padding(
-          padding: pagePadding, child: UserActivity(submitted: submitted)),
+          padding: pagePadding, child: UserActivityList(submitted: submitted)),
     );
   }
 }
 
-class UserActivity extends StatelessWidget {
-  UserActivity({Key? key, required this.submitted}) : super(key: key);
+class UserActivityList extends StatelessWidget {
+  UserActivityList({Key? key, required this.submitted}) : super(key: key);
 
   List<int> submitted;
 
   @override
   Widget build(BuildContext context) {
-    final notifier = context.watch<HackerNewsNotifier>();
+    // final notifier = context.watch<HackerNewsNotifier>();
 
-    return ListView(
-      children: [
-        for (final id in submitted) // TODO: pagination ?
-          // Comment(id: id),
-          FutureBuilder(
-            future: notifier.item(id),
-            builder: (BuildContext _, AsyncSnapshot<Item> snap) {
-              final error = snap.error;
-              if (error != null) {
-                onError(context, error);
-              }
+    return onData(context, submitted);
 
-              final data = snap.data;
-              if (data != null) {
-                return onData(context, data);
-              }
+    // return FutureBuilder(
+    //   future: Future.delayed(Duration(seconds: 1), () => submitted),
+    //   builder: (BuildContext _, AsyncSnapshot<List<int>> snap) {
+    //     // final error = snap.error;
+    //     // if (error != null) {
+    //     //   onError(context, error);
+    //     // }
 
-              return onLoading(context);
-            },
-          ),
-      ],
-    );
+    //     final data = snap.data;
+    //     if (data != null) {
+    //       return onData(context, data);
+    //     }
+
+    //     return onLoading(context);
+    //   },
+    // );
+
+    // return ListView(
+    //   children: [
+    //     for (final id in submitted.take(10)) // TODO: pagination ?
+    //       // Comment(id: id),
+    //       FutureBuilder(
+    //         future: notifier.item(id),
+    //         builder: (BuildContext _, AsyncSnapshot<Item> snap) {
+    //           final error = snap.error;
+    //           if (error != null) {
+    //             onError(context, error);
+    //           }
+
+    //           final data = snap.data;
+    //           if (data != null) {
+    //             return onData(context, data);
+    //           }
+
+    //           return onLoading(context);
+    //         },
+    //       ),
+    //   ],
+    // );
   }
 
   void onError(BuildContext context, Object? error) {
@@ -239,15 +318,70 @@ class UserActivity extends StatelessWidget {
   }
 
   Widget onLoading(BuildContext context) {
-    return LoadIndicator();
+    // return LoadIndicator();
+    return ListView(
+      children: [for (int i = 0; i < 20; i++) CommentPlaceholder(depth: 0)],
+    );
+  }
+
+  Widget onData(BuildContext context, List<int> data) {
+    return ListView(
+      // cacheExtent: 1.5,
+      children: [
+        // for (final id in data)  StoryTile(id: id, rank: rank)
+        for (int id in data) Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: UserActivityLoader(id: id),
+        )
+      ],
+    );
+  }
+}
+
+class UserActivityLoader extends StatelessWidget {
+  UserActivityLoader({Key? key, required this.id}) : super(key: key);
+
+  final int id;
+
+  @override
+  Widget build(BuildContext context) {
+    print(id);
+    // return CommentPlaceholder();
+    final notifier = context.watch<HackerNewsNotifier>();
+
+    return FutureBuilder(
+      future: notifier.item(id),
+      builder: (BuildContext _, AsyncSnapshot<Item> snap) {
+        final error = snap.error;
+        if (error != null) {
+          onError(context, error);
+        }
+
+        final data = snap.data;
+        if (data != null) {
+          return onData(context, data);
+        }
+
+        return onLoading(context);
+      },
+    );
+  }
+
+  void onError(BuildContext context, Object? error) {
+    // TODO
+  }
+
+  Widget onLoading(BuildContext context) {
+    // return LoadIndicator();
+    return CommentPlaceholder(depth: 0);
   }
 
   Widget onData(BuildContext context, Item item) {
     // print(item.toJson());
     if (item.type == 'comment') {
-      return Comment(item: item, showNested: false);
+      return Comment(item: item, showNested: false, activeUserLink: false);
     } else if (item.type == 'story') {
-      return StoryTile(item: item, showLeading: false);
+      return StoryTile(item: item, showLeading: false, activeUserLink: false);
     } else {
       // return StoryTile(item: item, showLeading: false);
       print(item.toJson);

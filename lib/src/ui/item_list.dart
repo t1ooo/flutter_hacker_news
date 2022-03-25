@@ -85,7 +85,12 @@ class ItemList extends StatelessWidget {
   }
 
   Widget onLoading(BuildContext context) {
-    return LoadIndicator();
+    // return LoadIndicator();
+    return ListView(
+      children: [
+        for (int i = 0; i < 20; i++) StoryTilePlaceholder(showLeading: true)
+      ],
+    );
   }
 
   // Widget build(BuildContext context) {
@@ -150,7 +155,8 @@ class ItemList extends StatelessWidget {
     return ListView(
       children: [
         // for (final id in data)  StoryTile(id: id, rank: rank)
-        for (int i=0; i<data.length; i++)  StoryTileLoader(id: data[i], rank: rank+i)
+        for (int i = 0; i < data.length; i++)
+          StoryTileLoader(id: data[i], rank: rank + i)
 
         // StoryTile(),
         // StoryTile(),

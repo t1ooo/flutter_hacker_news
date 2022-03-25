@@ -26,20 +26,26 @@ class HackerNewsNotifier extends ChangeNotifier {
   //   notifyListeners();
   // }
 
+  final int delay = 0;
+
   // TODO: rename beststories -> topstories
   Future<List<int>> beststories(int limit, int offset) async {
-    return (await api.topstories()).skip(offset).take(limit).toList();
+    // return (await api.topstories()).skip(offset).take(limit).toList();
+    return Future.delayed(Duration(seconds: delay),
+        () async => (await api.topstories()).skip(offset).take(limit).toList());
   }
 
   Future<Item> item(int id) async {
     // _log.info('load item: $id');
     // return await api.item(id);
-    return Future.delayed(Duration(seconds: 1), () => api.item(id));
+    return Future.delayed(Duration(seconds: delay), () => api.item(id));
   }
 
   Future<User> user(String name) async {
     // _log.info('load user: $name');
-    return await api.user(name);
+    // return await api.user(name);
+    return Future.delayed(Duration(seconds: delay), () => api.user(name));
+
   }
 
   // Future<Item> item(int id);

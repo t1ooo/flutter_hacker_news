@@ -4,6 +4,6 @@ class LoadIndicator extends StatelessWidget {
   LoadIndicator({Key? key}) : super(key: key);
 
   Widget build(BuildContext context) {
-    return SizedBox(height: 100, child: Center(child: CircularProgressIndicator()));
+    return SizedBox(height: 200, child: Center(child: CircularProgressIndicator()));
   }
 }
