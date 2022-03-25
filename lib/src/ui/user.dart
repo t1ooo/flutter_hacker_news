@@ -207,25 +207,25 @@ class UserInfoPlaceholder extends StatelessWidget {
         children: [
           TableRow(
             children: [
-              Text('user:'),
+              Text('user:', style: textStyle), // TODO: move to widget
               Text('_' * 10, style: textStyle),
             ],
           ),
           TableRow(
             children: [
-              Text('created:'),
+              Text('created:', style: textStyle),
               Text('_' * 10, style: textStyle),
             ],
           ),
           TableRow(
             children: [
-              Text('karma:'),
+              Text('karma:', style: textStyle),
               Text('_' * 10, style: textStyle),
             ],
           ),
           TableRow(
             children: [
-              Text('about:'),
+              Text('about:', style: textStyle),
               Text('_' * 10, style: textStyle),
             ],
           ),

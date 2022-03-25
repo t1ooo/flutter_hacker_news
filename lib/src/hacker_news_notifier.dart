@@ -26,7 +26,7 @@ class HackerNewsNotifier extends ChangeNotifier {
   //   notifyListeners();
   // }
 
-  final int delay = 0;
+  final int delay = 1;
 
   // TODO: rename beststories -> topstories
   Future<List<int>> beststories(int limit, int offset) async {
