@@ -8,6 +8,7 @@ import 'package:shimmer/shimmer.dart';
 
 import '../hacker_news_notifier.dart';
 import '../item.dart';
+import 'change_notifier_builder.dart';
 import 'html.dart';
 import 'user.dart';
 import 'load_indicator.dart';
@@ -71,6 +72,22 @@ class CommentLoader extends StatelessWidget {
   }
 }
 
+class CommentController extends ChangeNotifier {
+  bool _showNested = false;
+
+  bool get showNested => _showNested;
+
+  void show() {
+    _showNested = false;
+    notifyListeners();
+  }
+
+  void hide() {
+    _showNested = true;
+    notifyListeners();
+  }
+}
+
 class Comment extends StatelessWidget {
   Comment({
     Key? key,
@@ -85,13 +102,22 @@ class Comment extends StatelessWidget {
   final int depth;
   final bool activeUserLink;
 
+  Widget foo(BuildContext context) {
+    return ChangeNotifierBuilder(
+      notifier: CommentController(),
+      builder: (_, notifier) {
+        return Container();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final leftPadding = min(depth, commentMaxDepth) * 30.0;
     final textStyle = TextStyle(color: Colors.grey);
 
     return Padding(
-      padding: EdgeInsets.only(left: leftPadding, top: 5, bottom: 10),
+      padding: EdgeInsets.only(left: leftPadding, top: 15, bottom: 15),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -119,7 +145,22 @@ class Comment extends StatelessWidget {
               ],
               // Text('prev', style: textStyle),
               // Text(' | ', style: textStyle),
-              // Text('next [–]', style: textStyle),
+              // Text('next', style: textStyle),
+              // Text(' [–]', style: textStyle),
+              Text(' '),
+              InkWell(
+                child: Text('[–]', style: textStyle),
+                onTap: activeUserLink
+                    ? () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => UserScreen(name: item.by!),
+                          ),
+                        );
+                      }
+                    : null,
+              ),
             ],
           ),
           if (item.text != null) ...[
