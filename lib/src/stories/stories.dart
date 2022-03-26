@@ -9,7 +9,8 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../hacker_news_api.dart';
-import 'stories_controller.dart';
+import '../item_notifier.dart';
+import '../story_notifier.dart';
 import 'story_tile.dart';
 
 class Stories extends StatelessWidget {
@@ -23,7 +24,7 @@ class Stories extends StatelessWidget {
   Widget build(BuildContext context) {
     // final controller = context.watch<StoriesController>();
     final storyIdsR =
-        context.select<StoriesController, StoryIdsResult>((v) => v.storyIds);
+        context.select<StoryNotifier, StoryIdsResult>((v) => v.storyIds);
 
     // final storyIds = controller.storyIds;
 
@@ -68,7 +69,7 @@ class Stories extends StatelessWidget {
       itemBuilder: (_, int i) {
         final id = storyIds[i];
         // print(id);
-        context.read<StoriesController>().loadItem(id);
+        context.read<ItemNotifier>().loadItem(id);
         return StoryTileLoader(id: id, rank: rank + i);
       },
     );

@@ -2,6 +2,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hacker_news_prototype/src/item_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -13,7 +14,7 @@ import '../style/style.dart';
 // import '../ui/item_screen.dart';
 // import '../ui/user.dart';
 import '../user/user_screen.dart';
-import 'story_controller.dart';
+// import 'story_controller.dart';
 
 // TODO: renmae StoryTile* to Story*
 class StoryTileLoader extends StatelessWidget {
@@ -36,7 +37,7 @@ class StoryTileLoader extends StatelessWidget {
   Widget build(BuildContext context) {
     // final controller = context.watch<StoriesController>();
     final item =
-        context.select<StoryController, ItemResult>((v) => v.story);
+        context.select<ItemNotifier, ItemResult>((v) => v.item(id));
 
     // final item = controller.item(id);
     final error = item.error;

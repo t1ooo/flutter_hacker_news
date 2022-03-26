@@ -6,10 +6,11 @@ import 'package:provider/provider.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../hacker_news_notifier.dart';
+// import '../hacker_news_notifier.dart';
 import '../item.dart';
+import '../item_notifier.dart';
 import '../ui/html.dart';
-import 'story_controller.dart';
+
 
 const commentMaxDepth = 5;
 
@@ -33,7 +34,7 @@ class CommentLoader extends StatelessWidget {
     // final notifier = context.watch<HackerNewsNotifier>();
 
     final commentR =
-        context.select<StoryController, ItemResult>((v) => v.comment(id));
+        context.select<ItemNotifier, ItemResult>((v) => v.item(id));
 
     final error = commentR.error;
     if (error != null) {
@@ -117,7 +118,7 @@ class Comment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isVisible = context
-        .select<StoryController, bool>((v) => v.isCommentVisible(item.id));
+        .select<ItemNotifier, bool>((v) => v.isVisible(item.id));
 
     final leftPadding = min(depth, commentMaxDepth) * 30.0;
     final textStyle = TextStyle(color: Colors.grey);
@@ -162,8 +163,8 @@ class Comment extends StatelessWidget {
               InkWell(
                 child: Text(isVisible ? '[-]' : '[+]', style: textStyle),
                 onTap: () => context
-                    .read<StoryController>()
-                    .toggleCommentVisibility(item.id),
+                    .read<ItemNotifier>()
+                    .toggleVisibility(item.id),
               ),
             ],
           ),
@@ -190,7 +191,7 @@ class Comment extends StatelessWidget {
                 itemCount: item.kids!.length,
                 itemBuilder: (_, int i) {
                   final id = item.kids![i];
-                  context.read<StoryController>().loadComment(id);
+                  context.read<ItemNotifier>().loadItem(id);
                   return CommentLoader(
                     id: id,
                     depth: depth + 1,

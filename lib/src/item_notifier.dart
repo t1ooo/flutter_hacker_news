@@ -23,10 +23,18 @@ class ItemNotifier extends ChangeNotifier {
 
   final Map<int, ItemResult> _items = {};
   // Map<int, ItemResult> get items => _items;
+  final Map<int, bool> _visibilities = {};
 
   ItemResult item(int id) {
     return _items[id] ?? ItemResult.empty();
   }
+
+  void toggleVisibility(int id) {
+    _visibilities[id] = !isVisible(id);
+    notifyListeners();
+  }
+
+  bool isVisible(int id) => _visibilities[id] ?? true;
 
   Future<void> loadItem(int id) async {
     // print('load: $id');

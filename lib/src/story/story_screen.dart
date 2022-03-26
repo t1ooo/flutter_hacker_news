@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hacker_news_prototype/src/item_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/link.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -12,7 +13,7 @@ import '../item.dart';
 import 'story_tile.dart';
 import '../style/style.dart';
 import 'comment.dart';
-import 'story_controller.dart';
+
 
 class StoryScreen extends StatelessWidget {
   const StoryScreen({Key? key, required this.id}) : super(key: key);
@@ -30,7 +31,7 @@ class StoryScreen extends StatelessWidget {
         // child: Story(id: id),
         child: ChangeNotifierProvider(
           create: (BuildContext context) =>
-              StoryController(context.read<HackerNewsApi>())..loadStory(id),
+              ItemNotifier(context.read<HackerNewsApi>())..loadItem(id),
           child: Story(id: id),
         ),
       ),
@@ -46,7 +47,7 @@ class Story extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // final notifier = context.watch<HackerNewsNotifier>();
-    final storyR = context.select<StoryController, ItemResult>((v) => v.story);
+    final storyR = context.select<ItemNotifier, ItemResult>((v) => v.item(id));
 
     final error = storyR.error;
     if (error != null) {
@@ -104,7 +105,7 @@ class Story extends StatelessWidget {
             itemCount: data.kids!.length,
             itemBuilder: (_, int i) {
               final id = data.kids![i];
-              context.read<StoryController>().loadComment(id);
+              context.read<ItemNotifier>().loadItem(id);
               return CommentLoader(id: id);
             },
           ),

@@ -6,14 +6,15 @@ import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../hacker_news_notifier.dart';
+// import '../hacker_news_notifier.dart';
 import '../item.dart';
+import '../item_notifier.dart';
 import '../story/story_screen.dart';
+import '../story_notifier.dart';
 import '../style/style.dart';
 // import '../ui/item_screen.dart';
 // import '../ui/user.dart';
 import '../user/user_screen.dart';
-import 'stories_controller.dart';
 
 // TODO: renmae StoryTile* to Story*
 // TODO: pass Item instead id
@@ -35,9 +36,9 @@ class StoryTileLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final controller = context.watch<StoriesController>();
+    // final controller = context.watch<StoryNotifier>();
     final item =
-        context.select<StoriesController, ItemResult>((v) => v.item(id));
+        context.select<ItemNotifier, ItemResult>((v) => v.item(id));
 
     // final item = controller.item(id);
     final error = item.error;

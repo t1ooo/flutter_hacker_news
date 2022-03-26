@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hacker_news_prototype/src/item_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/link.dart';
@@ -13,7 +14,7 @@ import '../item.dart';
 import '../story/comment.dart';
 import '../story/story_tile.dart';
 import '../style/style.dart';
-import 'user_activity_controller.dart';
+// import 'user_activity_controller.dart';
 
 class UserActivityScreen extends StatelessWidget {
   UserActivityScreen({Key? key, required this.submitted}) : super(key: key);
@@ -31,7 +32,7 @@ class UserActivityScreen extends StatelessWidget {
         // child: UserActivityList(submitted: submitted),
         child: ChangeNotifierProvider(
           create: (BuildContext context) =>
-              UserActivityController(context.read<HackerNewsApi>()),
+              ItemNotifier(context.read<HackerNewsApi>()),
           child: UserActivityList(submitted: submitted),
         ),
       ),
@@ -119,7 +120,7 @@ class UserActivityList extends StatelessWidget {
       itemCount: data.length,
       itemBuilder: (_, int i) {
         final id = data[i];
-        context.read<UserActivityController>().loadActivity(id);
+        context.read<ItemNotifier>().loadItem(id);
         return UserActivityLoader(id: id);
       },
     );
@@ -134,7 +135,7 @@ class UserActivityLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final activityR = context
-        .select<UserActivityController, ItemResult>((v) => v.activity(id));
+        .select<ItemNotifier, ItemResult>((v) => v.item(id));
 
     final error = activityR.error;
     if (error != null) {

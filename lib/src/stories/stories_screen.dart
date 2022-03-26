@@ -8,9 +8,10 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 import '../hacker_news_api.dart';
+import '../item_notifier.dart';
+import '../story_notifier.dart';
 import '../style/style.dart';
 import 'stories.dart';
-import 'stories_controller.dart';
 
 class StoriesScreen extends StatelessWidget {
   const StoriesScreen({Key? key}) : super(key: key);
@@ -36,10 +37,24 @@ class StoriesScreen extends StatelessWidget {
             for (final storyType in StoryType.values)
               Padding(
                 padding: pagePadding,
-                child: ChangeNotifierProvider(
+                child: /*  ChangeNotifierProvider(
                   create: (BuildContext context) =>
-                      StoriesController(context.read<HackerNewsApi>())
+                      StoryNotifier(context.read<HackerNewsApi>())
                         ..loadStoryIds(storyType),
+                  child: Stories(storyType: storyType),
+                ), */
+                    MultiProvider(
+                  providers: [
+                    ChangeNotifierProvider(
+                      create: (BuildContext context) =>
+                          StoryNotifier(context.read<HackerNewsApi>())
+                            ..loadStoryIds(storyType),
+                    ),
+                    ChangeNotifierProvider(
+                      create: (BuildContext context) =>
+                          ItemNotifier(context.read<HackerNewsApi>()),
+                    ),
+                  ],
                   child: Stories(storyType: storyType),
                 ),
               )
