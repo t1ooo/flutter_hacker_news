@@ -8,41 +8,41 @@ import '../result.dart';
 typedef StoryIdsResult = Result<List<int>, Object>;
 typedef ItemResult = Result<Item, Object>;
 
-class StoriesController extends ChangeNotifier {
-  StoriesController(this.api);
+class StoryController extends ChangeNotifier {
+  StoryController(this.api);
 
   final HackerNewsApi api;
-  static final _log = Logger('StoriesController');
+  static final _log = Logger('StoryController');
   final int delay = 1;
 
-  StoryIdsResult _storyIds = StoryIdsResult.empty();
-  StoryIdsResult get storyIds => _storyIds;
+  ItemResult _story = ItemResult.empty();
+  final Map<int, ItemResult> _comments = {};
+  final Map<int, bool> _commentVisibility = {};
 
-  // Future<void> loadStoryIds(StoryType storyType, int limit, int offset) async {
-  Future<void> loadStoryIds(StoryType storyType) async {
-    _storyIds = await Future.delayed(Duration(seconds: delay), () async {
-      try {
-        final ids =
-            // (await api.stories(storyType)).skip(offset).take(limit).toList();
-            await api.stories(storyType);
-        return StoryIdsResult.value(ids);
-      } on Exception catch (e, st) {
-        _log.error(e, st);
-        return StoryIdsResult.error('fail to load');
-      }
-    });
+  ItemResult get story => _story;
+
+  ItemResult comment(int id) => _comments[id] ?? ItemResult.empty();
+
+  Future<void> loadStory(int id) async {
+    _story = await _loadItem(id);
     notifyListeners();
   }
 
-  final Map<int, ItemResult> _items = {};
-  ItemResult item(int id) => _items[id] ?? ItemResult.empty();
+  Future<void> loadComment(int id) async {
+    _comments[id] = await _loadItem(id);
+    notifyListeners();
+  }
 
+  void toggleCommentVisibility(int id) {
+    _commentVisibility[id] = !isCommentVisible(id);
+    notifyListeners();
+  }
 
-  // TODO: return story instead item
-  // Story.fromItem(Item)
-  Future<void> loadItem(int id) async {
+  bool isCommentVisible(int id) => _commentVisibility[id] ?? true;
+
+  Future<ItemResult> _loadItem(int id) async {
     // print('load: $id');
-    _items[id] = await Future.delayed(Duration(seconds: delay), () async {
+    return await Future.delayed(Duration(seconds: delay), () async {
       try {
         final item = await api.item(id);
         return ItemResult.value(item);
@@ -51,6 +51,5 @@ class StoriesController extends ChangeNotifier {
         return ItemResult.error(e);
       }
     });
-    notifyListeners();
   }
 }

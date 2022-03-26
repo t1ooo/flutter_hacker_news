@@ -12,10 +12,9 @@ import '../story/story_screen.dart';
 import '../style/style.dart';
 import '../ui/item_screen.dart';
 import '../ui/user.dart';
-import 'stories_controller.dart';
+import 'story_controller.dart';
 
 // TODO: renmae StoryTile* to Story*
-// TODO: pass Item instead id
 class StoryTileLoader extends StatelessWidget {
   StoryTileLoader({
     Key? key,
@@ -36,7 +35,7 @@ class StoryTileLoader extends StatelessWidget {
   Widget build(BuildContext context) {
     // final controller = context.watch<StoriesController>();
     final item =
-        context.select<StoriesController, ItemResult>((v) => v.item(id));
+        context.select<StoryController, ItemResult>((v) => v.story);
 
     // final item = controller.item(id);
     final error = item.error;

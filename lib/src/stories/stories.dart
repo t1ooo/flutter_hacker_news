@@ -45,12 +45,6 @@ class Stories extends StatelessWidget {
   }
 
   Widget onLoading(BuildContext context) {
-    //   return ListView(
-    //     children: [
-    //       for (int i = 0; i < 20; i++) StoryTilePlaceholder(showLeading: true)
-    //     ],
-    //   );
-
     return ListView.builder(
       itemCount: 20,
       itemBuilder: (_, __) {
@@ -68,12 +62,12 @@ class Stories extends StatelessWidget {
     //   ],
     // );
 
-    print(storyIds);
+    // print(storyIds);
     return ListView.builder(
       itemCount: storyIds.length,
       itemBuilder: (_, int i) {
         final id = storyIds[i];
-        print(id);
+        // print(id);
         context.read<StoriesController>().loadItem(id);
         return StoryTileLoader(id: id, rank: rank + i);
       },

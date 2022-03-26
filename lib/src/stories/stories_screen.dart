@@ -37,10 +37,11 @@ class StoriesScreen extends StatelessWidget {
               Padding(
                 padding: pagePadding,
                 child: ChangeNotifierProvider(
-                    create: (BuildContext context) =>
-                        StoriesController(context.read<HackerNewsApi>())
-                          ..loadStoryIds(storyType),
-                    child: Stories(storyType: storyType)),
+                  create: (BuildContext context) =>
+                      StoriesController(context.read<HackerNewsApi>())
+                        ..loadStoryIds(storyType),
+                  child: Stories(storyType: storyType),
+                ),
               )
           ],
           // ),
