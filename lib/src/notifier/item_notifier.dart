@@ -29,6 +29,7 @@ class ItemNotifier extends ChangeNotifier with TryNotifyListeners{
   // final Map<int, bool> _visibilities = {};
 
   ItemResult item(int id) {
+    _log.info('item: $id');
     return _items[id] ?? ItemResult.empty();
   }
 
@@ -40,7 +41,6 @@ class ItemNotifier extends ChangeNotifier with TryNotifyListeners{
   // bool isVisible(int id) => _visibilities[id] ?? true;
 
   Future<void> loadItem(int id) async {
-    // print('load: $id');
     _items[id] = await Future.delayed(Duration(seconds: delay), () async {
       try {
         final item = await api.item(id);
