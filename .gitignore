@@ -51,7 +51,7 @@ app.*.map.json
 *.jpeg
 
 # Generated
-*.g.dart
+# *.g.dart
 lib/src/l10n/gen
 
 # Dot files
