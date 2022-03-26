@@ -9,19 +9,19 @@ import '../user.dart';
 typedef StoryIdsResult = Result<List<int>, Object>;
 typedef UserResult = Result<User, Object>;
 
-class UserInfoController extends ChangeNotifier {
-  UserInfoController(this.api);
+class UserController extends ChangeNotifier {
+  UserController(this.api);
 
   final HackerNewsApi api;
-  static final _log = Logger('UserInfoController');
+  static final _log = Logger('UserController');
   final int delay = 1;
 
-  UserResult _userInfo = UserResult.empty();
+  UserResult _user = UserResult.empty();
 
-  UserResult get userInfo => _userInfo;
+  UserResult get user => _user;
 
-  Future<void> loadUserInfo(String name) async {
-    _userInfo = await _loadUser(name);
+  Future<void> loadUser(String name) async {
+    _user = await _loadUser(name);
     notifyListeners();
   }
 

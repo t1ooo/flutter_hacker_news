@@ -15,7 +15,8 @@ import '../story/comment.dart';
 import '../style/style.dart';
 import '../ui/html.dart';
 import '../user.dart';
-import 'user_info_controller.dart';
+import '../user_activity/user_activity_screen.dart';
+import 'user_controller.dart';
 
 class UserScreen extends StatelessWidget {
   UserScreen({Key? key, required this.name}) : super(key: key);
@@ -32,25 +33,23 @@ class UserScreen extends StatelessWidget {
         padding: pagePadding,
         child: ChangeNotifierProvider(
           create: (BuildContext context) =>
-              UserInfoController(context.read<HackerNewsApi>())
-                ..loadUserInfo(name),
-          child: UserInfoLoader(name: name),
+              UserController(context.read<HackerNewsApi>())..loadUser(name),
+          child: UserLoader(name: name),
         ),
       ),
     );
   }
 }
 
-class UserInfoLoader extends StatelessWidget {
+class UserLoader extends StatelessWidget {
   // TODO: remove name
-  UserInfoLoader({Key? key, required this.name}) : super(key: key);
+  UserLoader({Key? key, required this.name}) : super(key: key);
 
   final String name;
 
   @override
   Widget build(BuildContext context) {
-    final userR =
-        context.select<UserInfoController, UserResult>((v) => v.userInfo);
+    final userR = context.select<UserController, UserResult>((v) => v.user);
 
     final error = userR.error;
     if (error != null) {
@@ -70,18 +69,18 @@ class UserInfoLoader extends StatelessWidget {
   }
 
   Widget onLoading(BuildContext context) {
-    return UserInfoPlaceholder();
+    return UserPlaceholder();
     // return Container();
   }
 
   // Widget build(BuildContext context) {
   Widget onData(BuildContext context, User user) {
-    return UserInfo(user: user);
+    return UserWidget(user: user);
   }
 }
 
-class UserInfo extends StatelessWidget {
-  UserInfo({Key? key, required this.user}) : super(key: key);
+class UserWidget extends StatelessWidget {
+  UserWidget({Key? key, required this.user}) : super(key: key);
 
   final User user;
 
@@ -190,8 +189,8 @@ class UserInfo extends StatelessWidget {
   }
 }
 
-class UserInfoPlaceholder extends StatelessWidget {
-  UserInfoPlaceholder({Key? key}) : super(key: key);
+class UserPlaceholder extends StatelessWidget {
+  UserPlaceholder({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -248,155 +247,155 @@ class UserInfoPlaceholder extends StatelessWidget {
   }
 }
 
-class UserActivityScreen extends StatelessWidget {
-  UserActivityScreen({Key? key, required this.submitted}) : super(key: key);
+// class UserActivityScreen extends StatelessWidget {
+//   UserActivityScreen({Key? key, required this.submitted}) : super(key: key);
 
-  List<int> submitted;
+//   List<int> submitted;
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('UserActivityScreen'),
-      ),
-      body: Padding(
-          padding: pagePadding, child: UserActivityList(submitted: submitted)),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('UserActivityScreen'),
+//       ),
+//       body: Padding(
+//           padding: pagePadding, child: UserActivityList(submitted: submitted)),
+//     );
+//   }
+// }
 
-class UserActivityList extends StatelessWidget {
-  UserActivityList({Key? key, required this.submitted}) : super(key: key);
+// class UserActivityList extends StatelessWidget {
+//   UserActivityList({Key? key, required this.submitted}) : super(key: key);
 
-  List<int> submitted;
+//   List<int> submitted;
 
-  @override
-  Widget build(BuildContext context) {
-    // final notifier = context.watch<HackerNewsNotifier>();
+//   @override
+//   Widget build(BuildContext context) {
+//     // final notifier = context.watch<HackerNewsNotifier>();
 
-    return onData(context, submitted);
+//     return onData(context, submitted);
 
-    // return FutureBuilder(
-    //   future: Future.delayed(Duration(seconds: 1), () => submitted),
-    //   builder: (BuildContext _, AsyncSnapshot<List<int>> snap) {
-    //     // final error = snap.error;
-    //     // if (error != null) {
-    //     //   onError(context, error);
-    //     // }
+//     // return FutureBuilder(
+//     //   future: Future.delayed(Duration(seconds: 1), () => submitted),
+//     //   builder: (BuildContext _, AsyncSnapshot<List<int>> snap) {
+//     //     // final error = snap.error;
+//     //     // if (error != null) {
+//     //     //   onError(context, error);
+//     //     // }
 
-    //     final data = snap.data;
-    //     if (data != null) {
-    //       return onData(context, data);
-    //     }
+//     //     final data = snap.data;
+//     //     if (data != null) {
+//     //       return onData(context, data);
+//     //     }
 
-    //     return onLoading(context);
-    //   },
-    // );
+//     //     return onLoading(context);
+//     //   },
+//     // );
 
-    // return ListView(
-    //   children: [
-    //     for (final id in submitted.take(10)) // TODO: pagination ?
-    //       // Comment(id: id),
-    //       FutureBuilder(
-    //         future: notifier.item(id),
-    //         builder: (BuildContext _, AsyncSnapshot<Item> snap) {
-    //           final error = snap.error;
-    //           if (error != null) {
-    //             return onError(context, error, snap.stackTrace);
-    //           }
+//     // return ListView(
+//     //   children: [
+//     //     for (final id in submitted.take(10)) // TODO: pagination ?
+//     //       // Comment(id: id),
+//     //       FutureBuilder(
+//     //         future: notifier.item(id),
+//     //         builder: (BuildContext _, AsyncSnapshot<Item> snap) {
+//     //           final error = snap.error;
+//     //           if (error != null) {
+//     //             return onError(context, error, snap.stackTrace);
+//     //           }
 
-    //           final data = snap.data;
-    //           if (data != null) {
-    //             return onData(context, data);
-    //           }
+//     //           final data = snap.data;
+//     //           if (data != null) {
+//     //             return onData(context, data);
+//     //           }
 
-    //           return onLoading(context);
-    //         },
-    //       ),
-    //   ],
-    // );
-  }
+//     //           return onLoading(context);
+//     //         },
+//     //       ),
+//     //   ],
+//     // );
+//   }
 
-  void onError(BuildContext context, Object? error, StackTrace? st) {
-    print(error);
-  }
+//   void onError(BuildContext context, Object? error, StackTrace? st) {
+//     print(error);
+//   }
 
-  Widget onLoading(BuildContext context) {
-    // return LoadIndicator();
-    return ListView(
-      children: [for (int i = 0; i < 20; i++) CommentPlaceholder(depth: 0)],
-    );
-  }
+//   Widget onLoading(BuildContext context) {
+//     // return LoadIndicator();
+//     return ListView(
+//       children: [for (int i = 0; i < 20; i++) CommentPlaceholder(depth: 0)],
+//     );
+//   }
 
-  Widget onData(BuildContext context, List<int> data) {
-    return ListView(
-      // cacheExtent: 1.5,
-      children: [
-        // for (final id in data)  StoryTile(id: id, rank: rank)
-        for (int id in data)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: UserActivityLoader(id: id),
-          )
-      ],
-    );
-  }
-}
+//   Widget onData(BuildContext context, List<int> data) {
+//     return ListView(
+//       // cacheExtent: 1.5,
+//       children: [
+//         // for (final id in data)  StoryTile(id: id, rank: rank)
+//         for (int id in data)
+//           Padding(
+//             padding: const EdgeInsets.only(bottom: 10),
+//             child: UserActivityLoader(id: id),
+//           )
+//       ],
+//     );
+//   }
+// }
 
-class UserActivityLoader extends StatelessWidget {
-  UserActivityLoader({Key? key, required this.id}) : super(key: key);
+// class UserActivityLoader extends StatelessWidget {
+//   UserActivityLoader({Key? key, required this.id}) : super(key: key);
 
-  final int id;
+//   final int id;
 
-  @override
-  Widget build(BuildContext context) {
-    print(id);
-    // return CommentPlaceholder();
-    final notifier = context.watch<HackerNewsNotifier>();
+//   @override
+//   Widget build(BuildContext context) {
+//     print(id);
+//     // return CommentPlaceholder();
+//     final notifier = context.watch<HackerNewsNotifier>();
 
-    return FutureBuilder(
-      future: notifier.item(id),
-      builder: (BuildContext _, AsyncSnapshot<Item> snap) {
-        final error = snap.error;
-        if (error != null) {
-          return onError(context, error, snap.stackTrace);
-        }
+//     return FutureBuilder(
+//       future: notifier.item(id),
+//       builder: (BuildContext _, AsyncSnapshot<Item> snap) {
+//         final error = snap.error;
+//         if (error != null) {
+//           return onError(context, error, snap.stackTrace);
+//         }
 
-        final data = snap.data;
-        if (data != null) {
-          return onData(context, data);
-        }
+//         final data = snap.data;
+//         if (data != null) {
+//           return onData(context, data);
+//         }
 
-        return onLoading(context);
-      },
-    );
-  }
+//         return onLoading(context);
+//       },
+//     );
+//   }
 
-  Widget onError(BuildContext context, Object? error, StackTrace? st) {
-    print(error);
-    print(st);
-    return Text('fail to load');
-  }
+//   Widget onError(BuildContext context, Object? error, StackTrace? st) {
+//     print(error);
+//     print(st);
+//     return Text('fail to load');
+//   }
 
-  Widget onLoading(BuildContext context) {
-    // return LoadIndicator();
-    return CommentPlaceholder(depth: 0);
-  }
+//   Widget onLoading(BuildContext context) {
+//     // return LoadIndicator();
+//     return CommentPlaceholder(depth: 0);
+//   }
 
-  Widget onData(BuildContext context, Item item) {
-    return Container();
-    // print(item.toJson());
-    if (item.type == 'comment') {
-      return Comment(item: item, showNested: false, activeUserLink: false);
-    } else if (item.type == 'story') {
-      // return StoryTile(item: item, showLeading: false, activeUserLink: false);
-    } else {
-      // return StoryTile(item: item, showLeading: false);
-      print(item.toJson);
-      return Container();
-    }
-  }
-}
+//   Widget onData(BuildContext context, Item item) {
+//     return Container();
+//     // print(item.toJson());
+//     if (item.type == 'comment') {
+//       return Comment(item: item, showNested: false, activeUserLink: false);
+//     } else if (item.type == 'story') {
+//       // return StoryTile(item: item, showLeading: false, activeUserLink: false);
+//     } else {
+//       // return StoryTile(item: item, showLeading: false);
+//       print(item.toJson);
+//       return Container();
+//     }
+//   }
+// }
 
 // class UserSubmissionsScreen extends StatelessWidget {
 //   UserSubmissionsScreen({Key? key, required this.submitted}) : super(key: key);

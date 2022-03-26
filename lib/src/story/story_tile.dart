@@ -10,8 +10,9 @@ import '../hacker_news_notifier.dart';
 import '../item.dart';
 import '../story/story_screen.dart';
 import '../style/style.dart';
-import '../ui/item_screen.dart';
-import '../ui/user.dart';
+// import '../ui/item_screen.dart';
+// import '../ui/user.dart';
+import '../user/user_screen.dart';
 import 'story_controller.dart';
 
 // TODO: renmae StoryTile* to Story*
