@@ -80,16 +80,16 @@ class Story extends StatelessWidget {
             activeCommentsLink: false),
         SizedBox(height: 20),
 
-        if (data.kids != null)
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: data.kids!.length,
-            itemBuilder: (_, int i) {
-              final id = data.kids![i];
-              context.read<ItemNotifier>().loadItem(id);
-              return CommentLoader(id: id);
-            },
-          ),
+        // if (data.kids != null)
+        //   ListView.builder(
+        //     shrinkWrap: true,
+        //     itemCount: data.kids!.length,
+        //     itemBuilder: (_, int i) {
+        //       final id = data.kids![i];
+        //       context.read<ItemNotifier>().loadItem(id);
+        //       return CommentLoader(id: id);
+        //     },
+        //   ),
 
         // if (data.kids != null)
         //   ListView(children: [
@@ -99,6 +99,13 @@ class Story extends StatelessWidget {
         //         return CommentLoader(id: id);
         //       })
         //   ])
+
+        if (data.kids != null)
+          for (var id in data.kids!)
+            Builder(builder: (_) {
+              context.read<ItemNotifier>().loadItem(id);
+              return CommentLoader(id: id);
+            })
       ],
     );
   }
