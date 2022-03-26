@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import 'change_notifier.dart';
 import 'hacker_news_api.dart';
 import 'item.dart';
 import 'logging/logging.dart';
@@ -8,7 +9,7 @@ import 'user.dart';
 
 typedef StoryIdsResult = Result<List<int>, Object>;
 
-class StoryNotifier extends ChangeNotifier {
+class StoryNotifier extends ChangeNotifier  with TryNotifyListeners {
   StoryNotifier(this.api);
 
   final HackerNewsApi api;
@@ -30,7 +31,7 @@ class StoryNotifier extends ChangeNotifier {
         return StoryIdsResult.error(e);
       }
     });
-    notifyListeners();
+    tryNotifyListeners();
   }
 }
 

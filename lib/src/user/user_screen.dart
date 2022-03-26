@@ -16,7 +16,7 @@ import '../style/style.dart';
 import '../ui/html.dart';
 import '../user.dart';
 import '../user_activity/user_activity_screen.dart';
-import 'user_controller.dart';
+import 'user_notifier.dart';
 
 class UserScreen extends StatelessWidget {
   UserScreen({Key? key, required this.name}) : super(key: key);
@@ -33,7 +33,7 @@ class UserScreen extends StatelessWidget {
         padding: pagePadding,
         child: ChangeNotifierProvider(
           create: (BuildContext context) =>
-              UserController(context.read<HackerNewsApi>())..loadUser(name),
+              UserNotifier(context.read<HackerNewsApi>())..loadUser(name),
           child: UserLoader(name: name),
         ),
       ),
@@ -49,7 +49,7 @@ class UserLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userR = context.select<UserController, UserResult>((v) => v.user);
+    final userR = context.select<UserNotifier, UserResult>((v) => v.user);
 
     final error = userR.error;
     if (error != null) {

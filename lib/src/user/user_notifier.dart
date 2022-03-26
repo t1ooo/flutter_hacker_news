@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import '../change_notifier.dart';
 import '../hacker_news_api.dart';
 import '../item.dart';
 import '../logging/logging.dart';
@@ -9,11 +10,11 @@ import '../user.dart';
 typedef StoryIdsResult = Result<List<int>, Object>;
 typedef UserResult = Result<User, Object>;
 
-class UserController extends ChangeNotifier {
-  UserController(this.api);
+class UserNotifier extends ChangeNotifier  with TryNotifyListeners {
+  UserNotifier(this.api);
 
   final HackerNewsApi api;
-  static final _log = Logger('UserController');
+  static final _log = Logger('UserNotifier');
   final int delay = 1;
 
   UserResult _user = UserResult.empty();
@@ -22,7 +23,7 @@ class UserController extends ChangeNotifier {
 
   Future<void> loadUser(String name) async {
     _user = await _loadUser(name);
-    notifyListeners();
+    tryNotifyListeners();
   }
 
   // TODO: extract to mixin or function

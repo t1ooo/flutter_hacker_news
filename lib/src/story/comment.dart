@@ -7,6 +7,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:shimmer/shimmer.dart';
 
 // import '../hacker_news_notifier.dart';
+import '../comment_notifier.dart';
 import '../item.dart';
 import '../item_notifier.dart';
 import '../ui/html.dart';
@@ -118,7 +119,7 @@ class Comment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isVisible = context
-        .select<ItemNotifier, bool>((v) => v.isVisible(item.id));
+        .select<CommentNotifier, bool>((v) => v.isVisible(item.id));
 
     final leftPadding = min(depth, commentMaxDepth) * 30.0;
     final textStyle = TextStyle(color: Colors.grey);
@@ -163,7 +164,7 @@ class Comment extends StatelessWidget {
               InkWell(
                 child: Text(isVisible ? '[-]' : '[+]', style: textStyle),
                 onTap: () => context
-                    .read<ItemNotifier>()
+                    .read<CommentNotifier>()
                     .toggleVisibility(item.id),
               ),
             ],
