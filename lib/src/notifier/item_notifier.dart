@@ -1,11 +1,12 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_hacker_news_prototype/src/logging/logging.dart';
+import 'package:flutter_hacker_news_prototype/src/notifier/result.dart';
+import 'package:logging/logging.dart';
 
-import 'hacker_news_api.dart';
-import 'item.dart';
-import 'logging/logging.dart';
-import 'result.dart';
+import '../hacker_news_api/hacker_news_api.dart';
+import '../hacker_news_api/item.dart';
 import 'change_notifier.dart';
-import 'user.dart';
+
 
 typedef ItemResult = Result<Item, Object>;
 

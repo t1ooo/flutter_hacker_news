@@ -2,18 +2,20 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hacker_news_prototype/src/item_notifier.dart';
+
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../hacker_news_notifier.dart';
-import '../item.dart';
+// import '../hacker_news_notifier.dart';
+import '../hacker_news_api/item.dart';
+import '../notifier/item_notifier.dart';
 import '../story/story_screen.dart';
 import '../style/style.dart';
 // import '../ui/item_screen.dart';
 // import '../ui/user.dart';
 import '../user/user_screen.dart';
+import 'format_time.dart';
 // import 'story_controller.dart';
 
 // TODO: renmae StoryTile* to Story*
@@ -36,8 +38,7 @@ class StoryTileLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // final controller = context.watch<StoriesController>();
-    final item =
-        context.select<ItemNotifier, ItemResult>((v) => v.item(id));
+    final item = context.select<ItemNotifier, ItemResult>((v) => v.item(id));
 
     // final item = controller.item(id);
     final error = item.error;
@@ -195,16 +196,16 @@ class StoryTile extends StatelessWidget {
   }
 }
 
-String formatItemTime(int unixTimeS) {
-  final diff = DateTime.now()
-      .toUtc()
-      .difference(DateTime.fromMillisecondsSinceEpoch(unixTimeS * 1000));
-  if (diff.inDays > 0) {
-    return '${diff.inDays} days ago';
-  }
-  if (diff.inHours > 0) {
-    return '${diff.inHours} hours ago';
-  }
+// String formatItemTime(int unixTimeS) {
+//   final diff = DateTime.now()
+//       .toUtc()
+//       .difference(DateTime.fromMillisecondsSinceEpoch(unixTimeS * 1000));
+//   if (diff.inDays > 0) {
+//     return '${diff.inDays} days ago';
+//   }
+//   if (diff.inHours > 0) {
+//     return '${diff.inHours} hours ago';
+//   }
 
-  return '${diff.inMinutes} minutes ago';
-}
+//   return '${diff.inMinutes} minutes ago';
+// }

@@ -1,15 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hacker_news_prototype/src/hacker_news_api/hacker_news_api.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
 import 'logger.dart';
-import 'src/cache.dart';
+import 'src/hacker_news_api/cache.dart';
 import 'src/clock/clock.dart';
-import 'src/hacker_news_api.dart';
-import 'src/hacker_news_notifier.dart';
 import 'src/stories/stories_screen.dart';
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,17 +17,11 @@ Future<void> main() async {
   // final cache = InMemoryCache(clock);
   final cache = FileCache(clock);
   final hackerNewsApi = HackerNewsApiImpl(Client(), cache);
-  final hackerNewsNotifier = HackerNewsNotifier(hackerNewsApi);
-  // HackerNewsItemNotifier(hackerNewsApi)..loadItem(id),
 
   runApp(
     MultiProvider(
       providers: [
         Provider<HackerNewsApi>.value(value: hackerNewsApi),
-        ChangeNotifierProvider<HackerNewsNotifier>.value(
-            value: hackerNewsNotifier),
-        // RepositoryProvider.value(value: timerRepo),
-        // RepositoryProvider.value(value: notificationService),
       ],
       child: MyApp(),
     ),

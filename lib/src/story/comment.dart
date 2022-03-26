@@ -6,11 +6,12 @@ import 'package:provider/provider.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:shimmer/shimmer.dart';
 
-// import '../hacker_news_notifier.dart';
-import '../comment_notifier.dart';
-import '../item.dart';
-import '../item_notifier.dart';
+import '../hacker_news_api/item.dart';
+import '../notifier/comment_notifier.dart';
+import '../notifier/item_notifier.dart';
 import '../ui/html.dart';
+import 'format_time.dart';
+
 
 
 const commentMaxDepth = 5;
@@ -272,17 +273,17 @@ class CommentPlaceholder extends StatelessWidget {
   }
 }
 
-// TODO: remove duplicate
-String formatItemTime(int unixTimeS) {
-  final diff = DateTime.now()
-      .toUtc()
-      .difference(DateTime.fromMillisecondsSinceEpoch(unixTimeS * 1000));
-  if (diff.inDays > 0) {
-    return '${diff.inDays} days ago';
-  }
-  if (diff.inHours > 0) {
-    return '${diff.inHours} hours ago';
-  }
+// // TODO: remove duplicate
+// String formatItemTime(int unixTimeS) {
+//   final diff = DateTime.now()
+//       .toUtc()
+//       .difference(DateTime.fromMillisecondsSinceEpoch(unixTimeS * 1000));
+//   if (diff.inDays > 0) {
+//     return '${diff.inDays} days ago';
+//   }
+//   if (diff.inHours > 0) {
+//     return '${diff.inHours} hours ago';
+//   }
 
-  return '${diff.inMinutes} minutes ago';
-}
+//   return '${diff.inMinutes} minutes ago';
+// }

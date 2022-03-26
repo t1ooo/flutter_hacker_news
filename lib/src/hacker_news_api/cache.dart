@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
-import 'clock/clock.dart';
-import 'logging/logging.dart';
+import '../clock/clock.dart';
+import '../logging/logging.dart';
 
 abstract class Cache {
   Future<String?> get(String key);

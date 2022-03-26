@@ -1,11 +1,10 @@
 import 'package:flutter/foundation.dart';
 
+import '../hacker_news_api/hacker_news_api.dart';
+import '../hacker_news_api/story_type.dart';
+import '../logging/logging.dart';
 import 'change_notifier.dart';
-import 'hacker_news_api.dart';
-import 'item.dart';
-import 'logging/logging.dart';
 import 'result.dart';
-import 'user.dart';
 
 typedef StoryIdsResult = Result<List<int>, Object>;
 

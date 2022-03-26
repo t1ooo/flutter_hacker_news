@@ -6,38 +6,11 @@ import 'package:retry/retry.dart';
 
 import 'cache.dart';
 import 'item.dart';
+import 'story_type.dart';
 import 'updates.dart';
 import 'user.dart';
 
-enum StoryType {
-  top,
-  new_,
-  best,
-  ask,
-  show,
-  job,
-}
-
-extension StoryTypeToText on StoryType {
-  String toText() {
-    return this.toString().split('.').last.replaceAll('_', '');
-  }
-}
-
 String _e(String s) => Uri.encodeComponent(s);
-
-// Future<T> retry<T>(Future<T> Function() fn, [int tryN = 1]) async {
-//   Exception? exception;
-//   for (int t = 0; t < tryN; t++) {
-//     try {
-//       return await fn();
-//     } on Exception catch (e) {
-//       exception = e;
-//     }
-//   }
-
-//   throw (exception ?? Exception('failed to try'));
-// }
 
 class HackerNewsURI {
   static const String base = 'https://hacker-news.firebaseio.com';

@@ -8,10 +8,11 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../hacker_news_api.dart';
-import '../item_notifier.dart';
+import '../hacker_news_api/story_type.dart';
+import '../notifier/item_notifier.dart';
+import '../notifier/story_notifier.dart';
 import '../story/story_tile.dart';
-import '../story_notifier.dart';
+import '../notifier/user_notifier.dart';
 // import 'story_tile.dart._';
 
 class Stories extends StatelessWidget {

@@ -1,16 +1,15 @@
 import 'package:flutter/foundation.dart';
 
-import '../change_notifier.dart';
-import '../hacker_news_api.dart';
-import '../item.dart';
+import 'change_notifier.dart';
+import '../hacker_news_api/hacker_news_api.dart';
+import '../hacker_news_api/item.dart';
 import '../logging/logging.dart';
-import '../result.dart';
-import '../user.dart';
+import 'result.dart';
+import '../hacker_news_api/user.dart';
 
-typedef StoryIdsResult = Result<List<int>, Object>;
 typedef UserResult = Result<User, Object>;
 
-class UserNotifier extends ChangeNotifier  with TryNotifyListeners {
+class UserNotifier extends ChangeNotifier with TryNotifyListeners {
   UserNotifier(this.api);
 
   final HackerNewsApi api;

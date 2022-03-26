@@ -2,15 +2,17 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hacker_news_prototype/src/item_notifier.dart';
+
 import 'package:provider/provider.dart';
 import 'package:url_launcher/link.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_html/flutter_html.dart';
 
-import '../comment_notifier.dart';
-import '../hacker_news_api.dart';
-import '../item.dart';
+
+import '../hacker_news_api/hacker_news_api.dart';
+import '../hacker_news_api/item.dart';
+import '../notifier/comment_notifier.dart';
+import '../notifier/item_notifier.dart';
 import 'story_tile.dart';
 import '../style/style.dart';
 import 'comment.dart';

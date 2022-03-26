@@ -7,9 +7,10 @@ import 'package:url_launcher/link.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_html/flutter_html.dart';
 
-import '../hacker_news_api.dart';
-import '../item_notifier.dart';
-import '../story_notifier.dart';
+import '../hacker_news_api/hacker_news_api.dart';
+import '../hacker_news_api/story_type.dart';
+import '../notifier/item_notifier.dart';
+import '../notifier/story_notifier.dart';
 import '../style/style.dart';
 import 'stories.dart';
 

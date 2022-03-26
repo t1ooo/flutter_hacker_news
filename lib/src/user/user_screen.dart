@@ -8,15 +8,15 @@ import 'package:url_launcher/link.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_html/flutter_html.dart';
 
-import '../hacker_news_api.dart';
-import '../hacker_news_notifier.dart';
-import '../item.dart';
+// import '../hacker_news_notifier.dart';
+
+import '../hacker_news_api/hacker_news_api.dart';
+import '../hacker_news_api/user.dart';
 import '../story/comment.dart';
 import '../style/style.dart';
 import '../ui/html.dart';
-import '../user.dart';
 import '../user_activity/user_activity_screen.dart';
-import 'user_notifier.dart';
+import '../notifier/user_notifier.dart';
 
 class UserScreen extends StatelessWidget {
   UserScreen({Key? key, required this.name}) : super(key: key);
