@@ -1,4 +1,20 @@
 # v1
+class HackerNewsApi {}
+
+class CommentController {
+    get isVisible
+    toggleVisibility
+}
+
+# v2
+class HackerNewsApi {}
+
+class CommentsController {
+    isVisible(id)
+    toggleVisibility(id)
+}
+
+# v3
 class StoriesNotifier {
     get storyIds
     loadStoryIds()
@@ -14,7 +30,7 @@ class CommentController {
     toggleCommentVisibility()
 }
 
-# v2
+# v4
 class StoriesController {
     get storyIds
     loadStoryIds()
