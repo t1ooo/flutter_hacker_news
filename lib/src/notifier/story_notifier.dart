@@ -8,7 +8,7 @@ import 'result.dart';
 
 typedef StoryIdsResult = Result<List<int>, Object>;
 
-class StoryNotifier extends ChangeNotifier  with TryNotifyListeners {
+class StoryNotifier extends ChangeNotifier with TryNotifyListeners {
   StoryNotifier(this.api);
 
   final HackerNewsApi api;
@@ -18,12 +18,20 @@ class StoryNotifier extends ChangeNotifier  with TryNotifyListeners {
   StoryIdsResult _storyIds = StoryIdsResult.empty();
   StoryIdsResult get storyIds => _storyIds;
 
-  Future<void> loadStoryIds(
-      StoryType storyType /* , int limit, int offset */) async {
+  Future<void> loadStoryIds(StoryType storyType) async {
+    return _loadStoryIds(storyType, true);
+  }
+
+  Future<void> reloadStoryIds(StoryType storyType) async {
+    return _loadStoryIds(storyType, false);
+  }
+
+  Future<void> _loadStoryIds(StoryType storyType, [bool cached = true]) async {
+    _log.info('loadStoryIds: $storyType');
     _storyIds = await Future.delayed(Duration(seconds: delay), () async {
       try {
         // final ids = (await api.stories(storyType)).skip(offset).take(limit).toList();
-        final ids = await api.stories(storyType);
+        final ids = await api.stories(storyType, cached);
         return StoryIdsResult.value(ids);
       } on Exception catch (e, st) {
         _log.error(e, st);

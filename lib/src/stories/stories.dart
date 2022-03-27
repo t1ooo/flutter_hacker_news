@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import '../notifier/item_notifier.dart';
 import '../notifier/story_notifier.dart';
 import '../story/story_tile.dart';
 import '../notifier/user_notifier.dart';
+import '../ui/swipe_to_refresh.dart';
 // import 'story_tile.dart._';
 
 class Stories extends StatelessWidget {
@@ -66,14 +68,20 @@ class Stories extends StatelessWidget {
     // );
 
     // print(storyIds);
-    return ListView.builder(
-      itemCount: storyIds.length,
-      itemBuilder: (_, int i) {
-        final id = storyIds[i];
-        // print(id);
-        context.read<ItemNotifier>().loadItem(id);
-        return StoryTileLoader(id: id, rank: rank + i);
+    return SwipeToRefresh(
+      onRefresh: () async {
+        return context.read<StoryNotifier>().reloadStoryIds(storyType);
       },
+      child: ListView.builder(
+        // physics: const AlwaysScrollableScrollPhysics(),
+        itemCount: storyIds.length,
+        itemBuilder: (_, int i) {
+          final id = storyIds[i];
+          // print(id);
+          context.read<ItemNotifier>().loadItem(id);
+          return StoryTileLoader(id: id, rank: rank + i);
+        },
+      ),
     );
   }
 }

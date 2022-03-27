@@ -41,9 +41,16 @@ class ItemNotifier extends ChangeNotifier with TryNotifyListeners{
   // bool isVisible(int id) => _visibilities[id] ?? true;
 
   Future<void> loadItem(int id) async {
+    return _loadItem(id, true);
+  }
+  Future<void> reloadItem(int id) async {
+    return _loadItem(id, false);
+  }
+
+  Future<void> _loadItem(int id, [bool cached=true]) async {
     _items[id] = await Future.delayed(Duration(seconds: delay), () async {
       try {
-        final item = await api.item(id);
+        final item = await api.item(id, cached);
         return ItemResult.value(item);
       } on Exception catch (e, st) {
         _log.error(e, st);

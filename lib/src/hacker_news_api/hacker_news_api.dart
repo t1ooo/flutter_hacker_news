@@ -27,17 +27,17 @@ class HackerNewsURI {
 }
 
 abstract class HackerNewsApi {
-  Future<Item> item(int id);
-  Future<User> user(String name);
-  Future<int> maxitem();
-  Future<List<int>> topstories();
-  Future<List<int>> newstories();
-  Future<List<int>> beststories();
-  Future<List<int>> askstories();
-  Future<List<int>> showstories();
-  Future<List<int>> jobstories();
-  Future<Updates> updates();
-  Future<List<int>> stories(StoryType storyType);
+  Future<Item> item(int id, [bool cached=true]);
+  Future<User> user(String name, [bool cached=true]);
+  // Future<int> maxitem();
+  // Future<List<int>> topstories();
+  // Future<List<int>> newstories();
+  // Future<List<int>> beststories();
+  // Future<List<int>> askstories();
+  // Future<List<int>> showstories();
+  // Future<List<int>> jobstories();
+  // Future<Updates> updates();
+  Future<List<int>> stories(StoryType storyType, [bool cached=true]);
 }
 
 // TODO: retry
@@ -54,7 +54,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
     return await retry(() => client.get(uri));
   }
 
-  Future<String> _getBody(Uri uri, Duration maxAge) async {
+  Future<String> _getBody(Uri uri, Duration maxAge, bool cached) async {
     // return await retry(() => client.get(uri));
 
     // if (cache != null) {
@@ -64,15 +64,19 @@ class HackerNewsApiImpl implements HackerNewsApi {
     //   }
     // }
 
-    final body = await cache?.get(uri.toString());
-    if (body != null) {
-      return body;
+    if (cached) {
+      final body = await cache?.get(uri.toString());
+      if (body != null) {
+        return body;
+      }
     }
 
     return await retry(() async {
       final response = await client.get(uri);
       if (response.statusCode == 200) {
-        await cache?.put(uri.toString(), response.body, maxAge);
+        if (cached) {
+          await cache?.put(uri.toString(), response.body, maxAge);
+        }
         // if (cache != null) {
         // await cache!.put(uri.toString(), response.body, Duration(minutes: 5));
         // }
@@ -83,9 +87,9 @@ class HackerNewsApiImpl implements HackerNewsApi {
   }
 
   @override
-  Future<List<int>> stories(StoryType storyType) async {
+  Future<List<int>> stories(StoryType storyType, [bool cached=true]) async {
     final uri = Uri.parse(HackerNewsURI.base + _storyPath(storyType));
-    final body = await _getBody(uri, _storyCacheMaxAge);
+    final body = await _getBody(uri, _storyCacheMaxAge, cached);
     return (jsonDecode(body) as List).map((v) => v as int).toList();
   }
 
@@ -106,76 +110,76 @@ class HackerNewsApiImpl implements HackerNewsApi {
     }
   }
 
-  @override
-  Future<List<int>> askstories() async {
-    final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.askstories);
-    final body = await _getBody(uri, _storyCacheMaxAge);
-    return jsonDecode(body) as List<int>;
-  }
+  // @override
+  // Future<List<int>> askstories() async {
+  //   final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.askstories);
+  //   final body = await _getBody(uri, _storyCacheMaxAge);
+  //   return jsonDecode(body) as List<int>;
+  // }
+
+  // @override
+  // Future<List<int>> beststories() async {
+  //   final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.beststories);
+  //   final body = await _getBody(uri, _storyCacheMaxAge);
+  //   return (jsonDecode(body) as List).map((v) => v as int).toList();
+  //   // final response = await _get(uri);
+  //   // if (response.statusCode == 200) {
+  //   // return (jsonDecode(response.body) as List).map((v) => v as int).toList();
+  //   // } else {
+  //   // throw Exception('failed to load askstories');
+  //   // }
+  // }
+
+  // @override
+  // Future<List<int>> jobstories() async {
+  //   final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.jobstories);
+  //   final response = await _get(uri);
+  //   if (response.statusCode == 200) {
+  //     return jsonDecode(response.body) as List<int>;
+  //   } else {
+  //     throw Exception('failed to load askstories');
+  //   }
+  // }
+
+  // @override
+  // Future<List<int>> newstories() async {
+  //   final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.newstories);
+  //   final response = await _get(uri);
+  //   if (response.statusCode == 200) {
+  //     return jsonDecode(response.body) as List<int>;
+  //   } else {
+  //     throw Exception('failed to load askstories');
+  //   }
+  // }
+
+  // @override
+  // Future<List<int>> showstories() async {
+  //   final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.showstories);
+  //   final response = await _get(uri);
+  //   if (response.statusCode == 200) {
+  //     return jsonDecode(response.body) as List<int>;
+  //   } else {
+  //     throw Exception('failed to load askstories');
+  //   }
+  // }
+
+  // @override
+  // Future<List<int>> topstories() async {
+  //   final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.topstories);
+  //   final body = await _getBody(uri, _storyCacheMaxAge);
+  //   return (jsonDecode(body) as List).map((v) => v as int).toList();
+  //   // final response = await _get(uri);
+  //   // if (response.statusCode == 200) {
+  //   //   return (jsonDecode(response.body) as List).map((v) => v as int).toList();
+  //   // } else {
+  //   //   throw Exception('failed to load askstories');
+  //   // }
+  // }
 
   @override
-  Future<List<int>> beststories() async {
-    final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.beststories);
-    final body = await _getBody(uri, _storyCacheMaxAge);
-    return (jsonDecode(body) as List).map((v) => v as int).toList();
-    // final response = await _get(uri);
-    // if (response.statusCode == 200) {
-    // return (jsonDecode(response.body) as List).map((v) => v as int).toList();
-    // } else {
-    // throw Exception('failed to load askstories');
-    // }
-  }
-
-  @override
-  Future<List<int>> jobstories() async {
-    final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.jobstories);
-    final response = await _get(uri);
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body) as List<int>;
-    } else {
-      throw Exception('failed to load askstories');
-    }
-  }
-
-  @override
-  Future<List<int>> newstories() async {
-    final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.newstories);
-    final response = await _get(uri);
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body) as List<int>;
-    } else {
-      throw Exception('failed to load askstories');
-    }
-  }
-
-  @override
-  Future<List<int>> showstories() async {
-    final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.showstories);
-    final response = await _get(uri);
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body) as List<int>;
-    } else {
-      throw Exception('failed to load askstories');
-    }
-  }
-
-  @override
-  Future<List<int>> topstories() async {
-    final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.topstories);
-    final body = await _getBody(uri, _storyCacheMaxAge);
-    return (jsonDecode(body) as List).map((v) => v as int).toList();
-    // final response = await _get(uri);
-    // if (response.statusCode == 200) {
-    //   return (jsonDecode(response.body) as List).map((v) => v as int).toList();
-    // } else {
-    //   throw Exception('failed to load askstories');
-    // }
-  }
-
-  @override
-  Future<Item> item(int id) async {
+  Future<Item> item(int id, [bool cached=true]) async {
     final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.item(id));
-    final body = await _getBody(uri, _itemCacheMaxAge);
+    final body = await _getBody(uri, _itemCacheMaxAge, cached);
     return Item.fromJson(jsonDecode(body));
     // final response = await _get(uri);
     // if (response.statusCode == 200) {
@@ -185,36 +189,38 @@ class HackerNewsApiImpl implements HackerNewsApi {
     // }
   }
 
-  @override
-  Future<int> maxitem() async {
-    final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.maxitem);
-    final response = await _get(uri);
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body) as int;
-    } else {
-      throw Exception('failed to load askstories');
-    }
-  }
+  // @override
+  // Future<int> maxitem() async {
+  //   final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.maxitem);
+  //   final response = await _get(uri);
+  //   if (response.statusCode == 200) {
+  //     return jsonDecode(response.body) as int;
+  //   } else {
+  //     throw Exception('failed to load askstories');
+  //   }
+  // }
+
+  // @override
+  // Future<Updates> updates() async {
+  //   final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.updates);
+  //   final response = await _get(uri);
+  //   if (response.statusCode == 200) {
+  //     return Updates.fromJson(jsonDecode(response.body));
+  //   } else {
+  //     throw Exception('failed to load askstories');
+  //   }
+  // }
 
   @override
-  Future<Updates> updates() async {
-    final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.updates);
-    final response = await _get(uri);
-    if (response.statusCode == 200) {
-      return Updates.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception('failed to load askstories');
-    }
-  }
-
-  @override
-  Future<User> user(String name) async {
+  Future<User> user(String name, [bool cached=true]) async {
     final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.user(name));
-    final response = await _get(uri);
-    if (response.statusCode == 200) {
-      return User.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception('failed to load askstories');
-    }
+    final body = await _getBody(uri, _itemCacheMaxAge, cached);
+    return User.fromJson(jsonDecode(body));
+    // final response = await _get(uri);
+    // if (response.statusCode == 200) {
+    //   return User.fromJson(jsonDecode(response.body));
+    // } else {
+    //   throw Exception('failed to load askstories');
+    // }
   }
 }

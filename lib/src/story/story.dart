@@ -12,6 +12,7 @@ import '../hacker_news_api/hacker_news_api.dart';
 import '../hacker_news_api/item.dart';
 import '../notifier/comment_notifier.dart';
 import '../notifier/item_notifier.dart';
+import '../ui/swipe_to_refresh.dart';
 import 'story_tile.dart';
 import '../style/style.dart';
 import 'comment.dart';
@@ -69,44 +70,49 @@ class Story extends StatelessWidget {
   }
 
   // Widget build(BuildContext context) {
-  Widget onData(BuildContext context, Item data) {
-    return ListView(
-      children: [
-        // TODO: fix: item load twice
-        StoryTileLoader(
-            id: data.id,
-            rank: 0,
-            showLeading: false,
-            activeCommentsLink: false),
-        SizedBox(height: 20),
+  Widget onData(BuildContext context, Item item) {
+    return SwipeToRefresh(
+      onRefresh: () async {
+        return context.read<ItemNotifier>().reloadItem(item.id);
+      },
+      child: ListView(
+        children: [
+          // TODO: fix: item load twice
+          StoryTileLoader(
+              id: item.id,
+              rank: 0,
+              showLeading: false,
+              activeCommentsLink: false),
+          SizedBox(height: 20),
 
-        // if (data.kids != null)
-        //   ListView.builder(
-        //     shrinkWrap: true,
-        //     itemCount: data.kids!.length,
-        //     itemBuilder: (_, int i) {
-        //       final id = data.kids![i];
-        //       context.read<ItemNotifier>().loadItem(id);
-        //       return CommentLoader(id: id);
-        //     },
-        //   ),
+          // if (data.kids != null)
+          //   ListView.builder(
+          //     shrinkWrap: true,
+          //     itemCount: data.kids!.length,
+          //     itemBuilder: (_, int i) {
+          //       final id = data.kids![i];
+          //       context.read<ItemNotifier>().loadItem(id);
+          //       return CommentLoader(id: id);
+          //     },
+          //   ),
 
-        // if (data.kids != null)
-        //   ListView(children: [
-        //     for (var id in data.kids!)
-        //       Builder(builder: (_) {
-        //         context.read<ItemNotifier>().loadItem(id);
-        //         return CommentLoader(id: id);
-        //       })
-        //   ])
+          // if (data.kids != null)
+          //   ListView(children: [
+          //     for (var id in data.kids!)
+          //       Builder(builder: (_) {
+          //         context.read<ItemNotifier>().loadItem(id);
+          //         return CommentLoader(id: id);
+          //       })
+          //   ])
 
-        if (data.kids != null)
-          for (var id in data.kids!)
-            Builder(builder: (_) {
-              context.read<ItemNotifier>().loadItem(id);
-              return CommentLoader(id: id);
-            })
-      ],
+          if (item.kids != null)
+            for (var id in item.kids!)
+              Builder(builder: (_) {
+                context.read<ItemNotifier>().loadItem(id);
+                return CommentLoader(id: id);
+              })
+        ],
+      ),
     );
   }
 }
