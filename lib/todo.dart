@@ -6,3 +6,5 @@
 //  or user ItemNotifier per screen instead loader
 // TODO: collect data for Fake api
 // TODO: add parent on user activity
+// TODO: merge Comment and CommentLoader
+//  Comment(future: Future<Item>(), )
