@@ -25,7 +25,7 @@ class UserActivityScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('UserActivityScreen'),
+        title: Text('User Activity'),
       ),
       body: Padding(
         padding: pagePadding,

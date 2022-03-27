@@ -30,7 +30,7 @@ class StoriesScreen extends StatelessWidget {
             ],
             // labelPadding: EdgeInsets.symmetric(horizontal: 10.0),
           ),
-          title: Text('StoriesScreen'),
+          title: Text('Hacker News'),
         ),
         // body: Padding(padding: pagePadding, child: ItemList()),
         body: TabBarView(
