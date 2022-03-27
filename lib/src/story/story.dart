@@ -79,11 +79,20 @@ class Story extends StatelessWidget {
       child: ListView(
         children: [
           // TODO: fix: item load twice
-          StoryTileLoader(
-              id: item.id,
-              rank: 0,
-              showLeading: false,
-              activeCommentsLink: false),
+          // StoryTileLoader(
+          //   id: item.id,
+          //   rank: 0,
+          //   showLeading: false,
+          //   activeCommentsLink: false,
+          // ),
+
+          StoryTile(
+            item: item,
+            rank: 0,
+            showLeading: false,
+            activeCommentsLink: false,
+          ),
+
           SizedBox(height: 20),
 
           // if (data.kids != null)
@@ -108,10 +117,17 @@ class Story extends StatelessWidget {
 
           if (item.kids != null)
             for (var id in item.kids!)
-              Builder(builder: (_) {
-                context.read<ItemNotifier>().loadItem(id);
-                return CommentLoader(id: id);
-              })
+              // Builder(builder: (_) {
+              //   context.read<ItemNotifier>().loadItem(id);
+              //   return CommentLoader(id: id);
+              // })
+              CommentLoaderV2(
+                  id: id,
+                  onData: (_, Item item) {
+                    return Comment(
+                      item: item,
+                    );
+                  })
         ],
       ),
     );

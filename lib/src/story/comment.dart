@@ -10,7 +10,9 @@ import '../hacker_news_api/item.dart';
 import '../notifier/comment_notifier.dart';
 import '../notifier/item_notifier.dart';
 import '../ui/html.dart';
+import '../user/user_screen.dart';
 import 'format_time.dart';
+import 'story_screen.dart';
 
 const commentMaxDepth = 5;
 
@@ -71,6 +73,59 @@ class CommentLoader extends StatelessWidget {
   }
 }
 
+class CommentLoaderV2 extends StatefulWidget {
+  CommentLoaderV2({
+    Key? key,
+    required this.id,
+    required this.onData,
+    this.depth = 0,
+  }) : super(key: key);
+
+  final int id;
+  final int depth;
+  final Widget Function(BuildContext, Item) onData;
+
+  @override
+  State<CommentLoaderV2> createState() => _CommentLoaderState();
+}
+
+class _CommentLoaderState extends State<CommentLoaderV2> {
+  @override
+  void initState() {
+    context.read<ItemNotifier>().loadItem(widget.id);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // return CommentPlaceholder();
+    // final notifier = context.watch<HackerNewsNotifier>();
+
+    final commentR =
+        context.select<ItemNotifier, ItemResult>((v) => v.item(widget.id));
+
+    final error = commentR.error;
+    if (error != null) {
+      return onError(context, error);
+    }
+
+    final value = commentR.value;
+    if (value != null) {
+      return widget.onData(context, value);
+    }
+
+    return onLoading(context);
+  }
+
+  Widget onError(BuildContext context, Object? error) {
+    return Text(error.toString());
+  }
+
+  Widget onLoading(BuildContext context) {
+    return CommentPlaceholder(depth: widget.depth);
+  }
+}
+
 // class CommentController extends ChangeNotifier {
 //   CommentController() {
 //     print('CommentController');
@@ -112,6 +167,7 @@ class Comment extends StatelessWidget {
     this.depth = 0,
     this.activeUserLink = true,
     this.collapsable = true,
+    this.showParentLink = false,
   }) : super(key: key);
 
   final Item item;
@@ -119,6 +175,7 @@ class Comment extends StatelessWidget {
   final int depth;
   final bool activeUserLink;
   final bool collapsable;
+  final bool showParentLink;
 
   @override
   Widget build(BuildContext context) {
@@ -140,19 +197,20 @@ class Comment extends StatelessWidget {
           Wrap(
             children: [
               if (item.by != null) ...[
-                InkWell(
-                  child: Text(item.by!, style: textStyle),
-                  onTap: activeUserLink
-                      ? () {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (_) => UserScreen(name: item.by!),
-                          //   ),
-                          // );
-                        }
-                      : null,
-                ),
+                if (activeUserLink)
+                  InkWell(
+                    child: Text(item.by!, style: textStyle),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => UserScreen(name: item.by!),
+                        ),
+                      );
+                    },
+                  )
+                else
+                  Text(item.by!, style: textStyle),
               ],
               if (item.time != null) ...[
                 Text(' '),
@@ -163,14 +221,27 @@ class Comment extends StatelessWidget {
               // Text(' | ', style: textStyle),
               // Text('next', style: textStyle),
               // Text(' [–]', style: textStyle),
-              Text(' '),
+              if (showParentLink && item.parent != null && depth == 0) ...[
+                Text(' | ', style: textStyle),
+                InkWell(
+                  child: Text('parent', style: textStyle),
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => StoryScreen(id: item.parent!),
+                    ),
+                  ),
+                ),
+              ],
 
-              if (collapsable)
+              if (collapsable) ...[
+                Text(' '),
                 InkWell(
                   child: Text(isVisible ? '[-]' : '[+]', style: textStyle),
                   onTap: () =>
                       context.read<CommentNotifier>().toggleVisibility(item.id),
                 ),
+              ]
             ],
           ),
           if (isVisible) ...[
@@ -196,12 +267,34 @@ class Comment extends StatelessWidget {
                 itemCount: item.kids!.length,
                 itemBuilder: (_, int i) {
                   final id = item.kids![i];
-                  context.read<ItemNotifier>().loadItem(id);
-                  return CommentLoader(
+                  // context.read<ItemNotifier>().loadItem(id);
+                  // return CommentLoader(
+                  //   id: id,
+                  //   depth: depth + 1,
+                  //   activeUserLink: activeUserLink,
+                  // );
+                  return CommentLoaderV2(
                     id: id,
                     depth: depth + 1,
-                    activeUserLink: activeUserLink,
+                    onData: (_, Item item) {
+                      return Comment(
+                        item: item,
+                        depth: depth + 1,
+                        activeUserLink: activeUserLink,
+                      );
+                    },
                   );
+                  /* return CommentLoaderV2(
+                    id: id,
+                    onLoading: (_) => CommentPlaceholder(depth: depth+1),
+                    onData: (_, Item item) {
+                      return Comment(
+                        item: item,
+                        depth: depth + 1,
+                        activeUserLink: activeUserLink,
+                      );
+                    },
+                  ); */
                 },
               ),
           ],

@@ -204,7 +204,12 @@ class UserActivityLoader extends StatelessWidget {
 
   Widget onData(BuildContext context, Item item) {
     if (item.type == 'comment') {
-      return Comment(item: item, showNested: false, activeUserLink: false, collapsable: false);
+      return Comment(
+          item: item,
+          showNested: false,
+          activeUserLink: false,
+          collapsable: false,
+          showParentLink: true);
     } else if (item.type == 'story') {
       return StoryTile(item: item, showLeading: false, activeUserLink: false);
     } else {

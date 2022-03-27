@@ -75,6 +75,58 @@ class StoryTileLoader extends StatelessWidget {
   }
 }
 
+class StoryTileLoaderV2 extends StatefulWidget {
+  StoryTileLoaderV2({
+    Key? key,
+    required this.id,
+    required this.onData,
+    this.showLeading = true,
+  }) : super(key: key);
+
+  final int id;
+  final Widget Function(BuildContext, Item) onData;
+  final bool showLeading;
+
+  @override
+  State<StoryTileLoaderV2> createState() => _StoryTileLoaderV2State();
+}
+
+class _StoryTileLoaderV2State extends State<StoryTileLoaderV2> {
+  @override
+  void initState() {
+    context.read<ItemNotifier>().loadItem(widget.id);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // final controller = context.watch<StoriesController>();
+    final item =
+        context.select<ItemNotifier, ItemResult>((v) => v.item(widget.id));
+
+    // final item = controller.item(id);
+    final error = item.error;
+    if (error != null) {
+      return onError(context, error);
+    }
+
+    final value = item.value;
+    if (value != null) {
+      return widget.onData(context, value);
+    }
+
+    return onLoading(context);
+  }
+
+  Widget onError(BuildContext context, Object? error) {
+    return Text(error.toString());
+  }
+
+  Widget onLoading(BuildContext context) {
+    return StoryTilePlaceholder(showLeading: widget.showLeading);
+  }
+}
+
 class StoryTilePlaceholder extends StatelessWidget {
   StoryTilePlaceholder({Key? key, required this.showLeading}) : super(key: key);
 
@@ -82,11 +134,13 @@ class StoryTilePlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: extract to placeholder.dart
     final textStyle = TextStyle(
       color: Colors.white,
       backgroundColor: Colors.white,
     );
 
+    // extract to placeholder.dart
     return Shimmer.fromColors(
       baseColor: Colors.grey[300]!,
       highlightColor: Colors.grey[100]!,
@@ -155,19 +209,20 @@ class StoryTile extends StatelessWidget {
               Text(' '),
             ],
             if (item.by != null) ...[
-              Text('by '),
-              InkWell(
-                child: Text(item.by!),
-                onTap: activeUserLink
-                    ? () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => UserScreen(name: item.by!)),
-                        );
-                      }
-                    : null,
-              ),
+              if (activeUserLink)
+                InkWell(
+                  child: Text(item.by!),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => UserScreen(name: item.by!)),
+                    );
+                  },
+                )
+              else
+                Text('by '),
+              
               Text(' '),
             ],
             if (item.time != null) ...[

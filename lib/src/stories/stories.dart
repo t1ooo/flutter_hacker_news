@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../hacker_news_api/item.dart';
 import '../hacker_news_api/story_type.dart';
 import '../notifier/item_notifier.dart';
 import '../notifier/story_notifier.dart';
@@ -78,8 +79,14 @@ class Stories extends StatelessWidget {
         itemBuilder: (_, int i) {
           final id = storyIds[i];
           // print(id);
-          context.read<ItemNotifier>().loadItem(id);
-          return StoryTileLoader(id: id, rank: rank + i);
+          // context.read<ItemNotifier>().loadItem(id);
+          // return StoryTileLoader(id: id, rank: rank + i);
+          return StoryTileLoaderV2(
+            id: id,
+            onData: (_, Item item) {
+              return StoryTile(item: item, rank: rank + i);
+            },
+          );
         },
       ),
     );
