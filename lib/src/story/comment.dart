@@ -10,6 +10,7 @@ import '../hacker_news_api/item.dart';
 import '../notifier/comment_notifier.dart';
 import '../notifier/item_notifier.dart';
 import '../ui/html.dart';
+import '../ui/link.dart';
 import '../user/user_screen.dart';
 import 'format_time.dart';
 import 'story_screen.dart';
@@ -197,23 +198,28 @@ class Comment extends StatelessWidget {
           Wrap(
             children: [
               if (item.by != null) ...[
-                if (activeUserLink)
-                  InkWell(
-                    child: Text(item.by!, style: textStyle),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => UserScreen(name: item.by!),
-                        ),
-                      );
-                    },
-                  )
-                else
-                  Text(item.by!, style: textStyle),
+                // if (activeUserLink)
+                //   InkWell(
+                //     child: Text(item.by!, style: textStyle),
+                //     onTap: () {
+                //       Navigator.push(
+                //         context,
+                //         MaterialPageRoute(
+                //           builder: (_) => UserScreen(name: item.by!),
+                //         ),u
+                //       );
+                //     },
+                //   )
+                // else
+                //   Text(item.by!, style: textStyle),
+
+                MaterialAppLink(
+                  child: Text(item.by!, style: textStyle),
+                  routeBuilder: (_) => UserScreen(name: item.by!),
+                  active: activeUserLink,
+                ),
               ],
               if (item.time != null) ...[
-                Text(' '),
                 Text(' ${formatItemTime(item.time!)}', style: textStyle),
                 // Text(' | '),
               ],
@@ -223,14 +229,19 @@ class Comment extends StatelessWidget {
               // Text(' [–]', style: textStyle),
               if (showParentLink && item.parent != null && depth == 0) ...[
                 Text(' | ', style: textStyle),
-                InkWell(
+                // InkWell(
+                //   child: Text('parent', style: textStyle),
+                //   onTap: () => Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //       builder: (_) => StoryScreen(id: item.parent!),
+                //     ),
+                //   ),
+                // ),
+                MaterialAppLink(
                   child: Text('parent', style: textStyle),
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => StoryScreen(id: item.parent!),
-                    ),
-                  ),
+                  // child: Text('comments'),
+                  routeBuilder: (_) => StoryScreen(id: item.parent!),
                 ),
               ],
 

@@ -14,6 +14,7 @@ import '../story/story_screen.dart';
 import '../style/style.dart';
 // import '../ui/item_screen.dart';
 // import '../ui/user.dart';
+import '../ui/link.dart';
 import '../user/user_screen.dart';
 import 'format_time.dart';
 // import 'story_controller.dart';
@@ -189,58 +190,42 @@ class StoryTile extends StatelessWidget {
         // trailing: Icon(Icons.comment),
         title: Wrap(
           children: [
-            InkWell(
-              child: Tooltip(
-                  child: Text(title, textScaleFactor: 1.6),
-                  message: item.url ?? '-'),
-              onTap: item.url == null ? null : () => launch(item.url!),
-            ),
-            // if (item.url != null) ...[
-            //   Text(' ('),
-            //   Text(Uri.parse(item.url!).host),
-            //   Text(')'),
-            // ],
+            if (item.url != null)
+              WebLink(
+                child: Text(title, textScaleFactor: 1.6),
+                url: item.url!,
+              )
+            else
+              // Text(title, textScaleFactor: 1.6)
+              MaterialAppLink(
+                child: Text(title, textScaleFactor: 1.6),
+                // child: Text('comments'),
+                routeBuilder: (_) => StoryScreen(id: item.id),
+              ),
           ],
         ),
         subtitle: Wrap(
           children: [
             if (item.score != null) ...[
-              Text('${item.score} points'),
-              Text(' '),
+              Text('${item.score} points '),
             ],
             if (item.by != null) ...[
-              if (activeUserLink)
-                InkWell(
-                  child: Text(item.by!),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => UserScreen(name: item.by!)),
-                    );
-                  },
-                )
-              else
-                Text('by '),
-              
+              Text('by '),
+              MaterialAppLink(
+                child: Text(item.by!),
+                routeBuilder: (_) => UserScreen(name: item.by!),
+                active: activeUserLink,
+              ),
               Text(' '),
             ],
             if (item.time != null) ...[
-              Text(formatItemTime(item.time!)),
-              Text(' | '),
+              Text(formatItemTime(item.time!) + ' | '),
             ],
-            InkWell(
+            MaterialAppLink(
               child: Text('${item.descendants ?? 0} comments'),
               // child: Text('comments'),
-              onTap: activeCommentsLink
-                  ? () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => StoryScreen(id: item.id)),
-                      );
-                    }
-                  : null,
+              routeBuilder: (_) => StoryScreen(id: item.id),
+              active: activeCommentsLink,
             ),
           ],
         ),

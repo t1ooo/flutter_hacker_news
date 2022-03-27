@@ -15,6 +15,7 @@ import '../hacker_news_api/user.dart';
 import '../story/comment.dart';
 import '../style/style.dart';
 import '../ui/html.dart';
+import '../ui/link.dart';
 import '../user_activity/user_activity_screen_v2.dart';
 import '../notifier/user_notifier.dart';
 
@@ -134,18 +135,23 @@ class UserWidget extends StatelessWidget {
               Text(''),
               Padding(
                 padding: const EdgeInsets.only(top: 20),
-                child: InkWell(
+                // child: InkWell(
+                //   child: Text('activity'),
+                //   onTap: () {
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(
+                //         builder: (_) =>
+                //             // UserActivityScreen(submitted: user.submitted!),
+                //             UserActivityScreen(name: user.id),
+                //       ),
+                //     );
+                //   },
+                // ),
+                child: MaterialAppLink(
                   child: Text('activity'),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) =>
-                            // UserActivityScreen(submitted: user.submitted!),
-                            UserActivityScreen(name: user.id),
-                      ),
-                    );
-                  },
+                  // child: Text('comments'),
+                  routeBuilder: (_) => UserActivityScreen(name: user.id),
                 ),
               ),
             ],
