@@ -98,9 +98,10 @@ class UserActivityList extends StatelessWidget {
 
   Widget onLoading(BuildContext context) {
     // return LoadIndicator();
-    return ListView(
-      children: [for (int i = 0; i < 20; i++) CommentPlaceholder(depth: 0)],
-    );
+    // return ListView(
+    //   children: [for (int i = 0; i < 20; i++) CommentPlaceholder(depth: 0)],
+    // );
+    return CommentPlaceholders();
   }
 
   Widget onData(BuildContext context, List<int> data) {
@@ -160,7 +161,7 @@ class UserActivityLoader extends StatelessWidget {
 
   Widget onData(BuildContext context, Item item) {
     if (item.type == 'comment') {
-      return Comment(item: item, showNested: false, activeUserLink: false);
+      return Comment(item: item, showNested: false, activeUserLink: false, collapsable: false);
     } else if (item.type == 'story') {
       return StoryTile(item: item, showLeading: false, activeUserLink: false);
     } else {

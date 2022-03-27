@@ -64,9 +64,10 @@ class Story extends StatelessWidget {
     //   },
     // );
 
-    return ListView(children: [
-      for (int i = 0; i < 20; i++) CommentPlaceholder(depth: 0),
-    ]);
+    // return ListView(children: [
+    //   for (int i = 0; i < 20; i++) CommentPlaceholder(depth: 0),
+    // ]);
+    return CommentPlaceholders();
   }
 
   // Widget build(BuildContext context) {

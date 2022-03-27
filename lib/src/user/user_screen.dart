@@ -15,7 +15,7 @@ import '../hacker_news_api/user.dart';
 import '../story/comment.dart';
 import '../style/style.dart';
 import '../ui/html.dart';
-import '../user_activity/user_activity_screen.dart';
+import '../user_activity/user_activity_screen_v2.dart';
 import '../notifier/user_notifier.dart';
 
 class UserScreen extends StatelessWidget {
@@ -141,7 +141,8 @@ class UserWidget extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (_) =>
-                            UserActivityScreen(submitted: user.submitted!),
+                            // UserActivityScreen(submitted: user.submitted!),
+                            UserActivityScreen(name: user.id),
                       ),
                     );
                   },

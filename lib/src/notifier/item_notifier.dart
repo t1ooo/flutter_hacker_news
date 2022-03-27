@@ -47,7 +47,7 @@ class ItemNotifier extends ChangeNotifier with TryNotifyListeners{
     return _loadItem(id, false);
   }
 
-  Future<void> _loadItem(int id, [bool cached=true]) async {
+  Future<void> _loadItem(int id, bool cached) async {
     _items[id] = await Future.delayed(Duration(seconds: delay), () async {
       try {
         final item = await api.item(id, cached);

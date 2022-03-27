@@ -12,23 +12,23 @@ import '../notifier/item_notifier.dart';
 import '../ui/html.dart';
 import 'format_time.dart';
 
-
-
 const commentMaxDepth = 5;
 
 class CommentLoader extends StatelessWidget {
-  CommentLoader({
-    Key? key,
-    required this.id,
-    this.showNested = true,
-    this.depth = 0,
-    this.activeUserLink = true,
-  }) : super(key: key);
+  CommentLoader(
+      {Key? key,
+      required this.id,
+      this.showNested = true,
+      this.depth = 0,
+      this.activeUserLink = true,
+      this.collapsable = true})
+      : super(key: key);
 
   final int id;
   final int depth;
   final bool showNested;
   final bool activeUserLink;
+  final bool collapsable;
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +66,7 @@ class CommentLoader extends StatelessWidget {
       showNested: showNested,
       depth: depth,
       activeUserLink: activeUserLink,
+      collapsable: collapsable,
     );
   }
 }
@@ -110,17 +111,19 @@ class Comment extends StatelessWidget {
     this.showNested = true,
     this.depth = 0,
     this.activeUserLink = true,
+    this.collapsable = true,
   }) : super(key: key);
 
   final Item item;
   final bool showNested;
   final int depth;
   final bool activeUserLink;
+  final bool collapsable;
 
   @override
   Widget build(BuildContext context) {
-    final isVisible = context
-        .select<CommentNotifier, bool>((v) => v.isVisible(item.id));
+    final isVisible =
+        context.select<CommentNotifier, bool>((v) => v.isVisible(item.id));
 
     final leftPadding = min(depth, commentMaxDepth) * 30.0;
     final textStyle = TextStyle(color: Colors.grey);
@@ -162,12 +165,12 @@ class Comment extends StatelessWidget {
               // Text(' [–]', style: textStyle),
               Text(' '),
 
-              InkWell(
-                child: Text(isVisible ? '[-]' : '[+]', style: textStyle),
-                onTap: () => context
-                    .read<CommentNotifier>()
-                    .toggleVisibility(item.id),
-              ),
+              if (collapsable)
+                InkWell(
+                  child: Text(isVisible ? '[-]' : '[+]', style: textStyle),
+                  onTap: () =>
+                      context.read<CommentNotifier>().toggleVisibility(item.id),
+                ),
             ],
           ),
           if (isVisible) ...[
@@ -270,6 +273,19 @@ class CommentPlaceholder extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class CommentPlaceholders extends StatelessWidget {
+  CommentPlaceholders({Key? key, this.limit = 20}) : super(key: key);
+
+  final int limit;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(children: [
+      for (int i = 0; i < 20; i++) CommentPlaceholder(depth: 0),
+    ]);
   }
 }
 

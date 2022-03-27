@@ -26,7 +26,7 @@ class StoryNotifier extends ChangeNotifier with TryNotifyListeners {
     return _loadStoryIds(storyType, false);
   }
 
-  Future<void> _loadStoryIds(StoryType storyType, [bool cached = true]) async {
+  Future<void> _loadStoryIds(StoryType storyType, bool cached) async {
     _log.info('loadStoryIds: $storyType');
     _storyIds = await Future.delayed(Duration(seconds: delay), () async {
       try {

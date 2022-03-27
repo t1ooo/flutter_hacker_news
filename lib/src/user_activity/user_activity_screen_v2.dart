@@ -12,16 +12,20 @@ import 'package:flutter_html/flutter_html.dart';
 
 import '../hacker_news_api/hacker_news_api.dart';
 import '../hacker_news_api/item.dart';
+import '../hacker_news_api/user.dart';
+import '../notifier/comment_notifier.dart';
 import '../notifier/item_notifier.dart';
+import '../notifier/user_notifier.dart';
 import '../story/comment.dart';
 import '../story/story_tile.dart';
 import '../style/style.dart';
+import '../ui/swipe_to_refresh.dart';
 // import 'user_activity_controller.dart';
 
 class UserActivityScreen extends StatelessWidget {
-  UserActivityScreen({Key? key, required this.submitted}) : super(key: key);
+  UserActivityScreen({Key? key, required this.name}) : super(key: key);
 
-  List<int> submitted;
+  String name;
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +36,27 @@ class UserActivityScreen extends StatelessWidget {
       body: Padding(
         padding: pagePadding,
         // child: UserActivityList(submitted: submitted),
-        child: ChangeNotifierProvider(
-          create: (BuildContext context) =>
-              ItemNotifier(context.read<HackerNewsApi>()),
-          child: UserActivityList(submitted: submitted),
+        // child: ChangeNotifierProvider(
+        //   create: (BuildContext context) =>
+        //       ItemNotifier(context.read<HackerNewsApi>()),
+        //   child: UserActivityList(name: name),
+        // ),
+        child: MultiProvider(
+          providers: [
+            ChangeNotifierProvider(
+              create: (BuildContext context) =>
+                  UserNotifier(context.read<HackerNewsApi>())..loadUser(name),
+            ),
+            ChangeNotifierProvider(
+              create: (BuildContext context) => ItemNotifier(
+                context.read<HackerNewsApi>(),
+              ),
+            ),
+            ChangeNotifierProvider(
+              create: (BuildContext context) => CommentNotifier(),
+            ),
+          ],
+          child: UserActivityList(name: name),
         ),
       ),
     );
@@ -43,15 +64,29 @@ class UserActivityScreen extends StatelessWidget {
 }
 
 class UserActivityList extends StatelessWidget {
-  UserActivityList({Key? key, required this.submitted}) : super(key: key);
+  UserActivityList({Key? key, required this.name}) : super(key: key);
 
-  List<int> submitted;
+  String name;
 
   @override
   Widget build(BuildContext context) {
+    final userR = context.select<UserNotifier, UserResult>((v) => v.user);
+
+    final error = userR.error;
+    if (error != null) {
+      return onError(context, error);
+    }
+
+    final value = userR.value;
+    if (value != null) {
+      return onData(context, value);
+    }
+
+    return onLoading(context);
+
     // final notifier = context.watch<HackerNewsNotifier>();
 
-    return onData(context, submitted);
+    // return onData(context, submitted);
 
     // return FutureBuilder(
     //   future: Future.delayed(Duration(seconds: 1), () => submitted),
@@ -94,8 +129,8 @@ class UserActivityList extends StatelessWidget {
     // );
   }
 
-  void onError(BuildContext context, Object? error, StackTrace? st) {
-    print(error);
+  Widget onError(BuildContext context, Object? error) {
+    return Text(error.toString());
   }
 
   Widget onLoading(BuildContext context) {
@@ -105,7 +140,7 @@ class UserActivityList extends StatelessWidget {
     );
   }
 
-  Widget onData(BuildContext context, List<int> data) {
+  Widget onData(BuildContext context, User user) {
     // return ListView(
     //   // cacheExtent: 1.5,
     //   children: [
@@ -118,13 +153,20 @@ class UserActivityList extends StatelessWidget {
     //   ],
     // );
 
-    return ListView.builder(
-      itemCount: data.length,
-      itemBuilder: (_, int i) {
-        final id = data[i];
-        context.read<ItemNotifier>().loadItem(id);
-        return UserActivityLoader(id: id);
+    final submitted = user.submitted ?? [];
+
+    return SwipeToRefresh(
+      onRefresh: () async {
+        return context.read<UserNotifier>().reloadUser(name);
       },
+      child: ListView.builder(
+        itemCount: submitted.length,
+        itemBuilder: (_, int i) {
+          final id = submitted[i];
+          context.read<ItemNotifier>().loadItem(id);
+          return UserActivityLoader(id: id);
+        },
+      ),
     );
   }
 }
@@ -136,8 +178,8 @@ class UserActivityLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final activityR = context
-        .select<ItemNotifier, ItemResult>((v) => v.item(id));
+    final activityR =
+        context.select<ItemNotifier, ItemResult>((v) => v.item(id));
 
     final error = activityR.error;
     if (error != null) {
@@ -162,7 +204,7 @@ class UserActivityLoader extends StatelessWidget {
 
   Widget onData(BuildContext context, Item item) {
     if (item.type == 'comment') {
-      return Comment(item: item, showNested: false, activeUserLink: false);
+      return Comment(item: item, showNested: false, activeUserLink: false, collapsable: false);
     } else if (item.type == 'story') {
       return StoryTile(item: item, showLeading: false, activeUserLink: false);
     } else {

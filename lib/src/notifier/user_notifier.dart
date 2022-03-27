@@ -21,21 +21,25 @@ class UserNotifier extends ChangeNotifier with TryNotifyListeners {
   UserResult get user => _user;
 
   Future<void> loadUser(String name) async {
-    _user = await _loadUser(name);
-    tryNotifyListeners();
+    await _loadUser(name, true);
+  }
+
+  Future<void> reloadUser(String name) async {
+    await _loadUser(name, false);
   }
 
   // TODO: extract to mixin or function
-  Future<UserResult> _loadUser(String name) async {
+  Future<void> _loadUser(String name, bool cached) async {
     // print('load: $id');
-    return await Future.delayed(Duration(seconds: delay), () async {
+    _user = await Future.delayed(Duration(seconds: delay), () async {
       try {
-        final item = await api.user(name);
+        final item = await api.user(name, cached);
         return UserResult.value(item);
       } on Exception catch (e, st) {
         _log.error(e, st);
         return UserResult.error(e);
       }
     });
+    tryNotifyListeners();
   }
 }
