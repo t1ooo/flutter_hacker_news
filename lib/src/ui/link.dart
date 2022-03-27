@@ -35,6 +35,10 @@ class WebLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // return TextButton(
+    //   onPressed: () => launch(url),
+    //   child: Tooltip(child: child, message: url),
+    // );
     return InkWell(
       onTap: () => launch(url),
       // child: child,
@@ -57,6 +61,35 @@ class MaterialAppLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // return GestureDetector(
+    //   onTap: !active
+    //       ? null
+    //       : () {
+    //           Navigator.push(
+    //             context,
+    //             MaterialPageRoute(builder: routeBuilder),
+    //           );
+    //         },
+    //   child: Chip(
+    //     label: child,
+    //     shape: RoundedRectangleBorder(
+    //       borderRadius: BorderRadius.all(Radius.circular(5)),
+    //     ),
+    //   ),
+    // );
+
+    // return TextButton(
+    //   onPressed: !active
+    //       ? null
+    //       : () {
+    //           Navigator.push(
+    //             context,
+    //             MaterialPageRoute(builder: routeBuilder),
+    //           );
+    //         },
+    //   child: child,
+    // );
+
     return InkWell(
       onTap: !active
           ? null
