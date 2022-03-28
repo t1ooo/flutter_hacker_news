@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' show Client, Response;
 import 'package:retry/retry.dart';
 
+import '../logging/logging.dart';
 import 'cache.dart';
 import 'item.dart';
 import 'story_type.dart';
@@ -27,8 +28,8 @@ class HackerNewsURI {
 }
 
 abstract class HackerNewsApi {
-  Future<Item> item(int id, [bool cached=true]);
-  Future<User> user(String name, [bool cached=true]);
+  Future<Item> item(int id, [bool cached = true]);
+  Future<User> user(String name, [bool cached = true]);
   // Future<int> maxitem();
   // Future<List<int>> topstories();
   // Future<List<int>> newstories();
@@ -37,7 +38,7 @@ abstract class HackerNewsApi {
   // Future<List<int>> showstories();
   // Future<List<int>> jobstories();
   // Future<Updates> updates();
-  Future<List<int>> stories(StoryType storyType, [bool cached=true]);
+  Future<List<int>> stories(StoryType storyType, [bool cached = true]);
 }
 
 // TODO: retry
@@ -49,13 +50,36 @@ class HackerNewsApiImpl implements HackerNewsApi {
   final Cache? cache;
   static const _itemCacheMaxAge = Duration(minutes: 5);
   static const _storyCacheMaxAge = Duration(minutes: 5);
+  static final _log = Logger('HackerNewsApiImpl');
+
+  final delayBetweenRequest = Duration(seconds: 1);
+  DateTime lastRequestTime = DateTime.fromMicrosecondsSinceEpoch(0);
 
   Future<Response> _get(Uri uri) async {
     return await retry(() => client.get(uri));
   }
 
   Future<String> _getBody(Uri uri, Duration maxAge, bool cached) async {
-    await Future.delayed(Duration(seconds: 1));
+    // TODO: replace to clock
+    // while (true) {
+    //   final timeDiff = DateTime.now().difference(lastRequestTime).abs();
+    //   if (timeDiff < delayBetweenRequest) {
+    //     // print(delayBetweenRequest - timeDiff);
+    //     await Future.delayed(delayBetweenRequest - timeDiff);
+    //   } else {
+    //     break;
+    //   }
+    // }
+    // lastRequestTime = DateTime.now();
+
+    // final timeDiff = DateTime.now().difference(lastRequestTime).abs();
+    // if (timeDiff < delayBetweenRequest) {
+    //   print(delayBetweenRequest - timeDiff);
+    //   await Future.delayed(delayBetweenRequest - timeDiff);
+    // }
+    // lastRequestTime = DateTime.now();
+
+    // await Future.delayed(Duration(seconds: 1));
     // return await retry(() => client.get(uri));
 
     // if (cache != null) {
@@ -71,13 +95,15 @@ class HackerNewsApiImpl implements HackerNewsApi {
         return body;
       }
     }
+    // print(cached);
 
     return await retry(() async {
+      _log.info('request: $uri');
       final response = await client.get(uri);
       if (response.statusCode == 200) {
-        if (cached) {
-          await cache?.put(uri.toString(), response.body, maxAge);
-        }
+        // if (cached) {
+        await cache?.put(uri.toString(), response.body, maxAge);
+        // }
         // if (cache != null) {
         // await cache!.put(uri.toString(), response.body, Duration(minutes: 5));
         // }
@@ -88,7 +114,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
   }
 
   @override
-  Future<List<int>> stories(StoryType storyType, [bool cached=true]) async {
+  Future<List<int>> stories(StoryType storyType, [bool cached = true]) async {
     final uri = Uri.parse(HackerNewsURI.base + _storyPath(storyType));
     final body = await _getBody(uri, _storyCacheMaxAge, cached);
     return (jsonDecode(body) as List).map((v) => v as int).toList();
@@ -178,7 +204,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
   // }
 
   @override
-  Future<Item> item(int id, [bool cached=true]) async {
+  Future<Item> item(int id, [bool cached = true]) async {
     final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.item(id));
     final body = await _getBody(uri, _itemCacheMaxAge, cached);
     return Item.fromJson(jsonDecode(body));
@@ -213,7 +239,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
   // }
 
   @override
-  Future<User> user(String name, [bool cached=true]) async {
+  Future<User> user(String name, [bool cached = true]) async {
     final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.user(name));
     final body = await _getBody(uri, _itemCacheMaxAge, cached);
     return User.fromJson(jsonDecode(body));

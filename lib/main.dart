@@ -15,7 +15,7 @@ Future<void> main() async {
 
   final clock = Clock();
   // final cache = InMemoryCache(clock);
-  final cache = FileCache(clock);
+  final cache = InMemoryLruCache(1000, clock);
   final hackerNewsApi = HackerNewsApiImpl(Client(), cache);
 
   runApp(
@@ -41,6 +41,13 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: StoriesScreen(),
+      builder: (BuildContext context, Widget? widget) {
+        Widget error = Text('...rendering error...');
+        if (widget is Scaffold || widget is Navigator)
+          error = Scaffold(body: Center(child: error));
+        ErrorWidget.builder = (FlutterErrorDetails errorDetails) => error;
+        return widget ?? Container();
+      },
     );
   }
 }

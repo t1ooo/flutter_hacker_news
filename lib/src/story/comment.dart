@@ -94,10 +94,15 @@ class CommentLoaderV2 extends StatelessWidget {
     //   builder: builder,
     // );
 
-    return FutureBuilder(
-      future: context.read<ItemNotifier>().loadItem(id),
-      builder: (BuildContext context, _ ) => builder(context),
-    );
+    // return FutureBuilder(
+    //   future: context.read<ItemNotifier>().loadItem(id),
+    //   builder: (BuildContext context, _ ) => builder(context),
+    // );
+
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      context.read<ItemNotifier>().loadItem(id);
+    });
+    return builder(context);
   }
 
   Widget builder(BuildContext context) {

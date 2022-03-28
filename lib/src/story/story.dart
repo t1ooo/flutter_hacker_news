@@ -74,7 +74,8 @@ class Story extends StatelessWidget {
   Widget onData(BuildContext context, Item item) {
     return SwipeToRefresh(
       onRefresh: () async {
-        return context.read<ItemNotifier>().reloadItem(item.id);
+        // return context.read<ItemNotifier>().reloadItem(item.id);
+        context.read<ItemNotifier>().reloadItems();
       },
       child: ListView(
         children: [

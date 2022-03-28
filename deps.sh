@@ -12,6 +12,8 @@ flutter pub add flutter_widget_from_html
 flutter pub add retry
 flutter pub add clock
 flutter pub add shimmer
+flutter pub add html_unescape
+flutter pub add quiver
 
 flutter pub add build_runner --dev
 flutter pub add json_serializable --dev

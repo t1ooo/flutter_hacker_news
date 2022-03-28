@@ -18,6 +18,7 @@ import '../notifier/user_notifier.dart';
 import '../ui/swipe_to_refresh.dart';
 // import 'story_tile.dart._';
 
+// split to loader as Stories
 class Stories extends StatelessWidget {
   Stories({Key? key, required this.storyType}) : super(key: key);
 
@@ -71,7 +72,8 @@ class Stories extends StatelessWidget {
     // print(storyIds);
     return SwipeToRefresh(
       onRefresh: () async {
-        return context.read<StoryNotifier>().reloadStoryIds(storyType);
+        context.read<StoryNotifier>().reloadStoryIds(storyType);
+        context.read<ItemNotifier>().reloadItems();
       },
       child: ListView.builder(
         // physics: const AlwaysScrollableScrollPhysics(),

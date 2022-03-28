@@ -44,8 +44,8 @@ class UserActivityScreen extends StatelessWidget {
         child: MultiProvider(
           providers: [
             ChangeNotifierProvider(
-              create: (BuildContext context) =>
-                  UserNotifier(context.read<HackerNewsApi>())..loadUser(name),
+              create: (BuildContext context) => UserNotifier(
+                  context.read<HackerNewsApi>()), //..loadUser(name),
             ),
             ChangeNotifierProvider(
               create: (BuildContext context) => ItemNotifier(
@@ -70,6 +70,14 @@ class UserActivityList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      context.read<UserNotifier>().loadUser(name);
+    });
+    return builder(context);
+  }
+
+  @override
+  Widget builder(BuildContext context) {
     final userR = context.select<UserNotifier, UserResult>((v) => v.user);
 
     final error = userR.error;
@@ -157,13 +165,14 @@ class UserActivityList extends StatelessWidget {
 
     return SwipeToRefresh(
       onRefresh: () async {
-        return context.read<UserNotifier>().reloadUser(name);
+        context.read<UserNotifier>().reloadUser(name);
+        context.read<ItemNotifier>().reloadItems();
       },
       child: ListView.builder(
         itemCount: submitted.length,
         itemBuilder: (_, int i) {
           final id = submitted[i];
-          context.read<ItemNotifier>().loadItem(id);
+          // context.read<ItemNotifier>().loadItem(id);
           return UserActivityLoader(id: id);
         },
       ),
@@ -178,6 +187,13 @@ class UserActivityLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      context.read<ItemNotifier>().loadItem(id);
+    });
+    return builder(context);
+  }
+
+  Widget builder(BuildContext context) {
     final activityR =
         context.select<ItemNotifier, ItemResult>((v) => v.item(id));
 
