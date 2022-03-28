@@ -89,16 +89,21 @@ class CommentLoaderV2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InitBuilder(
-      initState: () => context.read<ItemNotifier>().loadItem(id),
-      builder: builder,
+    // return InitBuilder(
+    //   initState: () => context.read<ItemNotifier>().loadItem(id),
+    //   builder: builder,
+    // );
+
+    return FutureBuilder(
+      future: context.read<ItemNotifier>().loadItem(id),
+      builder: (BuildContext context, _ ) => builder(context),
     );
   }
 
   Widget builder(BuildContext context) {
     // return CommentPlaceholder();
     // final notifier = context.watch<HackerNewsNotifier>();
-
+    print('rebuild: $id');
     final commentR =
         context.select<ItemNotifier, ItemResult>((v) => v.item(id));
 

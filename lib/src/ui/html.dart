@@ -9,9 +9,11 @@ class HtmlText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HtmlWidget(html);
+    return HtmlWidget(html, isSelectable: false, onErrorBuilder: (_, __, ___) {
+      return Text('fail to display context');
+    });
 
-    // TODO: bug: 
+    // TODO: bug:
     //  exception when fast scroll with mouse
     //  bug reproduced on user activity
     // return Html(

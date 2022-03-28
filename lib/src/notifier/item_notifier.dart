@@ -28,7 +28,7 @@ class ItemNotifier extends ChangeNotifier with TryNotifyListeners {
   // final Map<int, bool> _visibilities = {};
 
   ItemResult item(int id) {
-    _log.info('item: $id');
+    // _log.info('item: $id');
     return _items[id] ?? ItemResult.empty();
   }
 

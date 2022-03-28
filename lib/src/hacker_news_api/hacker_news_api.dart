@@ -47,7 +47,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
 
   final Client client;
   final Cache? cache;
-  static const _itemCacheMaxAge = Duration(hours: 24);
+  static const _itemCacheMaxAge = Duration(minutes: 5);
   static const _storyCacheMaxAge = Duration(minutes: 5);
 
   Future<Response> _get(Uri uri) async {
