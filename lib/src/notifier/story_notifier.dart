@@ -15,10 +15,16 @@ class StoryNotifier extends ChangeNotifier with TryNotifyListeners {
   static final _log = Logger('StoryNotifier');
   final int delay = 1;
 
-  StoryIdsResult _storyIds = StoryIdsResult.empty();
-  StoryIdsResult get storyIds => _storyIds;
+  // StoryIdsResult _storyIds = StoryIdsResult.empty();
+  // StoryIdsResult get storyIds => _storyIds;
+
+  StoryIdsResult? _storyIds;
+  StoryIdsResult get storyIds => _storyIds ?? StoryIdsResult.empty();
 
   Future<void> loadStoryIds(StoryType storyType) async {
+    if (_storyIds != null) {
+      return;
+    }
     return _loadStoryIds(storyType, true);
   }
 

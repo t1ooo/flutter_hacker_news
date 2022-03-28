@@ -2,6 +2,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hacker_news_prototype/src/ui/builder.dart';
 
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -76,7 +77,7 @@ class StoryTileLoader extends StatelessWidget {
   }
 }
 
-class StoryTileLoaderV2 extends StatefulWidget {
+class StoryTileLoaderV2 extends StatelessWidget {
   StoryTileLoaderV2({
     Key? key,
     required this.id,
@@ -89,21 +90,16 @@ class StoryTileLoaderV2 extends StatefulWidget {
   final bool showLeading;
 
   @override
-  State<StoryTileLoaderV2> createState() => _StoryTileLoaderV2State();
-}
-
-class _StoryTileLoaderV2State extends State<StoryTileLoaderV2> {
-  @override
-  void initState() {
-    context.read<ItemNotifier>().loadItem(widget.id);
-    super.initState();
+  Widget build(BuildContext context) {
+    return InitBuilder(
+      initState: () => context.read<ItemNotifier>().loadItem(id),
+      builder: builder,
+    );
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget builder(BuildContext context) {
     // final controller = context.watch<StoriesController>();
-    final item =
-        context.select<ItemNotifier, ItemResult>((v) => v.item(widget.id));
+    final item = context.select<ItemNotifier, ItemResult>((v) => v.item(id));
 
     // final item = controller.item(id);
     final error = item.error;
@@ -113,7 +109,7 @@ class _StoryTileLoaderV2State extends State<StoryTileLoaderV2> {
 
     final value = item.value;
     if (value != null) {
-      return widget.onData(context, value);
+      return onData(context, value);
     }
 
     return onLoading(context);
@@ -124,7 +120,7 @@ class _StoryTileLoaderV2State extends State<StoryTileLoaderV2> {
   }
 
   Widget onLoading(BuildContext context) {
-    return StoryTilePlaceholder(showLeading: widget.showLeading);
+    return StoryTilePlaceholder(showLeading: showLeading);
   }
 }
 

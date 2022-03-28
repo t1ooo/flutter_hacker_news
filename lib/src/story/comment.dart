@@ -9,6 +9,7 @@ import 'package:shimmer/shimmer.dart';
 import '../hacker_news_api/item.dart';
 import '../notifier/comment_notifier.dart';
 import '../notifier/item_notifier.dart';
+import '../ui/builder.dart';
 import '../ui/html.dart';
 import '../ui/link.dart';
 import '../user/user_screen.dart';
@@ -74,7 +75,7 @@ class CommentLoader extends StatelessWidget {
   }
 }
 
-class CommentLoaderV2 extends StatefulWidget {
+class CommentLoaderV2 extends StatelessWidget {
   CommentLoaderV2({
     Key? key,
     required this.id,
@@ -87,23 +88,19 @@ class CommentLoaderV2 extends StatefulWidget {
   final Widget Function(BuildContext, Item) onData;
 
   @override
-  State<CommentLoaderV2> createState() => _CommentLoaderState();
-}
-
-class _CommentLoaderState extends State<CommentLoaderV2> {
-  @override
-  void initState() {
-    context.read<ItemNotifier>().loadItem(widget.id);
-    super.initState();
+  Widget build(BuildContext context) {
+    return InitBuilder(
+      initState: () => context.read<ItemNotifier>().loadItem(id),
+      builder: builder,
+    );
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget builder(BuildContext context) {
     // return CommentPlaceholder();
     // final notifier = context.watch<HackerNewsNotifier>();
 
     final commentR =
-        context.select<ItemNotifier, ItemResult>((v) => v.item(widget.id));
+        context.select<ItemNotifier, ItemResult>((v) => v.item(id));
 
     final error = commentR.error;
     if (error != null) {
@@ -112,7 +109,7 @@ class _CommentLoaderState extends State<CommentLoaderV2> {
 
     final value = commentR.value;
     if (value != null) {
-      return widget.onData(context, value);
+      return onData(context, value);
     }
 
     return onLoading(context);
@@ -123,7 +120,7 @@ class _CommentLoaderState extends State<CommentLoaderV2> {
   }
 
   Widget onLoading(BuildContext context) {
-    return CommentPlaceholder(depth: widget.depth);
+    return CommentPlaceholder(depth: depth);
   }
 }
 

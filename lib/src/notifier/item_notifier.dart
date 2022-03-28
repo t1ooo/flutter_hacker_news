@@ -41,6 +41,9 @@ class ItemNotifier extends ChangeNotifier with TryNotifyListeners{
   // bool isVisible(int id) => _visibilities[id] ?? true;
 
   Future<void> loadItem(int id) async {
+    if (_items.containsKey(id)) {
+      return;
+    }
     return _loadItem(id, true);
   }
   Future<void> reloadItem(int id) async {

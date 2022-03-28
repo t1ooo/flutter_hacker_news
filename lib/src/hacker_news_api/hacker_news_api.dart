@@ -55,6 +55,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
   }
 
   Future<String> _getBody(Uri uri, Duration maxAge, bool cached) async {
+    await Future.delayed(Duration(seconds: 1);
     // return await retry(() => client.get(uri));
 
     // if (cache != null) {
