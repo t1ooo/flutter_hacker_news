@@ -35,11 +35,11 @@ class UserActivityScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: pagePadding,
-        // child: UserActivityList(submitted: submitted),
+        // child: UserActivities(submitted: submitted),
         // child: ChangeNotifierProvider(
         //   create: (BuildContext context) =>
         //       ItemNotifier(context.read<HackerNewsApi>()),
-        //   child: UserActivityList(name: name),
+        //   child: UserActivities(name: name),
         // ),
         child: MultiProvider(
           providers: [
@@ -56,15 +56,16 @@ class UserActivityScreen extends StatelessWidget {
               create: (BuildContext context) => CommentNotifier(),
             ),
           ],
-          child: UserActivityList(name: name),
+          child: UserActivities(name: name),
         ),
       ),
     );
   }
 }
 
-class UserActivityList extends StatelessWidget {
-  UserActivityList({Key? key, required this.name}) : super(key: key);
+// TODO: split to loader and content
+class UserActivities extends StatelessWidget {
+  UserActivities({Key? key, required this.name}) : super(key: key);
 
   String name;
 

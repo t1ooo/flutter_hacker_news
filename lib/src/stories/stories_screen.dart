@@ -47,16 +47,22 @@ class StoriesScreen extends StatelessWidget {
                     MultiProvider(
                   providers: [
                     ChangeNotifierProvider(
-                      create: (BuildContext context) =>
-                          StoryNotifier(context.read<HackerNewsApi>())
-                            ..loadStoryIds(storyType),
-                    ),
+                        create: (BuildContext context) =>
+                            StoryNotifier(context.read<HackerNewsApi>())
+                        // ..loadStoryIds(storyType),
+                        ),
                     ChangeNotifierProvider(
                       create: (BuildContext context) =>
                           ItemNotifier(context.read<HackerNewsApi>()),
                     ),
                   ],
-                  child: Stories(storyType: storyType),
+                  // child: Stories(storyType: storyType),
+                  child: StoriesLoader(
+                    storyType: storyType,
+                    onData: (context, List<int> storyIds) {
+                      return Stories(storyType: storyType, storyIds: storyIds);
+                    },
+                  ),
                 ),
               )
           ],
