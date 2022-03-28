@@ -60,7 +60,7 @@ class StoriesScreen extends StatelessWidget {
                   child: StoriesLoader(
                     storyType: storyType,
                     onData: (context, List<int> storyIds) {
-                      return Stories(storyType: storyType, storyIds: storyIds);
+                      return Stories(/* storyType: storyType,  */storyIds: storyIds);
                     },
                   ),
                 ),

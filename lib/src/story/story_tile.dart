@@ -91,15 +91,18 @@ class StoryTileLoaderV2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return InitBuilder(
-    // initState: () => context.read<ItemNotifier>().loadItem(id),
-    // builder: builder,
-    // );
+    return InitBuilder(
+      initState: () => context.read<ItemNotifier>().loadItem(id),
+      builder: builder,
+    );
 
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      context.read<ItemNotifier>().loadItem(id);
-    });
-    return builder(context);
+    // WidgetsBinding.instance?.addPostFrameCallback((_) {
+    //   // if(context.widget == null) {
+    //   //   throw Exception();
+    //   // }
+    //   context.read<ItemNotifier>().loadItem(id);
+    // });
+    // return builder(context);
   }
 
   Widget builder(BuildContext context) {

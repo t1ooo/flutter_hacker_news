@@ -14,8 +14,8 @@ class ItemNotifier extends ChangeNotifier with TryNotifyListeners {
 
   final HackerNewsApi api;
   static final _log = Logger('ItemNotifier');
-  final int delay = 1;
-  bool _disposed = false;
+  // final int delay = 1;
+  // bool _disposed = false;
 
   // Future<List<int>> stories(StoryType storyType, int limit, int offset) {
   //   return Future.delayed(Duration(seconds: delay), () async {
@@ -51,6 +51,7 @@ class ItemNotifier extends ChangeNotifier with TryNotifyListeners {
 
   Future<void> reloadItems() async {
     for (final id in _items.keys) {
+      _items[id] = ItemResult.empty();
       reloadItem(id);
     }
     // _items.forEach((id, item) {
@@ -60,8 +61,8 @@ class ItemNotifier extends ChangeNotifier with TryNotifyListeners {
 
   Future<void> _loadItem(int id, bool cached) async {
     // _items.remove(id);
-    _items[id] = ItemResult.empty();
-    tryNotifyListeners();
+    // _items[id] = ItemResult.empty();
+    // tryNotifyListeners();
 
     try {
       final item = await api.item(id, cached);

@@ -15,6 +15,7 @@ import '../notifier/item_notifier.dart';
 import '../notifier/story_notifier.dart';
 import '../story/story_tile.dart';
 import '../notifier/user_notifier.dart';
+import '../ui/builder.dart';
 import '../ui/swipe_to_refresh.dart';
 // import 'story_tile.dart._';
 
@@ -27,20 +28,20 @@ class StoriesLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return InitBuilder(
-    //   initState: () => context.read<ItemNotifier>().loadItem(id),
-    //   builder: builder,
-    // );
+    return InitBuilder(
+      initState: () => context.read<StoryNotifier>().loadStoryIds(storyType),
+      builder: builder,
+    );
 
     // return FutureBuilder(
     //   future: context.read<ItemNotifier>().loadItem(id),
     //   builder: (BuildContext context, _ ) => builder(context),
     // );
 
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      context.read<StoryNotifier>().loadStoryIds(storyType);
-    });
-    return builder(context);
+    // WidgetsBinding.instance?.addPostFrameCallback((_) {
+    //   context.read<StoryNotifier>().loadStoryIds(storyType);
+    // });
+    // return builder(context);
   }
 
   Widget builder(BuildContext context) {
@@ -57,7 +58,7 @@ class StoriesLoader extends StatelessWidget {
 
     final storyIds = storyIdsR.value;
     if (storyIds != null) {
-      return onData(context, storyIds);
+      return _onData(context, storyIds);
     }
 
     return onLoading(context);
@@ -76,39 +77,15 @@ class StoriesLoader extends StatelessWidget {
     );
   }
 
-  // Widget onData(BuildContext context, List<int> storyIds, int rank) {
-  //   // return ListView(
-  //   //   children: [
-  //   //     // for (final id in data)  StoryTile(id: id, rank: rank)
-  //   //     for (int i = 0; i < data.length; i++)
-  //   //       StoryTileLoader(id: data[i], rank: rank + i)
-  //   //   ],
-  //   // );
-
-  //   // print(storyIds);
-  //   return SwipeToRefresh(
-  //     onRefresh: () async {
-  //       context.read<StoryNotifier>().reloadStoryIds(storyType);
-  //       context.read<ItemNotifier>().reloadItems();
-  //     },
-  //     child: ListView.builder(
-  //       // physics: const AlwaysScrollableScrollPhysics(),
-  //       itemCount: storyIds.length,
-  //       itemBuilder: (_, int i) {
-  //         final id = storyIds[i];
-  //         // print(id);
-  //         // context.read<ItemNotifier>().loadItem(id);
-  //         // return StoryTileLoader(id: id, rank: rank + i);
-  //         return StoryTileLoaderV2(
-  //           id: id,
-  //           onData: (_, Item item) {
-  //             return StoryTile(item: item, rank: rank + i);
-  //           },
-  //         );
-  //       },
-  //     ),
-  //   );
-  // }
+  Widget _onData(BuildContext context, List<int> storyIds) {
+    return SwipeToRefresh(
+      onRefresh: () async {
+        await context.read<StoryNotifier>().reloadStoryIds(storyType);
+        await context.read<ItemNotifier>().reloadItems();
+      },
+      child: onData(context, storyIds),
+    );
+  }
 }
 
 // class Stories extends StatelessWidget {
@@ -188,10 +165,10 @@ class StoriesLoader extends StatelessWidget {
 // }
 
 class Stories extends StatelessWidget {
-  Stories({Key? key, required this.storyType, required this.storyIds})
+  Stories({Key? key, /* required this.storyType, */ required this.storyIds})
       : super(key: key);
 
-  final StoryType storyType;
+  // final StoryType storyType;
   final List<int> storyIds;
 
   // final hnNotifier = locator<HackerNewsNotifier>()..loadBeststories();
@@ -208,27 +185,28 @@ class Stories extends StatelessWidget {
     // print(storyIds);
     final rank = 1;
     // TODO: move to StoryLoder
-    return SwipeToRefresh(
-      onRefresh: () async {
-        context.read<StoryNotifier>().reloadStoryIds(storyType);
-        context.read<ItemNotifier>().reloadItems();
+    // return SwipeToRefresh(
+    //   onRefresh: () async {
+    //     context.read<StoryNotifier>().reloadStoryIds(storyType);
+    //     context.read<ItemNotifier>().reloadItems();
+    //   },
+    //   child:
+    return ListView.builder(
+      // physics: const AlwaysScrollableScrollPhysics(),
+      itemCount: storyIds.length,
+      itemBuilder: (_, int i) {
+        final id = storyIds[i];
+        // print(id);
+        // context.read<ItemNotifier>().loadItem(id);
+        // return StoryTileLoader(id: id, rank: rank + i);
+        return StoryTileLoaderV2(
+          id: id,
+          onData: (_, Item item) {
+            return StoryTile(item: item, rank: rank + i);
+          },
+        );
       },
-      child: ListView.builder(
-        // physics: const AlwaysScrollableScrollPhysics(),
-        itemCount: storyIds.length,
-        itemBuilder: (_, int i) {
-          final id = storyIds[i];
-          // print(id);
-          // context.read<ItemNotifier>().loadItem(id);
-          // return StoryTileLoader(id: id, rank: rank + i);
-          return StoryTileLoaderV2(
-            id: id,
-            onData: (_, Item item) {
-              return StoryTile(item: item, rank: rank + i);
-            },
-          );
-        },
-      ),
     );
+    // );
   }
 }

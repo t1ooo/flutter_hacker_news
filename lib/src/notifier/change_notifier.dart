@@ -17,7 +17,6 @@ import 'package:flutter/foundation.dart';
   }
 } */
 
-
 mixin TryNotifyListeners on ChangeNotifier {
   bool _disposed = false;
 
@@ -25,8 +24,14 @@ mixin TryNotifyListeners on ChangeNotifier {
     if (_disposed) {
       return false;
     }
+    // try {
     notifyListeners();
     return true;
+    // } on Exception catch (e, st) {
+    //   print(e);
+    //   // print(st);
+    //   return false;
+    // }
   }
 
   @override
