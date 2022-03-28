@@ -22,10 +22,9 @@ class StoryNotifier extends ChangeNotifier with TryNotifyListeners {
   StoryIdsResult get storyIds => _storyIds ?? StoryIdsResult.empty();
 
   Future<void> loadStoryIds(StoryType storyType) async {
-    if (_storyIds != null) {
-      return;
+    if (_storyIds == null) {
+      return _loadStoryIds(storyType, true);
     }
-    return _loadStoryIds(storyType, true);
   }
 
   Future<void> reloadStoryIds(StoryType storyType) async {
@@ -34,16 +33,13 @@ class StoryNotifier extends ChangeNotifier with TryNotifyListeners {
 
   Future<void> _loadStoryIds(StoryType storyType, bool cached) async {
     _log.info('loadStoryIds: $storyType');
-    _storyIds = await Future.delayed(Duration(seconds: delay), () async {
-      try {
-        // final ids = (await api.stories(storyType)).skip(offset).take(limit).toList();
-        final ids = await api.stories(storyType, cached);
-        return StoryIdsResult.value(ids);
-      } on Exception catch (e, st) {
-        _log.error(e, st);
-        return StoryIdsResult.error(e);
-      }
-    });
+    try {
+      final ids = await api.stories(storyType, cached);
+      _storyIds = StoryIdsResult.value(ids);
+    } on Exception catch (e, st) {
+      _log.error(e, st);
+      _storyIds = StoryIdsResult.error(e);
+    }
     tryNotifyListeners();
   }
 }

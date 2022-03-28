@@ -7,10 +7,9 @@ import '../hacker_news_api/hacker_news_api.dart';
 import '../hacker_news_api/item.dart';
 import 'change_notifier.dart';
 
-
 typedef ItemResult = Result<Item, Object>;
 
-class ItemNotifier extends ChangeNotifier with TryNotifyListeners{
+class ItemNotifier extends ChangeNotifier with TryNotifyListeners {
   ItemNotifier(this.api);
 
   final HackerNewsApi api;
@@ -41,40 +40,24 @@ class ItemNotifier extends ChangeNotifier with TryNotifyListeners{
   // bool isVisible(int id) => _visibilities[id] ?? true;
 
   Future<void> loadItem(int id) async {
-    if (_items.containsKey(id)) {
-      return;
+    if (!_items.containsKey(id)) {
+      return _loadItem(id, true);
     }
-    return _loadItem(id, true);
   }
+
   Future<void> reloadItem(int id) async {
     return _loadItem(id, false);
   }
 
   Future<void> _loadItem(int id, bool cached) async {
-    _items[id] = await Future.delayed(Duration(seconds: delay), () async {
-      try {
-        final item = await api.item(id, cached);
-        return ItemResult.value(item);
-      } on Exception catch (e, st) {
-        _log.error(e, st);
-        return ItemResult.error(e);
-      }
-    });
+    try {
+      final item = await api.item(id, cached);
+      _items[id] = ItemResult.value(item);
+    } on Exception catch (e, st) {
+      _log.error(e, st);
+      _items[id] = ItemResult.error(e);
+    }
 
     tryNotifyListeners();
-    // safeNotifyListeners();
   }
-
-  // void safeNotifyListeners() {
-  //   if (_disposed) {
-  //     return;
-  //   }
-  //   notifyListeners();
-  // }
-
-  // @override
-  // void dispose() {
-  //   _disposed = true;
-  //   super.dispose();
-  // }
 }
