@@ -2,7 +2,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hacker_news_prototype/src/ui/builder.dart';
+import 'package:flutter_hacker_news_prototype/src/ui/builder.dart._';
 
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
