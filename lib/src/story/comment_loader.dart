@@ -91,10 +91,10 @@ class CommentLoaderV2 extends StatelessWidget {
       return onError(context, error);
     }
 
-    // final value = commentR.value;
-    // if (value != null) {
-    //   return onData(context, value);
-    // }
+    final value = commentR.value;
+    if (value != null) {
+      return onData(context, value);
+    }
 
     return onLoading(context);
   }

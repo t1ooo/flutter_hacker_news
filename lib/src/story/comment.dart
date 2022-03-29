@@ -10,6 +10,7 @@ import '../widget/html.dart';
 import '../widget/link.dart';
 import '../user/user_screen.dart';
 import 'comment_loader.dart';
+import 'comment_padding.dart';
 import 'const.dart';
 import 'format_time.dart';
 import 'story_screen.dart';
@@ -37,15 +38,10 @@ class Comment extends StatelessWidget {
     final isVisible =
         context.select<CommentNotifier, bool>((v) => v.isVisible(item.id));
 
-    final leftPadding = min(depth, commentMaxDepth) * 30.0;
     final textStyle = TextStyle(color: Colors.grey);
 
-    return Padding(
-      padding: EdgeInsets.only(
-        left: leftPadding,
-        top: commentPadding,
-        bottom: commentPadding,
-      ),
+    return CommentPadding(
+      depth: depth,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

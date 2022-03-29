@@ -79,7 +79,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
     // }
     // lastRequestTime = DateTime.now();
 
-    // await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(seconds: 1));
     // return await retry(() => client.get(uri));
 
     // if (cache != null) {
