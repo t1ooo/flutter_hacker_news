@@ -1,40 +1,40 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hacker_news_prototype/src/widget/loader.dart';
-
 import 'package:provider/provider.dart';
 
-import '../hacker_news_api/item.dart';
-import '../notifier/item_notifier.dart';
-import 'story_tile.dart';
-import 'story_tile_placeholder.dart';
+import '../../hacker_news_api/item.dart';
+import '../../notifier/item_notifier.dart';
+import '../../widget/loader.dart';
+import 'comment.dart';
+import 'comment_placeholder.dart';
 
-// TODO: renmae StoryTile* to Story*
-class StoryTileLoader extends StatelessWidget {
-  const StoryTileLoader({
+class CommentLoader extends StatelessWidget {
+  const CommentLoader({
     Key? key,
     required this.id,
-    required this.rank,
-    this.showLeading = true,
-    this.activeCommentsLink = true,
+    this.showNested = true,
+    this.depth = 0,
     this.activeUserLink = true,
+    this.collapsable = true,
   }) : super(key: key);
 
   final int id;
-  final int rank;
-  final bool showLeading;
-  final bool activeCommentsLink;
+  final int depth;
+  final bool showNested;
   final bool activeUserLink;
+  final bool collapsable;
 
   @override
   Widget build(BuildContext context) {
-    final item = context.select<ItemNotifier, ItemResult>((v) => v.item(id));
+    final commentR =
+        context.select<ItemNotifier, ItemResult>((v) => v.item(id));
 
-    final error = item.error;
+    final error = commentR.error;
     if (error != null) {
       return onError(context, error);
     }
 
-    final value = item.value;
+    final value = commentR.value;
     if (value != null) {
       return onData(context, value);
     }
@@ -47,31 +47,32 @@ class StoryTileLoader extends StatelessWidget {
   }
 
   Widget onLoading(BuildContext context) {
-    return StoryTilePlaceholder(showLeading: showLeading);
+    return CommentPlaceholder(depth: depth);
   }
 
-  Widget onData(BuildContext context, Item data) {
-    return StoryTile(
-      item: data,
-      showLeading: showLeading,
-      rank: rank,
-      activeCommentsLink: activeCommentsLink,
+  // Widget build(BuildContext context) {
+  Widget onData(BuildContext context, Item item) {
+    return Comment(
+      item: item,
+      showNested: showNested,
+      depth: depth,
       activeUserLink: activeUserLink,
+      collapsable: collapsable,
     );
   }
 }
 
-class StoryTileLoaderV2 extends StatelessWidget {
-  const StoryTileLoaderV2({
+class CommentLoaderV2 extends StatelessWidget {
+  const CommentLoaderV2({
     Key? key,
     required this.id,
     required this.onData,
-    this.showLeading = true,
+    this.depth = 0,
   }) : super(key: key);
 
   final int id;
+  final int depth;
   final Widget Function(BuildContext, Item) onData;
-  final bool showLeading;
 
   @override
   Widget build(BuildContext context) {
@@ -82,14 +83,15 @@ class StoryTileLoaderV2 extends StatelessWidget {
   }
 
   Widget builder(BuildContext context) {
-    final item = context.select<ItemNotifier, ItemResult>((v) => v.item(id));
+    final commentR =
+        context.select<ItemNotifier, ItemResult>((v) => v.item(id));
 
-    final error = item.error;
+    final error = commentR.error;
     if (error != null) {
       return onError(context, error);
     }
 
-    final value = item.value;
+    final value = commentR.value;
     if (value != null) {
       return onData(context, value);
     }
@@ -102,6 +104,6 @@ class StoryTileLoaderV2 extends StatelessWidget {
   }
 
   Widget onLoading(BuildContext context) {
-    return StoryTilePlaceholder(showLeading: showLeading);
+    return CommentPlaceholder(depth: depth);
   }
 }

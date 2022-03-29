@@ -1,12 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../hacker_news_api/item.dart';
-import '../story/story_screen.dart';
-import '../widget/link.dart';
-import '../user/user_screen.dart';
-import 'const.dart';
-import 'format_time.dart';
-
 class StoryTilePadding extends StatelessWidget {
   const StoryTilePadding({Key? key, required this.child}) : super(key: key);
 

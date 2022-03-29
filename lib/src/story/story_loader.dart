@@ -9,7 +9,7 @@ import '../hacker_news_api/item.dart';
 import '../notifier/item_notifier.dart';
 import '../widget/builder.dart._';
 import '../widget/swipe_to_refresh.dart';
-import 'comments_placeholder.dart';
+import './comment/comments_placeholder.dart';
 import 'story.dart';
 
 class StoryLoader extends StatelessWidget {

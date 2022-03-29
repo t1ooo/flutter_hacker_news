@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hacker_news_prototype/src/story/loading_placeholder.dart';
+import 'package:flutter_hacker_news_prototype/src/widget/loading_placeholder.dart';
 import 'package:shimmer/shimmer.dart';
 
 import 'comment_padding.dart';

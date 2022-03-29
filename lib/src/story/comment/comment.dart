@@ -4,16 +4,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../hacker_news_api/item.dart';
-import '../notifier/comment_notifier.dart';
-import '../widget/html.dart';
-import '../widget/link.dart';
-import '../user/user_screen.dart';
+import '../../hacker_news_api/item.dart';
+import '../../notifier/comment_notifier.dart';
+import '../../widget/html.dart';
+import '../../widget/link.dart';
+import '../../user/user_screen.dart';
+import '../format_time.dart';
+import '../story_screen.dart';
 import 'comment_loader.dart';
 import 'comment_padding.dart';
-import 'const.dart';
-import 'format_time.dart';
-import 'story_screen.dart';
 
 class Comment extends StatelessWidget {
   const Comment({

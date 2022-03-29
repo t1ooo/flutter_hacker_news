@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hacker_news_prototype/src/story/loading_placeholder.dart';
+import 'package:flutter_hacker_news_prototype/src/widget/loading_placeholder.dart';
 import 'package:provider/provider.dart';
 
 import '../hacker_news_api/story_type.dart';

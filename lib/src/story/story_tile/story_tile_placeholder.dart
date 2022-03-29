@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:shimmer/shimmer.dart';
 
-import 'const.dart';
-import 'loading_placeholder.dart';
+import '../../widget/loading_placeholder.dart';
 import 'story_tile_padding.dart';
 
 class StoryTilePlaceholder extends StatelessWidget {
