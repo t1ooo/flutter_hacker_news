@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../../hacker_news_api/item.dart';
 import '../../notifier/item_notifier.dart';
-import '../../widget/loader.dart';
+// import '../../widget/loader.dart';
 import '../../widget/result_builder.dart';
 import 'comment.dart';
 import 'comment_placeholder.dart';
@@ -21,13 +21,13 @@ class CommentLoader extends StatelessWidget {
   final int depth;
   final Widget Function(BuildContext, Item) onData;
 
-  @override
-  Widget build(BuildContext context) {
-    return Loader(
-      load: (context) => context.read<ItemNotifier>().loadItem(id),
-      builder: builder,
-    );
-  }
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Loader(
+  //     load: (context) => context.read<ItemNotifier>().loadItem(id),
+  //     builder: builder,
+  //   );
+  // }
 
   // Widget builder(BuildContext context) {
   //   final commentR =
@@ -45,8 +45,11 @@ class CommentLoader extends StatelessWidget {
 
   //   return onLoading(context);
   // }
-  Widget builder(BuildContext context) {
+
+  @override
+  Widget build(BuildContext context) {
     return ResultBuilder(
+      load: (context) => context.read<ItemNotifier>().loadItem(id),
       result: (context) =>
           context.select<ItemNotifier, ItemResult>((v) => v.item(id)),
       onError: onError,

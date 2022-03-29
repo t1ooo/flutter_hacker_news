@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hacker_news_prototype/src/widget/loader.dart';
+// import 'package:flutter_hacker_news_prototype/src/widget/loader.dart';
 
 import 'package:provider/provider.dart';
 
@@ -21,13 +21,13 @@ class StoryTileLoader extends StatelessWidget {
   final Widget Function(BuildContext, Item) onData;
   final bool showLeading;
 
-  @override
-  Widget build(BuildContext context) {
-    return Loader(
-      load: (context) => context.read<ItemNotifier>().loadItem(id),
-      builder: builder,
-    );
-  }
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Loader(
+  //     load: (context) => context.read<ItemNotifier>().loadItem(id),
+  //     builder: builder,
+  //   );
+  // }
 
   // Widget builder(BuildContext context) {
   //   final item = context.select<ItemNotifier, ItemResult>((v) => v.item(id));
@@ -45,8 +45,10 @@ class StoryTileLoader extends StatelessWidget {
   //   return onLoading(context);
   // }
 
-  Widget builder(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     return ResultBuilder(
+      load: (context) => context.read<ItemNotifier>().loadItem(id),
       result: (context) =>
          context.select<ItemNotifier, ItemResult>((v) => v.item(id)),
       onError: onError,

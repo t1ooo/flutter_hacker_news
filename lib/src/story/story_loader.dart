@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../hacker_news_api/item.dart';
 import '../notifier/item_notifier.dart';
-import '../widget/loader.dart';
+import '../widget/result_builder.dart';
 import '../widget/swipe_to_refresh.dart';
 import './comment/comments_placeholder.dart';
 import 'story.dart';
@@ -17,28 +17,40 @@ class StoryLoader extends StatelessWidget {
 
   final int id;
 
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Loader(
+  //     load: (context) => context.read<ItemNotifier>().loadItem(id),
+  //     builder: builder,
+  //   );
+  // }
+
+  // Widget builder(BuildContext context) {
+  //   final storyR = context.select<ItemNotifier, ItemResult>((v) => v.item(id));
+
+  //   final error = storyR.error;
+  //   if (error != null) {
+  //     return onError(context, error);
+  //   }
+
+  //   final value = storyR.value;
+  //   if (value != null) {
+  //     return onData(context, value);
+  //   }
+
+  //   return onLoading(context);
+  // }
+
   @override
   Widget build(BuildContext context) {
-    return Loader(
+    return ResultBuilder(
       load: (context) => context.read<ItemNotifier>().loadItem(id),
-      builder: builder,
+      result: (context) =>
+          context.select<ItemNotifier, ItemResult>((v) => v.item(id)),
+      onError: onError,
+      onData: onData,
+      onLoading: onLoading,
     );
-  }
-
-  Widget builder(BuildContext context) {
-    final storyR = context.select<ItemNotifier, ItemResult>((v) => v.item(id));
-
-    final error = storyR.error;
-    if (error != null) {
-      return onError(context, error);
-    }
-
-    final value = storyR.value;
-    if (value != null) {
-      return onData(context, value);
-    }
-
-    return onLoading(context);
   }
 
   Widget onError(BuildContext context, Object? error) {

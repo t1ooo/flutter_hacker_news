@@ -5,7 +5,7 @@ import '../hacker_news_api/user.dart';
 import '../notifier/item_notifier.dart';
 import '../notifier/user_notifier.dart';
 import '../story/comment/comments_placeholder.dart';
-import '../widget/loader.dart';
+
 import '../widget/result_builder.dart';
 import '../widget/swipe_to_refresh.dart';
 import 'user_activities.dart';
@@ -15,13 +15,13 @@ class UserActivitiesLoader extends StatelessWidget {
 
   final String name;
 
-  @override
-  Widget build(BuildContext context) {
-    return Loader(
-      load: (context) => context.read<UserNotifier>().loadUser(name),
-      builder: builder,
-    );
-  }
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Loader(
+  //     load: (context) => context.read<UserNotifier>().loadUser(name),
+  //     builder: builder,
+  //   );
+  // }
 
   // Widget builder(BuildContext context) {
   //   final userR = context.select<UserNotifier, UserResult>((v) => v.user);
@@ -39,8 +39,10 @@ class UserActivitiesLoader extends StatelessWidget {
   //   return onLoading(context);
   // }
 
-  Widget builder(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     return ResultBuilder(
+      load: (context) => context.read<UserNotifier>().loadUser(name),
       result: (context) =>
           context.select<UserNotifier, UserResult>((v) => v.user),
       onError: onError,

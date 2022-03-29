@@ -7,7 +7,6 @@ import '../notifier/item_notifier.dart';
 import '../notifier/result.dart';
 import '../notifier/story_notifier.dart';
 import '../story/story_tile/story_tile_placeholder.dart';
-import '../widget/loader.dart';
 import '../widget/result_builder.dart';
 import '../widget/swipe_to_refresh.dart';
 import 'stories.dart';
@@ -18,13 +17,13 @@ class StoriesLoader extends StatelessWidget {
 
   final StoryType storyType;
 
-  @override
-  Widget build(BuildContext context) {
-    return Loader(
-      load: (context) => context.read<StoryNotifier>().loadStoryIds(storyType),
-      builder: builder,
-    );
-  }
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Loader(
+  //     load: (context) => context.read<StoryNotifier>().loadStoryIds(storyType),
+  //     builder: builder,
+  //   );
+  // }
 
   // Widget builder(BuildContext context) {
   //   final storyIdsR =
@@ -43,8 +42,10 @@ class StoriesLoader extends StatelessWidget {
   //   return onLoading(context);
   // }
 
-  Widget builder(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     return ResultBuilder(
+      load: (context) => context.read<StoryNotifier>().loadStoryIds(storyType),
       result: (context) =>
           context.select<StoryNotifier, StoryIdsResult>((v) => v.storyIds),
       onError: onError,

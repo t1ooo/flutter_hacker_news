@@ -5,19 +5,41 @@ import '../notifier/result.dart';
 class ResultBuilder<V, E> extends StatelessWidget {
   const ResultBuilder({
     Key? key,
+    this.load,
     required this.result,
     required this.onError,
     required this.onData,
     required this.onLoading,
   }) : super(key: key);
 
+  final Future Function(BuildContext)? load;
   final Result<V, E> Function(BuildContext) result;
   final Widget Function(BuildContext, E) onError;
   final Widget Function(BuildContext, V) onData;
   final Widget Function(BuildContext) onLoading;
 
   @override
+  @override
   Widget build(BuildContext context) {
+    if (load != null) {
+      // return InitBuilder(
+      //   initState: load,
+      //   builder: builder,
+      // );
+
+      // return FutureBuilder(
+      //   future: load,
+      //   builder: (BuildContext context, _ ) => builder(context),
+      // );
+
+      WidgetsBinding.instance?.addPostFrameCallback((_) {
+        load!(context);
+      });
+    }
+    return builder(context);
+  }
+
+  Widget builder(BuildContext context) {
     final r = result(context);
 
     final error = r.error;

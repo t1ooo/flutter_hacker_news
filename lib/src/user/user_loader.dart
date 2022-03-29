@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../hacker_news_api/user.dart';
-import '../widget/loader.dart';
+// import '../widget/loader.dart';
 import '../notifier/user_notifier.dart';
 import '../widget/result_builder.dart';
 import 'user_placeholder.dart';
@@ -14,13 +14,13 @@ class UserLoader extends StatelessWidget {
 
   final String name;
 
-  @override
-  Widget build(BuildContext context) {
-    return Loader(
-      load: (context) => context.read<UserNotifier>().loadUser(name),
-      builder: builder,
-    );
-  }
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Loader(
+  //     load: (context) => context.read<UserNotifier>().loadUser(name),
+  //     builder: builder,
+  //   );
+  // }
 
   // Widget builder(BuildContext context) {
   //   final userR = context.select<UserNotifier, UserResult>((v) => v.user);
@@ -38,10 +38,12 @@ class UserLoader extends StatelessWidget {
   //   return onLoading(context);
   // }
 
-  Widget builder(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     return ResultBuilder(
+      load: (context) => context.read<UserNotifier>().loadUser(name),
       result: (context) =>
-         context.select<UserNotifier, UserResult>((v) => v.user),
+          context.select<UserNotifier, UserResult>((v) => v.user),
       onError: onError,
       onData: onData,
       onLoading: onLoading,

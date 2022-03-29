@@ -6,7 +6,7 @@ import '../../notifier/item_notifier.dart';
 import '../../story/comment/comment.dart';
 import '../../story/comment/comment_placeholder.dart';
 import '../../story/story_tile/story_tile.dart';
-import '../../widget/loader.dart';
+// import '../../widget/loader.dart';
 import '../../widget/result_builder.dart';
 
 class UserActivityLoader extends StatelessWidget {
@@ -14,13 +14,13 @@ class UserActivityLoader extends StatelessWidget {
 
   final int id;
 
-  @override
-  Widget build(BuildContext context) {
-    return Loader(
-      load: (context) => context.read<ItemNotifier>().loadItem(id),
-      builder: builder,
-    );
-  }
+  // @override
+  // Widget build(BuildContext context) {
+  //   return Loader(
+  //     load: (context) => context.read<ItemNotifier>().loadItem(id),
+  //     builder: builder,
+  //   );
+  // }
 
   // Widget builder(BuildContext context) {
   //   final activityR =
@@ -39,8 +39,10 @@ class UserActivityLoader extends StatelessWidget {
   //   return onLoading(context);
   // }
 
-  Widget builder(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     return ResultBuilder(
+      load: (context) => context.read<ItemNotifier>().loadItem(id),
       result: (context) =>
           context.select<ItemNotifier, ItemResult>((v) => v.item(id)),
       onError: onError,
