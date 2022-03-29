@@ -7,6 +7,7 @@ import '../../story/comment/comment.dart';
 import '../../story/comment/comment_placeholder.dart';
 import '../../story/story_tile/story_tile.dart';
 import '../../widget/loader.dart';
+import '../../widget/result_builder.dart';
 
 class UserActivityLoader extends StatelessWidget {
   const UserActivityLoader({Key? key, required this.id}) : super(key: key);
@@ -21,21 +22,31 @@ class UserActivityLoader extends StatelessWidget {
     );
   }
 
+  // Widget builder(BuildContext context) {
+  //   final activityR =
+  //       context.select<ItemNotifier, ItemResult>((v) => v.item(id));
+
+  //   final error = activityR.error;
+  //   if (error != null) {
+  //     return onError(context, error);
+  //   }
+
+  //   final value = activityR.value;
+  //   if (value != null) {
+  //     return onData(context, value);
+  //   }
+
+  //   return onLoading(context);
+  // }
+
   Widget builder(BuildContext context) {
-    final activityR =
-        context.select<ItemNotifier, ItemResult>((v) => v.item(id));
-
-    final error = activityR.error;
-    if (error != null) {
-      return onError(context, error);
-    }
-
-    final value = activityR.value;
-    if (value != null) {
-      return onData(context, value);
-    }
-
-    return onLoading(context);
+    return ResultBuilder(
+      result: (context) =>
+          context.select<ItemNotifier, ItemResult>((v) => v.item(id)),
+      onError: onError,
+      onData: onData,
+      onLoading: onLoading,
+    );
   }
 
   Widget onError(BuildContext context, Object? error) {

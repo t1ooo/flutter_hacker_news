@@ -6,6 +6,7 @@ import '../notifier/item_notifier.dart';
 import '../notifier/user_notifier.dart';
 import '../story/comment/comments_placeholder.dart';
 import '../widget/loader.dart';
+import '../widget/result_builder.dart';
 import '../widget/swipe_to_refresh.dart';
 import 'user_activities.dart';
 
@@ -22,20 +23,30 @@ class UserActivitiesLoader extends StatelessWidget {
     );
   }
 
+  // Widget builder(BuildContext context) {
+  //   final userR = context.select<UserNotifier, UserResult>((v) => v.user);
+
+  //   final error = userR.error;
+  //   if (error != null) {
+  //     return onError(context, error);
+  //   }
+
+  //   final value = userR.value;
+  //   if (value != null) {
+  //     return onData(context, value);
+  //   }
+
+  //   return onLoading(context);
+  // }
+
   Widget builder(BuildContext context) {
-    final userR = context.select<UserNotifier, UserResult>((v) => v.user);
-
-    final error = userR.error;
-    if (error != null) {
-      return onError(context, error);
-    }
-
-    final value = userR.value;
-    if (value != null) {
-      return onData(context, value);
-    }
-
-    return onLoading(context);
+    return ResultBuilder(
+      result: (context) =>
+          context.select<UserNotifier, UserResult>((v) => v.user),
+      onError: onError,
+      onData: onData,
+      onLoading: onLoading,
+    );
   }
 
   Widget onError(BuildContext context, Object? error) {

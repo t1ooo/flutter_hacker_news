@@ -4,9 +4,11 @@ import 'package:provider/provider.dart';
 
 import '../hacker_news_api/story_type.dart';
 import '../notifier/item_notifier.dart';
+import '../notifier/result.dart';
 import '../notifier/story_notifier.dart';
 import '../story/story_tile/story_tile_placeholder.dart';
 import '../widget/loader.dart';
+import '../widget/result_builder.dart';
 import '../widget/swipe_to_refresh.dart';
 import 'stories.dart';
 import 'stories_placeholder.dart';
@@ -24,21 +26,31 @@ class StoriesLoader extends StatelessWidget {
     );
   }
 
+  // Widget builder(BuildContext context) {
+  //   final storyIdsR =
+  //       context.select<StoryNotifier, StoryIdsResult>((v) => v.storyIds);
+
+  //   final error = storyIdsR.error;
+  //   if (error != null) {
+  //     return onError(context, error);
+  //   }
+
+  //   final storyIds = storyIdsR.value;
+  //   if (storyIds != null) {
+  //     return onData(context, storyIds);
+  //   }
+
+  //   return onLoading(context);
+  // }
+
   Widget builder(BuildContext context) {
-    final storyIdsR =
-        context.select<StoryNotifier, StoryIdsResult>((v) => v.storyIds);
-
-    final error = storyIdsR.error;
-    if (error != null) {
-      return onError(context, error);
-    }
-
-    final storyIds = storyIdsR.value;
-    if (storyIds != null) {
-      return onData(context, storyIds);
-    }
-
-    return onLoading(context);
+    return ResultBuilder(
+      result: (context) =>
+          context.select<StoryNotifier, StoryIdsResult>((v) => v.storyIds),
+      onError: onError,
+      onData: onData,
+      onLoading: onLoading,
+    );
   }
 
   Widget onError(BuildContext context, Object? error) {

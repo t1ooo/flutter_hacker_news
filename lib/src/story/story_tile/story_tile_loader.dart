@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../hacker_news_api/item.dart';
 import '../../notifier/item_notifier.dart';
+import '../../widget/result_builder.dart';
 import 'story_tile.dart';
 import 'story_tile_placeholder.dart';
 
@@ -28,20 +29,30 @@ class StoryTileLoader extends StatelessWidget {
     );
   }
 
+  // Widget builder(BuildContext context) {
+  //   final item = context.select<ItemNotifier, ItemResult>((v) => v.item(id));
+
+  //   final error = item.error;
+  //   if (error != null) {
+  //     return onError(context, error);
+  //   }
+
+  //   final value = item.value;
+  //   if (value != null) {
+  //     return onData(context, value);
+  //   }
+
+  //   return onLoading(context);
+  // }
+
   Widget builder(BuildContext context) {
-    final item = context.select<ItemNotifier, ItemResult>((v) => v.item(id));
-
-    final error = item.error;
-    if (error != null) {
-      return onError(context, error);
-    }
-
-    final value = item.value;
-    if (value != null) {
-      return onData(context, value);
-    }
-
-    return onLoading(context);
+    return ResultBuilder(
+      result: (context) =>
+         context.select<ItemNotifier, ItemResult>((v) => v.item(id)),
+      onError: onError,
+      onData: onData,
+      onLoading: onLoading,
+    );
   }
 
   Widget onError(BuildContext context, Object? error) {
