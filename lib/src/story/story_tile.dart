@@ -1,169 +1,143 @@
-// ignore_for_file: unused_import
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hacker_news_prototype/src/ui/builder.dart._';
 
-import 'package:provider/provider.dart';
-import 'package:shimmer/shimmer.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-// import '../hacker_news_notifier.dart';
 import '../hacker_news_api/item.dart';
-import '../notifier/item_notifier.dart';
 import '../story/story_screen.dart';
-import '../style/style.dart';
-// import '../ui/item_screen.dart';
-// import '../ui/user.dart';
 import '../ui/link.dart';
 import '../user/user_screen.dart';
+import 'const.dart';
 import 'format_time.dart';
-// import 'story_controller.dart';
 
 // TODO: renmae StoryTile* to Story*
-class StoryTileLoader extends StatelessWidget {
-  StoryTileLoader({
-    Key? key,
-    required this.id,
-    required this.rank,
-    this.showLeading = true,
-    this.activeCommentsLink = true,
-    this.activeUserLink = true,
-  }) : super(key: key);
+// class StoryTileLoader extends StatelessWidget {
+//   const StoryTileLoader({
+//     Key? key,
+//     required this.id,
+//     required this.rank,
+//     this.showLeading = true,
+//     this.activeCommentsLink = true,
+//     this.activeUserLink = true,
+//   }) : super(key: key);
 
-  final int id;
-  final int rank;
-  final bool showLeading;
-  final bool activeCommentsLink;
-  final bool activeUserLink;
+//   final int id;
+//   final int rank;
+//   final bool showLeading;
+//   final bool activeCommentsLink;
+//   final bool activeUserLink;
 
-  @override
-  Widget build(BuildContext context) {
-    // final controller = context.watch<StoriesController>();
-    final item = context.select<ItemNotifier, ItemResult>((v) => v.item(id));
+//   @override
+//   Widget build(BuildContext context) {
+//     final item = context.select<ItemNotifier, ItemResult>((v) => v.item(id));
 
-    // final item = controller.item(id);
-    final error = item.error;
-    if (error != null) {
-      return onError(context, error);
-    }
+//     final error = item.error;
+//     if (error != null) {
+//       return onError(context, error);
+//     }
 
-    final value = item.value;
-    if (value != null) {
-      return onData(context, value);
-    }
+//     final value = item.value;
+//     if (value != null) {
+//       return onData(context, value);
+//     }
 
-    return onLoading(context);
-  }
+//     return onLoading(context);
+//   }
 
-  Widget onError(BuildContext context, Object? error) {
-    return Text(error.toString());
-  }
+//   Widget onError(BuildContext context, Object? error) {
+//     return Text(error.toString());
+//   }
 
-  Widget onLoading(BuildContext context) {
-    // return LoadIndicator();
-    return StoryTilePlaceholder(showLeading: showLeading);
-  }
+//   Widget onLoading(BuildContext context) {
+//     return StoryTilePlaceholder(showLeading: showLeading);
+//   }
 
-  // Widget build(BuildContext context) {
-  Widget onData(BuildContext context, Item data) {
-    return StoryTile(
-      item: data,
-      showLeading: showLeading,
-      rank: rank,
-      activeCommentsLink: activeCommentsLink,
-      activeUserLink: activeUserLink,
-    );
-  }
-}
+//   Widget onData(BuildContext context, Item data) {
+//     return StoryTile(
+//       item: data,
+//       showLeading: showLeading,
+//       rank: rank,
+//       activeCommentsLink: activeCommentsLink,
+//       activeUserLink: activeUserLink,
+//     );
+//   }
+// }
 
-class StoryTileLoaderV2 extends StatelessWidget {
-  StoryTileLoaderV2({
-    Key? key,
-    required this.id,
-    required this.onData,
-    this.showLeading = true,
-  }) : super(key: key);
+// class StoryTileLoaderV2 extends StatelessWidget {
+//   const StoryTileLoaderV2({
+//     Key? key,
+//     required this.id,
+//     required this.onData,
+//     this.showLeading = true,
+//   }) : super(key: key);
 
-  final int id;
-  final Widget Function(BuildContext, Item) onData;
-  final bool showLeading;
+//   final int id;
+//   final Widget Function(BuildContext, Item) onData;
+//   final bool showLeading;
 
-  @override
-  Widget build(BuildContext context) {
-    return InitBuilder(
-      initState: () => context.read<ItemNotifier>().loadItem(id),
-      builder: builder,
-    );
+//   @override
+//   Widget build(BuildContext context) {
+//     return Loader(
+//       load: () => context.read<ItemNotifier>().loadItem(id),
+//       builder: builder,
+//     );
+//   }
 
-    // WidgetsBinding.instance?.addPostFrameCallback((_) {
-    //   // if(context.widget == null) {
-    //   //   throw Exception();
-    //   // }
-    //   context.read<ItemNotifier>().loadItem(id);
-    // });
-    // return builder(context);
-  }
+//   Widget builder(BuildContext context) {
+//     final item = context.select<ItemNotifier, ItemResult>((v) => v.item(id));
 
-  Widget builder(BuildContext context) {
-    // final controller = context.watch<StoriesController>();
-    final item = context.select<ItemNotifier, ItemResult>((v) => v.item(id));
+//     final error = item.error;
+//     if (error != null) {
+//       return onError(context, error);
+//     }
 
-    // final item = controller.item(id);
-    final error = item.error;
-    if (error != null) {
-      return onError(context, error);
-    }
+//     final value = item.value;
+//     if (value != null) {
+//       return onData(context, value);
+//     }
 
-    final value = item.value;
-    if (value != null) {
-      return onData(context, value);
-    }
+//     return onLoading(context);
+//   }
 
-    return onLoading(context);
-  }
+//   Widget onError(BuildContext context, Object? error) {
+//     return Text(error.toString());
+//   }
 
-  Widget onError(BuildContext context, Object? error) {
-    return Text(error.toString());
-  }
+//   Widget onLoading(BuildContext context) {
+//     return StoryTilePlaceholder(showLeading: showLeading);
+//   }
+// }
 
-  Widget onLoading(BuildContext context) {
-    return StoryTilePlaceholder(showLeading: showLeading);
-  }
-}
+// class StoryTilePlaceholder extends StatelessWidget {
+//   const StoryTilePlaceholder({Key? key, required this.showLeading}) : super(key: key);
 
-class StoryTilePlaceholder extends StatelessWidget {
-  StoryTilePlaceholder({Key? key, required this.showLeading}) : super(key: key);
+//   final bool showLeading;
 
-  final bool showLeading;
+//   @override
+//   Widget build(BuildContext context) {
+//     // TODO: extract to placeholder.dart
+//     final textStyle = TextStyle(
+//       color: Colors.white,
+//       backgroundColor: Colors.white,
+//     );
 
-  @override
-  Widget build(BuildContext context) {
-    // TODO: extract to placeholder.dart
-    final textStyle = TextStyle(
-      color: Colors.white,
-      backgroundColor: Colors.white,
-    );
+//     // extract to placeholder.dart
+//     return Shimmer.fromColors(
+//       baseColor: Colors.grey[300]!,
+//       highlightColor: Colors.grey[100]!,
+//       child: Padding(
+//         padding:
+//             EdgeInsets.only(top: storyTilePadding, bottom: storyTilePadding),
+//         child: ListTile(
+//           contentPadding: EdgeInsets.all(0),
+//           leading: showLeading ? Text('   ', style: textStyle) : null,
+//           title: Text('_' * 60, style: textStyle),
+//           subtitle: Text('_' * 40, style: textStyle),
+//         ),
+//       ),
+//     );
+//   }
+// }
 
-    // extract to placeholder.dart
-    return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
-      child: Padding(
-        padding:
-            EdgeInsets.only(top: _storyTilePadding, bottom: _storyTilePadding),
-        child: ListTile(
-          contentPadding: EdgeInsets.all(0),
-          leading: showLeading ? Text('   ', style: textStyle) : null,
-          title: Text('_' * 60, style: textStyle),
-          subtitle: Text('_' * 40, style: textStyle),
-        ),
-      ),
-    );
-  }
-}
-
-const _storyTilePadding = 10.0;
+// const storyTilePadding = 10.0;
 
 class StoryTile extends StatelessWidget {
   StoryTile({
@@ -186,7 +160,7 @@ class StoryTile extends StatelessWidget {
 
     return Padding(
       padding:
-          EdgeInsets.only(top: _storyTilePadding, bottom: _storyTilePadding),
+          EdgeInsets.only(top: storyTilePadding, bottom: storyTilePadding),
       child: ListTile(
         contentPadding: EdgeInsets.all(0),
         leading: showLeading ? Text('$rank.') : null,
