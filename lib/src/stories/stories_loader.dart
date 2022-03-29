@@ -10,7 +10,6 @@ import '../story/story_tile/story_tile_placeholder.dart';
 import '../widget/result_builder.dart';
 import '../widget/swipe_to_refresh.dart';
 import 'stories.dart';
-import 'stories_placeholder.dart._';
 
 class StoriesLoader extends StatelessWidget {
   const StoriesLoader({Key? key, required this.storyType}) : super(key: key);
