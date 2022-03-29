@@ -3,28 +3,8 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-// class WebLink extends StatelessWidget {
-//   WebLink({
-//     Key? key,
-//     required this.child,
-//     this.url,
-//   }) : super(key: key);
-
-//   final String? url;
-//   final Widget child;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return InkWell(
-//       onTap: (url == null) ? null : () => launch(url!),
-//       // child: child,
-//       child: Tooltip(child: child, message: url),
-//     );
-//   }
-// }
-
 class WebLink extends StatelessWidget {
-  WebLink({
+  const WebLink({
     Key? key,
     required this.url,
     required this.child,
@@ -41,14 +21,13 @@ class WebLink extends StatelessWidget {
     // );
     return InkWell(
       onTap: () => launch(url),
-      // child: child,
       child: Tooltip(child: child, message: url),
     );
   }
 }
 
 class MaterialAppLink extends StatelessWidget {
-  MaterialAppLink({
+  const MaterialAppLink({
     Key? key,
     required this.routeBuilder,
     required this.child,
@@ -91,14 +70,11 @@ class MaterialAppLink extends StatelessWidget {
     // );
 
     return InkWell(
-      onTap: !active
-          ? null
-          : () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: routeBuilder),
-              );
-            },
+      onTap: active
+          ? () {
+              Navigator.push(context, MaterialPageRoute(builder: routeBuilder));
+            }
+          : null,
       child: child,
     );
   }

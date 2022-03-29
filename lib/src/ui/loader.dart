@@ -9,7 +9,7 @@ class Loader<T> extends StatelessWidget {
     required this.builder,
   }) : super(key: key);
 
-  final Future<T> Function() load;
+  final Future<T> Function(BuildContext) load;
   final WidgetBuilder builder;
 
   @override
@@ -25,7 +25,7 @@ class Loader<T> extends StatelessWidget {
     // );
 
     WidgetsBinding.instance?.addPostFrameCallback((_) {
-      load();
+      load(context);
     });
     return builder(context);
   }

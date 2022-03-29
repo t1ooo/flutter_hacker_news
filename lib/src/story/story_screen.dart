@@ -6,8 +6,8 @@ import 'package:provider/provider.dart';
 import '../hacker_news_api/hacker_news_api.dart';
 import '../notifier/comment_notifier.dart';
 import '../notifier/item_notifier.dart';
-import 'story.dart';
 import '../style/style.dart';
+import 'story_loader.dart';
 
 class StoryScreen extends StatelessWidget {
   const StoryScreen({Key? key, required this.id}) : super(key: key);

@@ -77,7 +77,7 @@ class CommentLoaderV2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Loader(
-      load: () => context.read<ItemNotifier>().loadItem(id),
+      load: (context) => context.read<ItemNotifier>().loadItem(id),
       builder: builder,
     );
   }
@@ -91,10 +91,10 @@ class CommentLoaderV2 extends StatelessWidget {
       return onError(context, error);
     }
 
-    final value = commentR.value;
-    if (value != null) {
-      return onData(context, value);
-    }
+    // final value = commentR.value;
+    // if (value != null) {
+    //   return onData(context, value);
+    // }
 
     return onLoading(context);
   }

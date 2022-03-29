@@ -1,15 +1,16 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../hacker_news_api/user.dart';
-import '../ui/loader.dart';
+import '../notifier/item_notifier.dart';
 import '../notifier/user_notifier.dart';
-import 'user_placeholder.dart';
-import 'user_widget.dart';
+import '../story/comments_placeholder.dart';
+import '../ui/loader.dart';
+import '../ui/swipe_to_refresh.dart';
+import 'user_activities.dart';
 
-class UserLoader extends StatelessWidget {
-  UserLoader({Key? key, required this.name}) : super(key: key);
+class UserActivitiesLoader extends StatelessWidget {
+  const UserActivitiesLoader({Key? key, required this.name}) : super(key: key);
 
   final String name;
 
@@ -42,10 +43,18 @@ class UserLoader extends StatelessWidget {
   }
 
   Widget onLoading(BuildContext context) {
-    return UserPlaceholder();
+    return CommentsPlaceholder();
   }
 
   Widget onData(BuildContext context, User user) {
-    return UserWidget(user: user);
+    final submitted = user.submitted ?? [];
+
+    return SwipeToRefresh(
+      onRefresh: () async {
+        context.read<UserNotifier>().reloadUser(name);
+        context.read<ItemNotifier>().reloadItems();
+      },
+      child: UserActivities(submitted: submitted),
+    );
   }
 }

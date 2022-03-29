@@ -76,7 +76,7 @@ class StoryTileLoaderV2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Loader(
-      load: () => context.read<ItemNotifier>().loadItem(id),
+      load: (context) => context.read<ItemNotifier>().loadItem(id),
       builder: builder,
     );
   }

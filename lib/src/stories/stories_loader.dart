@@ -1,14 +1,15 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hacker_news_prototype/src/story/loading_placeholder.dart';
 import 'package:provider/provider.dart';
 
 import '../hacker_news_api/story_type.dart';
 import '../notifier/item_notifier.dart';
 import '../notifier/story_notifier.dart';
-import '../story/story_tile.dart';
+import '../story/story_tile_placeholder.dart';
 import '../ui/loader.dart';
 import '../ui/swipe_to_refresh.dart';
 import 'stories.dart';
+import 'stories_placeholder.dart';
 
 class StoriesLoader extends StatelessWidget {
   const StoriesLoader({
@@ -23,7 +24,7 @@ class StoriesLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Loader(
-      load: () => context.read<StoryNotifier>().loadStoryIds(storyType),
+      load: (context) => context.read<StoryNotifier>().loadStoryIds(storyType),
       builder: builder,
     );
   }
@@ -50,12 +51,7 @@ class StoriesLoader extends StatelessWidget {
   }
 
   Widget onLoading(BuildContext context) {
-    return ListView.builder(
-      itemCount: 20,
-      itemBuilder: (_, __) {
-        return StoryTilePlaceholder(showLeading: true);
-      },
-    );
+    return StoriesPlaceholder();
   }
 
   Widget _onData(BuildContext context, List<int> storyIds) {

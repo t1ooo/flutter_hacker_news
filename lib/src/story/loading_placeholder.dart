@@ -6,14 +6,14 @@ import 'package:shimmer/shimmer.dart';
 
 import 'const.dart';
 
-class CommentPlaceholder extends StatelessWidget {
-  const CommentPlaceholder({Key? key, this.depth = 0}) : super(key: key);
+class LoadingPlaceholder extends StatelessWidget {
+  const LoadingPlaceholder({Key? key, this.depth = 0}) : super(key: key);
 
   final int depth;
 
   @override
   Widget build(BuildContext context) {
-    final leftPadding = min(depth, commentMaxDepth) * 30.0;
+    final leftPadding = min(depth, commentMaxDepth) * 30.0; // TODO: move to comment padding
     // TODO: move to shimmer.dart
     final textStyle = TextStyle(
       color: Colors.white,
@@ -29,12 +29,10 @@ class CommentPlaceholder extends StatelessWidget {
           top: commentPadding,
           bottom: commentPadding,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('_' * 40, style: textStyle), // TODO: move to shimmer.dart
-            Text('_' * 250, style: textStyle, overflow: TextOverflow.clip),
-          ],
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: 100,
+          color: Colors.white,
         ),
       ),
     );

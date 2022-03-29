@@ -12,13 +12,15 @@ class UserNotifier extends ChangeNotifier with TryNotifyListeners {
   UserNotifier(this.api);
 
   final HackerNewsApi api;
-  UserResult _user = UserResult.empty();
+  UserResult? _user;
   static final _log = Logger('UserNotifier');
 
-  UserResult get user => _user;
+  UserResult get user => _user ?? UserResult.empty();
 
   Future<void> loadUser(String name) async {
-    await _loadUser(name, true);
+    if (_user == null) {
+      await _loadUser(name, true);
+    }
   }
 
   Future<void> reloadUser(String name) async {
@@ -26,6 +28,7 @@ class UserNotifier extends ChangeNotifier with TryNotifyListeners {
   }
 
   Future<void> _loadUser(String name, bool cached) async {
+    _log.info('load: $name');
     try {
       final item = await api.user(name, cached);
       _user = UserResult.value(item);

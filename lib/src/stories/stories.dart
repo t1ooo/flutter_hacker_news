@@ -1,8 +1,8 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../hacker_news_api/item.dart';
 import '../story/story_tile.dart';
+import '../story/story_tile_loader.dart';
 
 class Stories extends StatelessWidget {
   const Stories({
@@ -13,16 +13,15 @@ class Stories extends StatelessWidget {
   final List<int> storyIds;
 
   Widget build(BuildContext context) {
-    final rank = 1;
-
     return ListView.builder(
       itemCount: storyIds.length,
       itemBuilder: (_, int i) {
         final id = storyIds[i];
-        return StoryTileLoaderV2(// TODO: remove V1
+        return StoryTileLoaderV2(
+          // TODO: remove V1
           id: id,
           onData: (_, Item item) {
-            return StoryTile(item: item, rank: rank + i);
+            return StoryTile(item: item, rank: i + 1);
           },
         );
       },
