@@ -4,11 +4,11 @@ import 'package:provider/provider.dart';
 import '../hacker_news_api/user.dart';
 import '../notifier/item_notifier.dart';
 import '../notifier/user_notifier.dart';
-import '../story/comment/comments_placeholder.dart';
 
 import '../widget/result_builder.dart';
 import '../widget/swipe_to_refresh.dart';
 import 'user_activities.dart';
+import 'user_activity/user_activity_placeholder.dart';
 
 class UserActivitiesLoader extends StatelessWidget {
   const UserActivitiesLoader({Key? key, required this.name}) : super(key: key);
@@ -42,9 +42,10 @@ class UserActivitiesLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ResultBuilder(
-      load: (context) => context.read<UserNotifier>().loadUser(name),
-      result: (context) =>
-          context.select<UserNotifier, UserResult>((v) => v.user),
+      result: (context) {
+        context.read<UserNotifier>().loadUser(name);
+        return context.select<UserNotifier, UserResult>((v) => v.user);
+      },
       onError: onError,
       onData: onData,
       onLoading: onLoading,
@@ -56,7 +57,9 @@ class UserActivitiesLoader extends StatelessWidget {
   }
 
   Widget onLoading(BuildContext context) {
-    return CommentsPlaceholder();
+    return ListView(children: [
+      for (int i = 0; i < 20; i++) UserActivityPlaceholder(),
+    ]);
   }
 
   Widget onData(BuildContext context, User user) {

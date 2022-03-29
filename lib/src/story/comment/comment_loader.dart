@@ -49,9 +49,10 @@ class CommentLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ResultBuilder(
-      load: (context) => context.read<ItemNotifier>().loadItem(id),
-      result: (context) =>
-          context.select<ItemNotifier, ItemResult>((v) => v.item(id)),
+      result: (context) {
+        context.read<ItemNotifier>().loadItem(id);
+        return context.select<ItemNotifier, ItemResult>((v) => v.item(id));
+      },
       onError: onError,
       onData: onData,
       onLoading: onLoading,

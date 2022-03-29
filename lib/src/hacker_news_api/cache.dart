@@ -35,23 +35,35 @@ class FileCache implements Cache {
   @override
   Future<String?> get(String key) async {
     final fileInfo = await _cacheManager.getFileFromCache(key);
-    if (fileInfo != null && fileInfo.validTill.isAfter(clock.now())) {
+    // if (fileInfo != null && fileInfo.validTill.isAfter(clock.now())) {
     // if (fileInfo != null && fileInfo.validTill.isAfter(DateTime.now())) {
-      return fileInfo.file.readAsString();
+    // return fileInfo.file.readAsString();
+    // }
+
+    // _log.info('miss: $key');
+    // return null;
+
+    if (fileInfo == null) {
+      _log.info('miss: $key');
+      return null;
     }
 
-    _log.info('cache miss: $key');
-    return null;
-    // if (fileInfo == null) {
-    //   _log.info('cache miss: $key');
-    //   return null;
-    // }
-    // return fileInfo.file.readAsString();
+    if (clock.now().isAfter(fileInfo.validTill)) {
+      _log.info('expired: $key');
+      _cacheManager.removeFile(key);
+      return null;
+    }
+
+    return fileInfo.file.readAsString();
   }
 
   @override
   Future<void> put(String key, String value, Duration maxAge) async {
-    await _cacheManager.putFile(key, utf8.encoder.convert(value), maxAge: maxAge);
+    await _cacheManager.putFile(
+      key,
+      utf8.encoder.convert(value),
+      maxAge: maxAge,
+    );
   }
 }
 
@@ -100,7 +112,7 @@ class InMemoryCache implements Cache {
       return null;
     }
 
-    _log.info('hit: $key');
+    // _log.info('hit: $key');
     return item.value;
   }
 
@@ -111,9 +123,8 @@ class InMemoryCache implements Cache {
   }
 }
 
-
 class InMemoryLruCache implements Cache {
-  InMemoryLruCache(int size, this.clock)  {
+  InMemoryLruCache(int size, this.clock) {
     data = LruMap(maximumSize: size);
   }
 
@@ -136,7 +147,7 @@ class InMemoryLruCache implements Cache {
       return null;
     }
 
-    _log.info('hit: $key');
+    // _log.info('hit: $key');
     return item.value;
   }
 

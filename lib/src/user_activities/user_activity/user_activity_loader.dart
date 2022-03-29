@@ -4,10 +4,10 @@ import 'package:provider/provider.dart';
 import '../../hacker_news_api/item.dart';
 import '../../notifier/item_notifier.dart';
 import '../../story/comment/comment.dart';
-import '../../story/comment/comment_placeholder.dart';
 import '../../story/story_tile/story_tile.dart';
 // import '../../widget/loader.dart';
 import '../../widget/result_builder.dart';
+import 'user_activity_placeholder.dart';
 
 class UserActivityLoader extends StatelessWidget {
   const UserActivityLoader({Key? key, required this.id}) : super(key: key);
@@ -42,9 +42,10 @@ class UserActivityLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ResultBuilder(
-      load: (context) => context.read<ItemNotifier>().loadItem(id),
-      result: (context) =>
-          context.select<ItemNotifier, ItemResult>((v) => v.item(id)),
+      result: (context) {
+        context.read<ItemNotifier>().loadItem(id);
+        return context.select<ItemNotifier, ItemResult>((v) => v.item(id));
+      },
       onError: onError,
       onData: onData,
       onLoading: onLoading,
@@ -56,7 +57,7 @@ class UserActivityLoader extends StatelessWidget {
   }
 
   Widget onLoading(BuildContext context) {
-    return CommentPlaceholder();
+    return UserActivityPlaceholder();
   }
 
   Widget onData(BuildContext context, Item item) {

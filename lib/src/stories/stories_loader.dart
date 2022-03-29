@@ -10,7 +10,7 @@ import '../story/story_tile/story_tile_placeholder.dart';
 import '../widget/result_builder.dart';
 import '../widget/swipe_to_refresh.dart';
 import 'stories.dart';
-import 'stories_placeholder.dart';
+import 'stories_placeholder.dart._';
 
 class StoriesLoader extends StatelessWidget {
   const StoriesLoader({Key? key, required this.storyType}) : super(key: key);
@@ -45,9 +45,10 @@ class StoriesLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ResultBuilder(
-      load: (context) => context.read<StoryNotifier>().loadStoryIds(storyType),
-      result: (context) =>
-          context.select<StoryNotifier, StoryIdsResult>((v) => v.storyIds),
+      result: (context) {
+        context.read<StoryNotifier>().loadStoryIds(storyType);
+        return context.select<StoryNotifier, StoryIdsResult>((v) => v.storyIds);
+      },
       onError: onError,
       onData: onData,
       onLoading: onLoading,
@@ -59,7 +60,10 @@ class StoriesLoader extends StatelessWidget {
   }
 
   Widget onLoading(BuildContext context) {
-    return StoriesPlaceholder();
+    return ListView(children: [
+      for (int i = 0; i < 20; i++) StoryTilePlaceholder()
+    ]);
+    
   }
 
   Widget onData(BuildContext context, List<int> storyIds) {

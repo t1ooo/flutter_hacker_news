@@ -6,7 +6,7 @@ import '../../widget/loading_placeholder.dart';
 import 'story_tile_padding.dart';
 
 class StoryTilePlaceholder extends StatelessWidget {
-  const StoryTilePlaceholder({Key? key, required this.showLeading})
+  const StoryTilePlaceholder({Key? key, this.showLeading = false})
       : super(key: key);
 
   final bool showLeading;

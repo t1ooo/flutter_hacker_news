@@ -11,7 +11,7 @@ class CommentPadding extends StatelessWidget {
 
   final int depth;
   final Widget child;
-  static const _commentPadding = 10.0;
+  static const _padding = 10.0;
   static const _commentMaxDepth = 5;
 
   @override
@@ -20,8 +20,8 @@ class CommentPadding extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(
         left: leftPadding,
-        top: _commentPadding,
-        bottom: _commentPadding,
+        top: _padding,
+        bottom: _padding,
       ),
       child: child,
     );

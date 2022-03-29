@@ -41,9 +41,10 @@ class UserLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ResultBuilder(
-      load: (context) => context.read<UserNotifier>().loadUser(name),
-      result: (context) =>
-          context.select<UserNotifier, UserResult>((v) => v.user),
+      result: (context) {
+        context.read<UserNotifier>().loadUser(name);
+        return context.select<UserNotifier, UserResult>((v) => v.user);
+      },
       onError: onError,
       onData: onData,
       onLoading: onLoading,

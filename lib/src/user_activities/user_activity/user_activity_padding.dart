@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class StoryTilePadding extends StatelessWidget {
-  const StoryTilePadding({Key? key, required this.child}) : super(key: key);
+class UserActivityPadding extends StatelessWidget {
+  const UserActivityPadding({Key? key, required this.child}) : super(key: key);
 
   final Widget child;
   static const _padding = 10.0;

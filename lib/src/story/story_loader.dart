@@ -9,7 +9,7 @@ import '../hacker_news_api/item.dart';
 import '../notifier/item_notifier.dart';
 import '../widget/result_builder.dart';
 import '../widget/swipe_to_refresh.dart';
-import './comment/comments_placeholder.dart';
+import 'comment/comment_placeholder.dart';
 import 'story.dart';
 
 class StoryLoader extends StatelessWidget {
@@ -44,9 +44,10 @@ class StoryLoader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ResultBuilder(
-      load: (context) => context.read<ItemNotifier>().loadItem(id),
-      result: (context) =>
-          context.select<ItemNotifier, ItemResult>((v) => v.item(id)),
+      result: (context) {
+        context.read<ItemNotifier>().loadItem(id);
+        return context.select<ItemNotifier, ItemResult>((v) => v.item(id));
+      },
       onError: onError,
       onData: onData,
       onLoading: onLoading,
@@ -58,7 +59,9 @@ class StoryLoader extends StatelessWidget {
   }
 
   Widget onLoading(BuildContext context) {
-    return CommentsPlaceholder();
+    return ListView(children: [
+      for (int i = 0; i < 20; i++) CommentPlaceholder()
+    ]);
   }
 
   // Widget build(BuildContext context) {

@@ -3,8 +3,8 @@
 // TODO: http timeout
 // TODO: replace cache to in memory lru
 // TODO: MAYBE: load story, user titles
-// TODO: analytics options
+// TODO: static analytics options
 // TODO: remove comments
 // TODO: remove cache?
 // TODO: Http client with retry and cache
-// TODO: replace placeholders to generic placeholder
+// TODO: InMemoryLruCache flush to file
