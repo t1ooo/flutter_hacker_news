@@ -16,7 +16,11 @@ Provider<HackerNewsApi> hackerNewsApiProvider() {
   final clock = Clock();
   // final cache = InMemoryCache(clock);
   // final cache = InMemoryLruCache(1000, clock);
-  final cache = EternalFileCache(File('/home/graibn/GoogleDrive/dev/project/source/flutter_hacker_news_prototype/data/data.json'))..load();
+  final cache = EternalFileCache(
+    File(
+        '/home/graibn/GoogleDrive/dev/project/source/flutter_hacker_news_prototype/data/data.json'),
+    clock,
+  )..load();
   final hackerNewsApi = HackerNewsApiImpl(Client(), cache);
 
   return Provider.value(value: hackerNewsApi);

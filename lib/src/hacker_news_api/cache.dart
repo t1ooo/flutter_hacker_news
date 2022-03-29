@@ -50,7 +50,7 @@ class FileCache implements Cache {
       return null;
     }
 
-    if (clock.now().isAfter(fileInfo.validTill)) {
+    if (fileInfo.validTill < clock.now()) {
       _log.info('expired: $key');
       _cacheManager.removeFile(key);
       return null;
@@ -108,7 +108,7 @@ class InMemoryCache implements Cache {
       return null;
     }
 
-    if (clock.now().isAfter(item.expired)) {
+    if (item.expired < clock.now()) {
       _log.info('expired: $key');
       _data.remove(key);
       return null;
@@ -143,7 +143,7 @@ class InMemoryLruCache implements Cache {
       return null;
     }
 
-    if (clock.now().isAfter(item.expired)) {
+    if (item.expired < clock.now()) {
       _log.info('expired: $key');
       _data.remove(key);
       return null;
@@ -161,14 +161,18 @@ class InMemoryLruCache implements Cache {
 }
 
 class EternalFileCache implements Cache {
-  EternalFileCache(this.file) {
-    Timer.periodic(Duration(seconds: 60), (_) {
-      _save();
-    });
+  EternalFileCache(this.file, this.clock) {
+    _savePeriodic();
   }
 
   final File file;
+  final Clock clock;
   final Map<String, String> _data = {};
+
+  static final _initDateTime = DateTime(1970);
+  DateTime _lastUpdate = _initDateTime;
+  DateTime _lastSave = _initDateTime;
+
   static final _log = Logger('EternalFileCache');
 
   @override
@@ -186,19 +190,33 @@ class EternalFileCache implements Cache {
   @override
   Future<void> put(String key, String value, Duration maxAge) async {
     _data[key] = value;
-    // await _save();
+    _lastUpdate = clock.now();
   }
 
   Future<void> load() async {
     _log.info('load');
-    // final data = (jsonDecode(await file.readAsString()) as Map<String, String>).map((v) => v as String);
-    final  Map<String, String> data = Map.castFrom(jsonDecode(await file.readAsString()));
+    final Map<String, String> data =
+        Map.castFrom(jsonDecode(await file.readAsString()));
     _data.addAll(data);
+  }
+
+  void _savePeriodic() {
+    Timer.periodic(Duration(seconds: 60), (_) {
+      if (_lastSave < _lastUpdate) {
+        _save();
+      }
+    });
   }
 
   Future<void> _save() async {
     _log.info('save');
+    _lastSave = clock.now();
     final json = jsonEncode(_data);
     await file.writeAsString(json);
   }
+}
+
+extension T on DateTime {
+  bool operator <(DateTime other) => isBefore(other);
+  bool operator >(DateTime other) => isAfter(other);
 }
