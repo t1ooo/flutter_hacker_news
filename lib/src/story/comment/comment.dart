@@ -84,7 +84,7 @@ class Comment extends StatelessWidget {
                 itemCount: item.kids!.length,
                 itemBuilder: (_, int i) {
                   final id = item.kids![i];
-                  return CommentLoaderV2(
+                  return CommentLoader(
                     id: id,
                     depth: depth + 1,
                     onData: (_, Item item) {

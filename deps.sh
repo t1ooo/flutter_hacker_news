@@ -14,6 +14,7 @@ flutter pub add clock
 flutter pub add shimmer
 flutter pub add html_unescape
 flutter pub add quiver
+flutter pub add intl
 
 flutter pub add build_runner --dev
 flutter pub add json_serializable --dev

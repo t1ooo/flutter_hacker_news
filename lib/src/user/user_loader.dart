@@ -9,7 +9,7 @@ import 'user_placeholder.dart';
 import 'user_widget.dart';
 
 class UserLoader extends StatelessWidget {
-  UserLoader({Key? key, required this.name}) : super(key: key);
+  const UserLoader({Key? key, required this.name}) : super(key: key);
 
   final String name;
 

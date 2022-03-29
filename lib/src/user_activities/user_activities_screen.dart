@@ -8,8 +8,8 @@ import '../notifier/user_notifier.dart';
 import '../style/style.dart';
 import 'user_activities_loader.dart';
 
-class UserActivityScreen extends StatelessWidget {
-  const UserActivityScreen({Key? key, required this.name}) : super(key: key);
+class UserActivitiesScreen extends StatelessWidget {
+  const UserActivitiesScreen({Key? key, required this.name}) : super(key: key);
 
   final String name;
 

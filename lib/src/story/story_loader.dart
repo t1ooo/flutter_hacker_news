@@ -7,21 +7,20 @@ import 'package:provider/provider.dart';
 
 import '../hacker_news_api/item.dart';
 import '../notifier/item_notifier.dart';
-import '../widget/builder.dart._';
+import '../widget/loader.dart';
 import '../widget/swipe_to_refresh.dart';
 import './comment/comments_placeholder.dart';
 import 'story.dart';
 
 class StoryLoader extends StatelessWidget {
-  const StoryLoader({Key? key, required this.id, this.onData}) : super(key: key);
+  const StoryLoader({Key? key, required this.id}) : super(key: key);
 
   final int id;
-  final Widget Function(BuildContext, Item)? onData;
 
   @override
   Widget build(BuildContext context) {
-    return InitBuilder(
-      initState: () => context.read<ItemNotifier>().loadItem(id),
+    return Loader(
+      load: (context) => context.read<ItemNotifier>().loadItem(id),
       builder: builder,
     );
   }
@@ -36,7 +35,7 @@ class StoryLoader extends StatelessWidget {
 
     final value = storyR.value;
     if (value != null) {
-      return _onData(context, value);
+      return onData(context, value);
     }
 
     return onLoading(context);
@@ -51,16 +50,12 @@ class StoryLoader extends StatelessWidget {
   }
 
   // Widget build(BuildContext context) {
-  Widget _onData(BuildContext context, Item item) {
+  Widget onData(BuildContext context, Item item) {
     return SwipeToRefresh(
       onRefresh: () async {
         context.read<ItemNotifier>().reloadItems();
       },
-      child: (onData ?? defaultOnData)(context, item),
+      child: Story(item: item),
     );
-  }
-
-  Widget defaultOnData(BuildContext context, Item item) {
-    return Story(item: item);
   }
 }

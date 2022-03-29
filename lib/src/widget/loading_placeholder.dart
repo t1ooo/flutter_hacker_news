@@ -6,11 +6,6 @@ class LoadingPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final textStyle = TextStyle(
-    //   color: Colors.white,
-    //   backgroundColor: Colors.white,
-    // );
-
     return Shimmer.fromColors(
       baseColor: Colors.grey[300]!,
       highlightColor: Colors.grey[100]!,

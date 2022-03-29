@@ -16,7 +16,6 @@ class ItemNotifier extends ChangeNotifier with TryNotifyListeners {
   static final _log = Logger('ItemNotifier');
 
   ItemResult item(int id) {
-    // _log.info('item: $id');
     return _items[id] ?? ItemResult.empty();
   }
 

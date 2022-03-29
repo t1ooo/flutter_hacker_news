@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import '../story/story_tile_placeholder.dart';
+import '../story/story_tile/story_tile_placeholder.dart';
 
 class StoriesPlaceholder extends StatelessWidget {
   const StoriesPlaceholder({Key? key, this.limit = 20}) : super(key: key);

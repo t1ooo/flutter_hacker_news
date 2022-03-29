@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../hacker_news_api/item.dart';
-import '../notifier/item_notifier.dart';
-import '../story/comment/comment.dart';
-import '../story/comment/comment_placeholder.dart';
-import '../story/story_tile/story_tile.dart';
-import '../widget/loader.dart';
+import '../../hacker_news_api/item.dart';
+import '../../notifier/item_notifier.dart';
+import '../../story/comment/comment.dart';
+import '../../story/comment/comment_placeholder.dart';
+import '../../story/story_tile/story_tile.dart';
+import '../../widget/loader.dart';
 
 class UserActivityLoader extends StatelessWidget {
   const UserActivityLoader({Key? key, required this.id}) : super(key: key);

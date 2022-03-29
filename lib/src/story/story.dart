@@ -30,7 +30,7 @@ class Story extends StatelessWidget {
           SizedBox(height: 20),
           if (item.kids != null)
             for (var id in item.kids!)
-              CommentLoaderV2(
+              CommentLoader(
                 id: id,
                 onData: (_, Item item) {
                   return Comment(

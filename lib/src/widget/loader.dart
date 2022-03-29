@@ -30,3 +30,32 @@ class Loader<T> extends StatelessWidget {
     return builder(context);
   }
 }
+
+
+
+// class InitBuilder extends StatefulWidget {
+//   InitBuilder({
+//     Key? key,
+//     required this.initState,
+//     required this.builder,
+//   }) : super(key: key);
+
+//   final void Function() initState;
+//   final WidgetBuilder builder;
+
+//   @override
+//   State<InitBuilder> createState() => _InitBuilderState();
+// }
+
+// class _InitBuilderState extends State<InitBuilder> {
+//   @override
+//   void initState() {
+//     widget.initState();
+//     super.initState();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return widget.builder(context);
+//   }
+// }

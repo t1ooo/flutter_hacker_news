@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'user_activity_loader.dart';
+import 'user_activity/user_activity_loader.dart';
 
 class UserActivities extends StatelessWidget {
   const UserActivities({Key? key, required this.submitted}) : super(key: key);

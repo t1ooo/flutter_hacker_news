@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../hacker_news_api/user.dart';
 import '../widget/html.dart';
 import '../widget/link.dart';
-import '../user_activity/user_activity_screen_v2.dart';
+import '../user_activities/user_activities_screen.dart';
 
 class UserWidget extends StatelessWidget {
   const UserWidget({Key? key, required this.user}) : super(key: key);
@@ -27,8 +28,7 @@ class UserWidget extends StatelessWidget {
         TableRow(
           children: [
             Text('created:'),
-            Text(DateTime.fromMillisecondsSinceEpoch(user.created * 1000)
-                .toString(),), // TODO: format
+            Text(_formatItemTime(user.created)), // TODO: format
           ],
         ),
         TableRow(
@@ -51,7 +51,7 @@ class UserWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 20),
                 child: MaterialAppLink(
                   child: Text('activity'),
-                  routeBuilder: (_) => UserActivityScreen(name: user.id),
+                  routeBuilder: (_) => UserActivitiesScreen(name: user.id),
                 ),
               ),
             ],
@@ -59,5 +59,12 @@ class UserWidget extends StatelessWidget {
         ],
       ],
     );
+  }
+
+  static final _dateFormater = DateFormat('MMMM dd, yyyy');
+
+  String _formatItemTime(int unixTimeS) {
+    final dt = DateTime.fromMillisecondsSinceEpoch(unixTimeS * 1000);
+    return _dateFormater.format(dt);
   }
 }
