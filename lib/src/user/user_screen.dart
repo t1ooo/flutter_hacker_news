@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../hacker_news_api/hacker_news_api.dart';
+import '../provider/provider.dart';
 import '../style/style.dart';
 import '../notifier/user_notifier.dart';
 import 'user_loader.dart';
@@ -19,9 +20,10 @@ class UserScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: pagePadding,
-        child: ChangeNotifierProvider(
-          create: (BuildContext context) =>
-              UserNotifier(context.read<HackerNewsApi>()),
+        child: MultiProvider(
+          providers: [
+            userProvider(context),
+          ],
           child: UserLoader(name: name),
         ),
       ),

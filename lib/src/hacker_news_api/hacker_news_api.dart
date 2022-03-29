@@ -101,9 +101,9 @@ class HackerNewsApiImpl implements HackerNewsApi {
       // _log.info('request: $uri');
       final response = await client.get(uri);
       if (response.statusCode == 200) {
-        // if (cached) {
-        await cache?.put(uri.toString(), response.body, maxAge);
-        // }
+        if (cached) {
+          await cache?.put(uri.toString(), response.body, maxAge);
+        }
         // if (cache != null) {
         // await cache!.put(uri.toString(), response.body, Duration(minutes: 5));
         // }

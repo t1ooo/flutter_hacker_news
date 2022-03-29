@@ -6,6 +6,7 @@ import '../hacker_news_api/hacker_news_api.dart';
 import '../hacker_news_api/story_type.dart';
 import '../notifier/item_notifier.dart';
 import '../notifier/story_notifier.dart';
+import '../provider/provider.dart';
 import '../style/style.dart';
 import 'stories_loader.dart';
 
@@ -33,16 +34,8 @@ class StoriesScreen extends StatelessWidget {
                 padding: pagePadding,
                 child: MultiProvider(
                   providers: [
-                    // TODO: move providers to function
-                    // storyProvider(context)  => ...
-                    ChangeNotifierProvider(
-                      create: (BuildContext context) =>
-                          StoryNotifier(context.read<HackerNewsApi>()),
-                    ),
-                    ChangeNotifierProvider(
-                      create: (BuildContext context) =>
-                          ItemNotifier(context.read<HackerNewsApi>()),
-                    ),
+                    storyProvider(context),
+                    itemProvider(context),
                   ],
                   child: StoriesLoader(storyType: storyType),
                 ),

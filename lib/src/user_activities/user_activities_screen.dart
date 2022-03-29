@@ -5,6 +5,7 @@ import '../hacker_news_api/hacker_news_api.dart';
 import '../notifier/comment_notifier.dart';
 import '../notifier/item_notifier.dart';
 import '../notifier/user_notifier.dart';
+import '../provider/provider.dart';
 import '../style/style.dart';
 import 'user_activities_loader.dart';
 
@@ -23,18 +24,9 @@ class UserActivitiesScreen extends StatelessWidget {
         padding: pagePadding,
         child: MultiProvider(
           providers: [
-            ChangeNotifierProvider(
-              create: (BuildContext context) =>
-                  UserNotifier(context.read<HackerNewsApi>()),
-            ),
-            ChangeNotifierProvider(
-              create: (BuildContext context) => ItemNotifier(
-                context.read<HackerNewsApi>(),
-              ),
-            ),
-            ChangeNotifierProvider(
-              create: (BuildContext context) => CommentNotifier(),
-            ),
+            userProvider(context),
+            itemProvider(context),
+            commentProvider(context),
           ],
           child: UserActivitiesLoader(name: name),
         ),

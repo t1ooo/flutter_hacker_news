@@ -7,21 +7,23 @@ import 'package:provider/provider.dart';
 import 'logger.dart';
 import 'src/hacker_news_api/cache.dart';
 import 'src/clock/clock.dart';
+import 'src/provider/provider.dart';
 import 'src/stories/stories_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   configureLogger(kDebugMode);
 
-  final clock = Clock();
-  // final cache = InMemoryCache(clock);
-  final cache = InMemoryLruCache(1000, clock);
-  final hackerNewsApi = HackerNewsApiImpl(Client(), cache);
+  // final clock = Clock();
+  // // final cache = InMemoryCache(clock);
+  // final cache = InMemoryLruCache(1000, clock);
+  // final hackerNewsApi = HackerNewsApiImpl(Client(), cache);
 
   runApp(
     MultiProvider(
       providers: [
-        Provider<HackerNewsApi>.value(value: hackerNewsApi),
+        // Provider<HackerNewsApi>.value(value: hackerNewsApi),
+        hackerNewsApiProvider(),
       ],
       child: MyApp(),
     ),

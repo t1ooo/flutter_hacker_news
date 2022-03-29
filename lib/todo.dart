@@ -7,4 +7,9 @@
 // TODO: remove comments
 // TODO: remove cache?
 // TODO: Http client with retry and cache
-// TODO: InMemoryLruCache flush to file
+// TODO: InMemoryLruCache flush to file (use delay + last update)
+// TODO: html error boundary
+// TODO: StoryTile
+//  onclick: go to Story
+//  add external link button
+// TODO: add custrom Html render with html parser  or add Html.customRender
