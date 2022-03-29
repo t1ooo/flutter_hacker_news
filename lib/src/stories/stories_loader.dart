@@ -6,8 +6,8 @@ import '../hacker_news_api/story_type.dart';
 import '../notifier/item_notifier.dart';
 import '../notifier/story_notifier.dart';
 import '../story/story_tile_placeholder.dart';
-import '../ui/loader.dart';
-import '../ui/swipe_to_refresh.dart';
+import '../widget/loader.dart';
+import '../widget/swipe_to_refresh.dart';
 import 'stories.dart';
 import 'stories_placeholder.dart';
 

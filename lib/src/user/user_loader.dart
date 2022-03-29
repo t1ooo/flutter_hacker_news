@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../hacker_news_api/user.dart';
-import '../ui/loader.dart';
+import '../widget/loader.dart';
 import '../notifier/user_notifier.dart';
 import 'user_placeholder.dart';
 import 'user_widget.dart';

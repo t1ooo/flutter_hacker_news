@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../hacker_news_api/user.dart';
-import '../ui/html.dart';
-import '../ui/link.dart';
+import '../widget/html.dart';
+import '../widget/link.dart';
 import '../user_activity/user_activity_screen_v2.dart';
 
 class UserWidget extends StatelessWidget {

@@ -6,7 +6,7 @@ import '../notifier/item_notifier.dart';
 import '../story/comment.dart';
 import '../story/comment_placeholder.dart';
 import '../story/story_tile.dart';
-import '../ui/loader.dart';
+import '../widget/loader.dart';
 
 class UserActivityLoader extends StatelessWidget {
   const UserActivityLoader({Key? key, required this.id}) : super(key: key);

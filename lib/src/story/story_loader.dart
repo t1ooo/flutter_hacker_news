@@ -7,8 +7,8 @@ import 'package:provider/provider.dart';
 
 import '../hacker_news_api/item.dart';
 import '../notifier/item_notifier.dart';
-import '../ui/builder.dart._';
-import '../ui/swipe_to_refresh.dart';
+import '../widget/builder.dart._';
+import '../widget/swipe_to_refresh.dart';
 import 'comments_placeholder.dart';
 import 'story.dart';
 

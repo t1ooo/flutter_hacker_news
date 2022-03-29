@@ -6,8 +6,8 @@ import 'package:provider/provider.dart';
 
 import '../hacker_news_api/item.dart';
 import '../notifier/comment_notifier.dart';
-import '../ui/html.dart';
-import '../ui/link.dart';
+import '../widget/html.dart';
+import '../widget/link.dart';
 import '../user/user_screen.dart';
 import 'comment_loader.dart';
 import 'const.dart';

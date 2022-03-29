@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../hacker_news_api/item.dart';
 import '../notifier/item_notifier.dart';
-import '../ui/loader.dart';
+import '../widget/loader.dart';
 import 'comment.dart';
 import 'comment_placeholder.dart';
 

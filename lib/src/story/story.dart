@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../hacker_news_api/item.dart';
 import '../notifier/item_notifier.dart';
-import '../ui/swipe_to_refresh.dart';
+import '../widget/swipe_to_refresh.dart';
 import 'comment_loader.dart';
 import 'story_tile.dart';
 import 'comment.dart';
