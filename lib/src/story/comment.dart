@@ -9,130 +9,133 @@ import 'package:shimmer/shimmer.dart';
 import '../hacker_news_api/item.dart';
 import '../notifier/comment_notifier.dart';
 import '../notifier/item_notifier.dart';
-import '../ui/builder.dart';
+import '../ui/builder.dart._';
 import '../ui/html.dart';
 import '../ui/link.dart';
 import '../user/user_screen.dart';
+import 'comment_loader.dart';
+import 'const.dart';
 import 'format_time.dart';
 import 'story_screen.dart';
 
-const commentMaxDepth = 5;
+// const commentMaxDepth = 5;
+// const commentPadding = 10.0;
 
-class CommentLoader extends StatelessWidget {
-  CommentLoader(
-      {Key? key,
-      required this.id,
-      this.showNested = true,
-      this.depth = 0,
-      this.activeUserLink = true,
-      this.collapsable = true})
-      : super(key: key);
+// class CommentLoader extends StatelessWidget {
+//   CommentLoader(
+//       {Key? key,
+//       required this.id,
+//       this.showNested = true,
+//       this.depth = 0,
+//       this.activeUserLink = true,
+//       this.collapsable = true})
+//       : super(key: key);
 
-  final int id;
-  final int depth;
-  final bool showNested;
-  final bool activeUserLink;
-  final bool collapsable;
+//   final int id;
+//   final int depth;
+//   final bool showNested;
+//   final bool activeUserLink;
+//   final bool collapsable;
 
-  @override
-  Widget build(BuildContext context) {
-    // return CommentPlaceholder();
-    // final notifier = context.watch<HackerNewsNotifier>();
+//   @override
+//   Widget build(BuildContext context) {
+//     // return CommentPlaceholder();
+//     // final notifier = context.watch<HackerNewsNotifier>();
 
-    final commentR =
-        context.select<ItemNotifier, ItemResult>((v) => v.item(id));
+//     final commentR =
+//         context.select<ItemNotifier, ItemResult>((v) => v.item(id));
 
-    final error = commentR.error;
-    if (error != null) {
-      return onError(context, error);
-    }
+//     final error = commentR.error;
+//     if (error != null) {
+//       return onError(context, error);
+//     }
 
-    final value = commentR.value;
-    if (value != null) {
-      return onData(context, value);
-    }
+//     final value = commentR.value;
+//     if (value != null) {
+//       return onData(context, value);
+//     }
 
-    return onLoading(context);
-  }
+//     return onLoading(context);
+//   }
 
-  Widget onError(BuildContext context, Object? error) {
-    return Text(error.toString());
-  }
+//   Widget onError(BuildContext context, Object? error) {
+//     return Text(error.toString());
+//   }
 
-  Widget onLoading(BuildContext context) {
-    return CommentPlaceholder(depth: depth);
-  }
+//   Widget onLoading(BuildContext context) {
+//     return CommentPlaceholder(depth: depth);
+//   }
 
-  // Widget build(BuildContext context) {
-  Widget onData(BuildContext context, Item item) {
-    return Comment(
-      item: item,
-      showNested: showNested,
-      depth: depth,
-      activeUserLink: activeUserLink,
-      collapsable: collapsable,
-    );
-  }
-}
+//   // Widget build(BuildContext context) {
+//   Widget onData(BuildContext context, Item item) {
+//     return Comment(
+//       item: item,
+//       showNested: showNested,
+//       depth: depth,
+//       activeUserLink: activeUserLink,
+//       collapsable: collapsable,
+//     );
+//   }
+// }
 
-class CommentLoaderV2 extends StatelessWidget {
-  CommentLoaderV2({
-    Key? key,
-    required this.id,
-    required this.onData,
-    this.depth = 0,
-  }) : super(key: key);
+// class CommentLoaderV2 extends StatelessWidget {
+//   CommentLoaderV2({
+//     Key? key,
+//     required this.id,
+//     required this.onData,
+//     this.depth = 0,
+//   }) : super(key: key);
 
-  final int id;
-  final int depth;
-  final Widget Function(BuildContext, Item) onData;
+//   final int id;
+//   final int depth;
+//   final Widget Function(BuildContext, Item) onData;
 
-  @override
-  Widget build(BuildContext context) {
-    // return InitBuilder(
-    //   initState: () => context.read<ItemNotifier>().loadItem(id),
-    //   builder: builder,
-    // );
+//   @override
+//   Widget build(BuildContext context) {
+//     // return InitBuilder(
+//     //   initState: () => context.read<ItemNotifier>().loadItem(id),
+//     //   builder: builder,
+//     // );
 
-    // return FutureBuilder(
-    //   future: context.read<ItemNotifier>().loadItem(id),
-    //   builder: (BuildContext context, _ ) => builder(context),
-    // );
+//     // return FutureBuilder(
+//     //   future: context.read<ItemNotifier>().loadItem(id),
+//     //   builder: (BuildContext context, _ ) => builder(context),
+//     // );
 
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      context.read<ItemNotifier>().loadItem(id);
-    });
-    return builder(context);
-  }
+//     WidgetsBinding.instance?.addPostFrameCallback((_) {
+//       context.read<ItemNotifier>().loadItem(id);
+//     });
+//     return builder(context);
+//   }
 
-  Widget builder(BuildContext context) {
-    // return CommentPlaceholder();
-    // final notifier = context.watch<HackerNewsNotifier>();
-    print('rebuild: $id');
-    final commentR =
-        context.select<ItemNotifier, ItemResult>((v) => v.item(id));
+//   Widget builder(BuildContext context) {
+//     // return CommentPlaceholder();
+//     // final notifier = context.watch<HackerNewsNotifier>();
+//     print('rebuild: $id');
+//     final commentR =
+//         context.select<ItemNotifier, ItemResult>((v) => v.item(id));
 
-    final error = commentR.error;
-    if (error != null) {
-      return onError(context, error);
-    }
+//     final error = commentR.error;
+//     if (error != null) {
+//       return onError(context, error);
+//     }
 
-    final value = commentR.value;
-    if (value != null) {
-      return onData(context, value);
-    }
+//     final value = commentR.value;
+//     if (value != null) {
+//       return onData(context, value);
+//     }
 
-    return onLoading(context);
-  }
+//     return onLoading(context);
+//   }
 
-  Widget onError(BuildContext context, Object? error) {
-    return Text(error.toString());
-  }
+//   Widget onError(BuildContext context, Object? error) {
+//     return Text(error.toString());
+//   }
 
-  Widget onLoading(BuildContext context) {
-    return CommentPlaceholder(depth: depth);
-  }
-}
+//   Widget onLoading(BuildContext context) {
+//     return CommentPlaceholder(depth: depth);
+//   }
+// }
 
 // class CommentController extends ChangeNotifier {
 //   CommentController() {
@@ -165,7 +168,7 @@ class CommentLoaderV2 extends StatelessWidget {
 //   // }
 // }
 
-const _commentPadding = 10.0;
+
 
 class Comment extends StatelessWidget {
   Comment({
@@ -196,8 +199,8 @@ class Comment extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(
         left: leftPadding,
-        top: _commentPadding,
-        bottom: _commentPadding,
+        top: commentPadding,
+        bottom: commentPadding,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -343,62 +346,62 @@ class Comment extends StatelessWidget {
 //   }
 // }
 
-class CommentPlaceholder extends StatelessWidget {
-  CommentPlaceholder({Key? key, required this.depth}) : super(key: key);
+// class CommentPlaceholder extends StatelessWidget {
+//   CommentPlaceholder({Key? key, required this.depth}) : super(key: key);
 
-  final int depth;
+//   final int depth;
 
-  @override
-  Widget build(BuildContext context) {
-    final leftPadding = min(depth, commentMaxDepth) * 30.0;
-    final textStyle = TextStyle(
-      color: Colors.white,
-      backgroundColor: Colors.white,
-    );
+//   @override
+//   Widget build(BuildContext context) {
+//     final leftPadding = min(depth, commentMaxDepth) * 30.0;
+//     final textStyle = TextStyle(
+//       color: Colors.white,
+//       backgroundColor: Colors.white,
+//     );
 
-    return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
-      child: Padding(
-        padding: EdgeInsets.only(
-          left: leftPadding,
-          top: _commentPadding,
-          bottom: _commentPadding,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('_' * 40, style: textStyle),
-            // SizedBox(height: 5),
-            Text('_' * 250, style: textStyle),
-            // Container(
-            // height: 26.0,
-            // color: Colors.white,
-            // ),
-            // SizedBox(height: 10,),
-            // Container(
-            // height: 48.0,
-            // color: Colors.white,
-            // ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+//     return Shimmer.fromColors(
+//       baseColor: Colors.grey[300]!,
+//       highlightColor: Colors.grey[100]!,
+//       child: Padding(
+//         padding: EdgeInsets.only(
+//           left: leftPadding,
+//           top: commentPadding,
+//           bottom: commentPadding,
+//         ),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             Text('_' * 40, style: textStyle),
+//             // SizedBox(height: 5),
+//             Text('_' * 250, style: textStyle),
+//             // Container(
+//             // height: 26.0,
+//             // color: Colors.white,
+//             // ),
+//             // SizedBox(height: 10,),
+//             // Container(
+//             // height: 48.0,
+//             // color: Colors.white,
+//             // ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
 
-class CommentPlaceholders extends StatelessWidget {
-  CommentPlaceholders({Key? key, this.limit = 20}) : super(key: key);
+// class CommentsPlaceholder extends StatelessWidget {
+//   CommentsPlaceholder({Key? key, this.limit = 20}) : super(key: key);
 
-  final int limit;
+//   final int limit;
 
-  @override
-  Widget build(BuildContext context) {
-    return ListView(children: [
-      for (int i = 0; i < 20; i++) CommentPlaceholder(depth: 0),
-    ]);
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return ListView(children: [
+//       for (int i = 0; i < 20; i++) CommentPlaceholder(depth: 0),
+//     ]);
+//   }
+// }
 
 // // TODO: remove duplicate
 // String formatItemTime(int unixTimeS) {

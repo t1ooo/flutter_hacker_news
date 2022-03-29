@@ -1,3 +1,5 @@
+// TODO: load user
+
 import 'dart:math';
 
 import 'package:flutter/foundation.dart';
@@ -10,46 +12,57 @@ import 'package:flutter_html/flutter_html.dart';
 
 import '../hacker_news_api/hacker_news_api.dart';
 import '../hacker_news_api/item.dart';
+import '../hacker_news_api/user.dart';
+import '../notifier/comment_notifier.dart';
 import '../notifier/item_notifier.dart';
+import '../notifier/user_notifier.dart';
 import '../story/comment.dart';
+import '../story/comment_placeholder.dart';
 import '../story/story_tile.dart';
 import '../style/style.dart';
+import '../ui/loader.dart';
+import '../ui/swipe_to_refresh.dart';
+import 'user_activity_loader.dart';
 // import 'user_activity_controller.dart';
 
-class UserActivityScreen extends StatelessWidget {
-  UserActivityScreen({Key? key, required this.submitted}) : super(key: key);
 
-  List<int> submitted;
+// TODO: split to loader and content
+class UserActivitiesLoader extends StatelessWidget {
+  UserActivitiesLoader({Key? key, required this.name}) : super(key: key);
+
+  String name;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('User Activity'),
-      ),
-      body: Padding(
-        padding: pagePadding,
-        // child: UserActivityList(submitted: submitted),
-        child: ChangeNotifierProvider(
-          create: (BuildContext context) =>
-              ItemNotifier(context.read<HackerNewsApi>()),
-          child: UserActivityList(submitted: submitted),
-        ),
-      ),
+    // WidgetsBinding.instance?.addPostFrameCallback((_) {
+    //   context.read<UserNotifier>().loadUser(name);
+    // });
+    // return builder(context);
+    return Loader(
+      load: () => context.read<UserNotifier>().loadUser(name),
+      builder: builder,
     );
   }
-}
-
-class UserActivityList extends StatelessWidget {
-  UserActivityList({Key? key, required this.submitted}) : super(key: key);
-
-  List<int> submitted;
 
   @override
-  Widget build(BuildContext context) {
+  Widget builder(BuildContext context) {
+    final userR = context.select<UserNotifier, UserResult>((v) => v.user);
+
+    final error = userR.error;
+    if (error != null) {
+      return onError(context, error);
+    }
+
+    final value = userR.value;
+    if (value != null) {
+      return onData(context, value);
+    }
+
+    return onLoading(context);
+
     // final notifier = context.watch<HackerNewsNotifier>();
 
-    return onData(context, submitted);
+    // return onData(context, submitted);
 
     // return FutureBuilder(
     //   future: Future.delayed(Duration(seconds: 1), () => submitted),
@@ -92,19 +105,18 @@ class UserActivityList extends StatelessWidget {
     // );
   }
 
-  void onError(BuildContext context, Object? error, StackTrace? st) {
-    print(error);
+  Widget onError(BuildContext context, Object? error) {
+    return Text(error.toString());
   }
 
   Widget onLoading(BuildContext context) {
     // return LoadIndicator();
-    // return ListView(
-    //   children: [for (int i = 0; i < 20; i++) CommentPlaceholder(depth: 0)],
-    // );
-    return CommentPlaceholders();
+    return ListView(
+      children: [for (int i = 0; i < 20; i++) CommentPlaceholder(depth: 0)],
+    );
   }
 
-  Widget onData(BuildContext context, List<int> data) {
+  Widget onData(BuildContext context, User user) {
     // return ListView(
     //   // cacheExtent: 1.5,
     //   children: [
@@ -117,56 +129,32 @@ class UserActivityList extends StatelessWidget {
     //   ],
     // );
 
-    return ListView.builder(
-      itemCount: data.length,
-      itemBuilder: (_, int i) {
-        final id = data[i];
-        context.read<ItemNotifier>().loadItem(id);
-        return UserActivityLoader(id: id);
+    final submitted = user.submitted ?? [];
+
+    return SwipeToRefresh(
+      onRefresh: () async {
+        context.read<UserNotifier>().reloadUser(name);
+        context.read<ItemNotifier>().reloadItems();
       },
+      child: UserActivities(submitted:submitted),
     );
   }
 }
 
-class UserActivityLoader extends StatelessWidget {
-  UserActivityLoader({Key? key, required this.id}) : super(key: key);
+class UserActivities extends StatelessWidget {
+  UserActivities({Key? key, required this.submitted}) : super(key: key);
 
-  final int id;
+  final List<int> submitted;
 
   @override
   Widget build(BuildContext context) {
-    final activityR = context
-        .select<ItemNotifier, ItemResult>((v) => v.item(id));
-
-    final error = activityR.error;
-    if (error != null) {
-      return onError(context, error);
-    }
-
-    final value = activityR.value;
-    if (value != null) {
-      return onData(context, value);
-    }
-
-    return onLoading(context);
-  }
-
-  Widget onError(BuildContext context, Object? error) {
-    return Text(error.toString());
-  }
-
-  Widget onLoading(BuildContext context) {
-    return CommentPlaceholder(depth: 0);
-  }
-
-  Widget onData(BuildContext context, Item item) {
-    if (item.type == 'comment') {
-      return Comment(item: item, showNested: false, activeUserLink: false, collapsable: false);
-    } else if (item.type == 'story') {
-      return StoryTile(item: item, showLeading: false, activeUserLink: false);
-    } else {
-      print(item.toJson);
-      return Container();
-    }
+    return ListView.builder(
+        itemCount: submitted.length,
+        itemBuilder: (_, int i) {
+          final id = submitted[i];
+          // context.read<ItemNotifier>().loadItem(id);
+          return UserActivityLoader(id: id);
+        },
+      );
   }
 }

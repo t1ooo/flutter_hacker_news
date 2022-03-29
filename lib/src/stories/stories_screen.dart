@@ -13,6 +13,7 @@ import '../notifier/item_notifier.dart';
 import '../notifier/story_notifier.dart';
 import '../style/style.dart';
 import 'stories.dart';
+import 'stories_loader.dart';
 
 class StoriesScreen extends StatelessWidget {
   const StoriesScreen({Key? key}) : super(key: key);
@@ -46,6 +47,8 @@ class StoriesScreen extends StatelessWidget {
                 ), */
                     MultiProvider(
                   providers: [
+                    // TODO: move providers to function
+                    // storyProvider(context)  => ...
                     ChangeNotifierProvider(
                         create: (BuildContext context) =>
                             StoryNotifier(context.read<HackerNewsApi>())
@@ -57,12 +60,7 @@ class StoriesScreen extends StatelessWidget {
                     ),
                   ],
                   // child: Stories(storyType: storyType),
-                  child: StoriesLoader(
-                    storyType: storyType,
-                    onData: (context, List<int> storyIds) {
-                      return Stories(/* storyType: storyType,  */storyIds: storyIds);
-                    },
-                  ),
+                  child: StoriesLoader(storyType: storyType),
                 ),
               )
           ],

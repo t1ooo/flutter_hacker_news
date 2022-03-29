@@ -12,8 +12,10 @@ import '../hacker_news_api/hacker_news_api.dart';
 import '../hacker_news_api/item.dart';
 import '../notifier/comment_notifier.dart';
 import '../notifier/item_notifier.dart';
-import '../ui/builder.dart';
+import '../ui/builder.dart._';
 import '../ui/swipe_to_refresh.dart';
+import 'comment_loader.dart';
+import 'comments_placeholder.dart';
 import 'story_tile.dart';
 import '../style/style.dart';
 import 'comment.dart';
@@ -68,7 +70,7 @@ import 'comment.dart';
 //     // return ListView(children: [
 //     //   for (int i = 0; i < 20; i++) CommentPlaceholder(depth: 0),
 //     // ]);
-//     return CommentPlaceholders();
+//     return CommentsPlaceholder();
 //   }
 
 //   // Widget build(BuildContext context) {
@@ -192,7 +194,7 @@ class StoryLoader extends StatelessWidget {
     // return ListView(children: [
     //   for (int i = 0; i < 20; i++) CommentPlaceholder(depth: 0),
     // ]);
-    return CommentPlaceholders();
+    return CommentsPlaceholder();
   }
 
   // Widget build(BuildContext context) {
