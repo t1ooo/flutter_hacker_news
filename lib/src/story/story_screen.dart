@@ -46,7 +46,7 @@ class StoryScreen extends StatelessWidget {
               create: (BuildContext context) => CommentNotifier(),
             ),
           ],
-          child: Story(id: id),
+          child: StoryLoader(id: id),
         ),
       ),
     );
