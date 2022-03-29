@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../widget/loading_placeholder.dart';
-import 'story_tile_padding.dart';
+import 'style.dart';
 
 class StoryTilePlaceholder extends StatelessWidget {
   const StoryTilePlaceholder({Key? key, this.showLeading = false})
@@ -13,7 +13,7 @@ class StoryTilePlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StoryTilePadding(child: LoadingPlaceholder());
+    return Padding(padding: storyTilePadding, child: LoadingPlaceholder());
 
     // // TODO: extract to placeholder.dart
     // final textStyle = TextStyle(

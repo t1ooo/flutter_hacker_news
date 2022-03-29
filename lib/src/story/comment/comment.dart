@@ -1,6 +1,3 @@
-import 'dart:math';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,7 +9,7 @@ import '../../user/user_screen.dart';
 import '../format_time.dart';
 import '../story_screen.dart';
 import 'comment_loader.dart';
-import 'comment_padding.dart';
+import 'style.dart';
 
 class Comment extends StatelessWidget {
   const Comment({
@@ -39,8 +36,8 @@ class Comment extends StatelessWidget {
 
     final textStyle = TextStyle(color: Colors.grey);
 
-    return CommentPadding(
-      depth: depth,
+    return Padding(
+      padding: commentPadding(depth),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -5,7 +5,7 @@ import '../../story/story_screen.dart';
 import '../../widget/link.dart';
 import '../../user/user_screen.dart';
 import '../format_time.dart';
-import 'story_tile_padding.dart';
+import 'style.dart';
 
 class StoryTile extends StatelessWidget {
   const StoryTile({
@@ -27,7 +27,8 @@ class StoryTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final title = (item.deleted == true) ? '[deleted]' : (item.title ?? '');
 
-    return StoryTilePadding(
+    return Padding(
+      padding: storyTilePadding,
       child: ListTile(
         contentPadding: EdgeInsets.all(0),
         leading: showLeading ? Text('$rank.') : null,
