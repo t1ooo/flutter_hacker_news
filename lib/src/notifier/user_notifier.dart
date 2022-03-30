@@ -28,7 +28,7 @@ class UserNotifier extends ChangeNotifier with TryNotifyListeners {
   }
 
   Future<void> _loadUser(String name, bool cached) async {
-    _log.info('load: $name');
+    // _log.info('load: $name');
     try {
       final item = await api.user(name, cached);
       _user = UserResult.value(item);

@@ -49,20 +49,22 @@ class Comment extends StatelessWidget {
                   routeBuilder: (_) => UserScreen(name: item.by!),
                   active: activeUserLink,
                 ),
+                Text(' '),
               ],
               if (item.time != null) ...[
-                Text(' ${formatItemTime(item.time!)}', style: textStyle),
+                Text('${formatItemTime(item.time!)}', style: textStyle),
+                Text(' '),
               ],
               if (showParentLink && item.parent != null && depth == 0) ...[
-                Text(' | ', style: textStyle),
+                Text('| ', style: textStyle),
                 MaterialAppLink(
                   child: Text('parent', style: textStyle),
                   // child: Text('comments'),
                   routeBuilder: (_) => StoryScreen(id: item.parent!),
                 ),
+                Text(' '),
               ],
               if (collapsable) ...[
-                Text(' '),
                 InkWell(
                   child: Text(isVisible ? '[-]' : '[+]', style: textStyle),
                   onTap: () =>

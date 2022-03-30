@@ -14,37 +14,39 @@ class UserPlaceholder extends StatelessWidget {
       color: Colors.white,
       backgroundColor: Colors.white,
     );
+    
+    final text = Text('_' * 8, style: textStyle);
 
     return Shimmer.fromColors(
       baseColor: Colors.grey[300]!,
       highlightColor: Colors.grey[100]!,
       child: Table(
         columnWidths: const <int, TableColumnWidth>{
-          0: IntrinsicColumnWidth(flex: 0.15),
+          0: IntrinsicColumnWidth(flex: 0.16),
           1: FlexColumnWidth(),
         },
         children: [
           TableRow(
             children: [
-              Text('user:', style: textStyle), // TODO: move to widget
-              Text('_' * 10, style: textStyle),
+              text,
+              text,
             ],
           ),
           TableRow(
             children: [
-              Text('created:', style: textStyle),
-              Text('_' * 10, style: textStyle),
+              text,
+              text,
             ],
           ),
           TableRow(
             children: [
-              Text('karma:', style: textStyle),
-              Text('_' * 10, style: textStyle),
+              text,
+              text,
             ],
           ),
           TableRow(
             children: [
-              Text('about:', style: textStyle),
+              text,
               Text('_' * 500, style: textStyle),
             ],
           ),
