@@ -13,7 +13,7 @@ import '../notifier/item_notifier.dart';
 import '../notifier/story_notifier.dart';
 import '../notifier/user_notifier.dart';
 
-Provider<HackerNewsApi> hackerNewsApiProvider() {
+Future<Provider<HackerNewsApi>> hackerNewsApiProvider() async {
   final clock = Clock();
   // final cache = InMemoryCache(clock);
   // final cache = InMemoryLruCache(1000, clock);
@@ -21,7 +21,8 @@ Provider<HackerNewsApi> hackerNewsApiProvider() {
     File(
         '/home/graibn/GoogleDrive/dev/project/source/flutter_hacker_news_prototype/data/data.json'),
     clock,
-  )..load();
+  );
+  await cache.load();
   final httpClient = HttpClientImpl(Client(), cache);
   final hackerNewsApi = HackerNewsApiImplV2(httpClient);
   // final hackerNewsApi = HackerNewsApiImpl(Client(), cache);

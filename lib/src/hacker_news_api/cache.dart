@@ -90,6 +90,16 @@ class _CacheItem {
     this.value,
     this.expired,
   );
+
+  factory _CacheItem.fromJson(Map<String, dynamic> json) => _CacheItem(
+        json['value'] as String,
+        DateTime.parse(json['expired'] as String),
+      );
+
+  Map<String, dynamic> toJson() => {
+        'value': value,
+        'expired': expired.toIso8601String(),
+      };
 }
 
 class InMemoryCache implements Cache {
@@ -160,6 +170,106 @@ class InMemoryLruCache implements Cache {
   }
 }
 
+class PersistenceLruCache implements Cache {
+  PersistenceLruCache(
+    int size,
+    this.clock,
+    this.file, {
+    this.saveDelay = const Duration(seconds: 60),
+  }) {
+    if (saveDelay < Duration.zero) {
+      throw Exception('saveDelay < 0');
+    }
+
+    _data = LruMap(maximumSize: size);
+    _lastUpdate = _lastSave = DateTime(2000);
+
+    _savePeriodic();
+  }
+
+  final Clock clock;
+  final File file;
+  late final Duration saveDelay;
+  late final LruMap<String, _CacheItem> _data;
+  late DateTime _lastSave;
+  late DateTime _lastUpdate;
+  static final _log = Logger('PersistenceLruCache');
+
+  @override
+  Future<String?> get(String key) async {
+    final item = _data[key];
+
+    if (item == null) {
+      _log.info('miss: $key');
+      return null;
+    }
+
+    if (item.expired < clock.now()) {
+      _log.info('expired: $key');
+      _data.remove(key);
+      return null;
+    }
+
+    // _log.info('hit: $key');
+    return item.value;
+  }
+
+  @override
+  Future<void> put(String key, String value, Duration maxAge) async {
+    final expired = clock.now().add(maxAge);
+    _data[key] = _CacheItem(value, expired);
+  }
+
+  Future<void> load() async {
+    _log.info('load');
+    // final data = (jsonDecode(await file.readAsString())).map((k, v) {
+    //   return MapEntry(k as String, _CacheItem.fromJson(v));
+    // });
+    // _data.addAll(data);
+
+    final data = jsonDecode(await file.readAsString()) as Map<String, dynamic>;
+    for (final e in data.entries) {
+      final k = e.key;
+      final v = _CacheItem.fromJson(e.value);
+      _data[k] = v;
+    }
+    // _data.addAll(data);
+  }
+
+  // void _savePeriodic() {
+  //   Timer.periodic(saveDelay, (_) {
+  //     if (_lastSave < _lastUpdate) {
+  //       _save();
+  //     }
+  //   });
+  // }
+
+  Future<void> _savePeriodic() async {
+    while (true) {
+      if (_lastSave < _lastUpdate) {
+        await _save();
+      }
+      await Future.delayed(saveDelay);
+    }
+  }
+
+  // bool saving = false;
+
+  Future<void> _save() async {
+    // if(saving) {
+    //   return;
+    // }
+    // saving = true;
+
+    _log.info('save');
+    _lastSave = clock.now();
+    final json = jsonEncode(_data);
+    await file.writeAsString(json);
+
+    // saving = false;
+  }
+}
+
 class EternalFileCache implements Cache {
   EternalFileCache(this.file, this.clock) {
     _savePeriodic();
@@ -205,12 +315,21 @@ class EternalFileCache implements Cache {
     // _completer.complete(true);
   }
 
-  void _savePeriodic() {
-    Timer.periodic(Duration(seconds: 60), (_) {
+  // void _savePeriodic() {
+  //   Timer.periodic(Duration(seconds: 60), (_) {
+  //     if (_lastSave < _lastUpdate) {
+  //       _save();
+  //     }
+  //   });
+  // }
+
+  Future<void> _savePeriodic() async {
+    while (true) {
       if (_lastSave < _lastUpdate) {
-        _save();
+        await _save();
       }
-    });
+      await Future.delayed(Duration(seconds: 60));
+    }
   }
 
   Future<void> _save() async {

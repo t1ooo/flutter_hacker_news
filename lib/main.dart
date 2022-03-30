@@ -18,12 +18,13 @@ Future<void> main() async {
   // // final cache = InMemoryCache(clock);
   // final cache = InMemoryLruCache(1000, clock);
   // final hackerNewsApi = HackerNewsApiImpl(Client(), cache);
+  final _hackerNewsApiProvider = await hackerNewsApiProvider();
 
   runApp(
     MultiProvider(
       providers: [
         // Provider<HackerNewsApi>.value(value: hackerNewsApi),
-        hackerNewsApiProvider(),
+        _hackerNewsApiProvider,
       ],
       child: MyApp(),
     ),
