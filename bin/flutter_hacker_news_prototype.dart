@@ -1,33 +1,54 @@
 import 'package:flutter_hacker_news_prototype/logger.dart';
-import 'package:flutter_hacker_news_prototype/src/cache.dart';
-import 'package:flutter_hacker_news_prototype/src/hacker_news_api_v2.dart';
-import 'package:http/http.dart';
+import 'package:html/dom_parsing.dart';
+import 'package:html/parser.dart';
+import 'package:html/dom.dart';
 
 Future<void> main() async {
   configureLogger(true);
-  final client = Client();
-  final cache = CacheImpl();
-  final api = HackerNewsApiImpl(client, cache);
-  {
-    final limit = 5;
-    final items = await api.topstories(limit);
-    // print('items: ${items.toJson()}');
-    // items.forEach((v) {
-    //   print(v);
-    // });
-    items.forEach((v) {
-      print(v.toJson());
-    });
+  final html = '''
+<p>paragraph  <a href="https://example.com/path/path2">example.com/path/p...</a> </p>
+''';
+
+  final document = parse(html);
+  print(getText(document));
+}
+
+
+String getText(Node node) => (DomVisitor()..visit(node)).toString();
+
+class DomVisitor extends TreeVisitor {
+  final _str = StringBuffer();
+
+  @override
+  String toString() => _str.toString();
+
+  @override
+  void visitText(Text node) {
+    _str.write(node.data);
   }
 
-  {
-    final limit = 5;
-    final id = 30749134;
-    final items = await api.item(id, limit);
-    print(items.toJson());
-    // print(item);
-    // items.forEach((v) {
-    // print(v.toJson());
-    // });
+  // void visitNodeFallback(Node node) => visitChildren(node);
+
+  // void visitDocument(Document node) => visitNodeFallback(node);
+
+  // void visitDocumentType(DocumentType node) => visitNodeFallback(node);
+
+  // void visitText(Text node) => visitNodeFallback(node);
+
+  void visitElement(Element node) {
+    // print(node.localName);
+    if (node.localName == 'a') {
+      final href = node.attributes['href'] ?? '';
+      // final parent = node.parent;
+      // if (parent != null) {
+      //   parent.
+      // }
+      node.text = href;
+    }
+    visitNodeFallback(node);
   }
+
+  // void visitComment(Comment node) => visitNodeFallback(node);
+
+  // void visitDocumentFragment(DocumentFragment node) => visitNodeFallback(node);
 }

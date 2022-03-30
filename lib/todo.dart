@@ -12,4 +12,3 @@
 // TODO: StoryTile
 //  onclick: go to Story
 //  add external link button
-// TODO: add custrom Html render with html parser  or add Html.customRender

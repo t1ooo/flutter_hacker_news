@@ -1,0 +1,40 @@
+import 'package:flutter/widgets.dart' show Text, Widget;
+import 'package:html/parser.dart';
+import 'package:html/dom_parsing.dart';
+import 'package:html/dom.dart' hide Text;
+
+Widget htmlToWidget(String html) {
+  final prepHtml = html.replaceAll('<p>', '\n\n').replaceAll('<pre>', '\n');
+  final document = parse(prepHtml);
+  final visitor = _HtmlVisitor();
+  visitor.visit(document);
+  return visitor.widget ?? Text('[empty]');
+}
+
+class _HtmlVisitor extends TreeVisitor {
+  Widget? widget;
+  
+  void visitElement(Element node) {
+    print(node.localName);
+    switch (node.localName) {
+      case 'p':
+        widget = p(node);
+        break;
+      case 'a':
+        _repairFullUrl(node);
+        break;
+    }
+    visitNodeFallback(node);
+  }
+
+  Widget p(Element node) {
+    return Text(node.text);
+  }
+
+  void _repairFullUrl(Element node) {
+    final href = node.attributes['href'] ?? '';
+    if (href != '') {
+      node.text = href;
+    }
+  }
+}
