@@ -72,9 +72,12 @@ class Comment extends StatelessWidget {
             ],
           ),
           if (isVisible) ...[
-            if (item.text != null) ...[
-              HtmlText(html: item.text!),
-            ],
+            // if (item.text != null) ...[
+            // HtmlText(html: item.text!),
+            // ],
+            (item.text != null)
+                ? HtmlText(html: item.text!)
+                : Text('[deleted]'),
             if (showNested && item.kids != null)
               ListView.builder(
                 shrinkWrap: true,

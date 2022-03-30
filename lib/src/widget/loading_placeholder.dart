@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class LoadingPlaceholder extends StatelessWidget {
-  const LoadingPlaceholder({Key? key}) : super(key: key);
+  const LoadingPlaceholder({Key? key, this.height=100}) : super(key: key);
+
+  final double height;
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +13,7 @@ class LoadingPlaceholder extends StatelessWidget {
       highlightColor: Colors.grey[100]!,
       child: Container(
         width: MediaQuery.of(context).size.width,
-        height: 100,
+        height: height,
         color: Colors.white,
       ),
     );

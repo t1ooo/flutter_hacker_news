@@ -12,6 +12,9 @@ class UserActivity extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (item.type == 'comment') {
+      // if ((item.text ?? '') == '') {
+      //   print(item.toJson());
+      // }
       return Comment(
         item: item,
         showNested: false,
@@ -20,13 +23,19 @@ class UserActivity extends StatelessWidget {
         showParentLink: true,
       );
     } else if (item.type == 'story') {
+      // if ((item.title ?? '') == '') {
+      //   print(item.toJson());
+      // }
       return StoryTile(
         item: item,
         showLeading: false,
         activeUserLink: false,
       );
     } else {
-      print(item.toJson);
+      print(item.toJson());
+      // return Container();
+      // return Text(item.toJson().toString());
+      // print(item.title);
       return StoryTile(
         item: item,
         showLeading: false,

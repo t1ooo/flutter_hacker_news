@@ -7,6 +7,7 @@ import '../../story/comment/comment.dart';
 import '../../story/story_tile/story_tile.dart';
 // import '../../widget/loader.dart';
 import '../../widget/result_builder.dart';
+import 'user_activity.dart';
 import 'user_activity_placeholder.dart';
 
 class UserActivityLoader extends StatelessWidget {
@@ -61,27 +62,28 @@ class UserActivityLoader extends StatelessWidget {
   }
 
   Widget onData(BuildContext context, Item item) {
-    if (item.type == 'comment') {
-      return Comment(
-        item: item,
-        showNested: false,
-        activeUserLink: false,
-        collapsable: false,
-        showParentLink: true,
-      );
-    } else if (item.type == 'story') {
-      return StoryTile(
-        item: item,
-        showLeading: false,
-        activeUserLink: false,
-      );
-    } else {
-      print(item.toJson);
-      return StoryTile(
-        item: item,
-        showLeading: false,
-        activeUserLink: false,
-      );
-    }
+    return UserActivity(item: item);
+    // if (item.type == 'comment') {
+    //   return Comment(
+    //     item: item,
+    //     showNested: false,
+    //     activeUserLink: false,
+    //     collapsable: false,
+    //     showParentLink: true,
+    //   );
+    // } else if (item.type == 'story') {
+    //   return StoryTile(
+    //     item: item,
+    //     showLeading: false,
+    //     activeUserLink: false,
+    //   );
+    // } else {
+    //   print(item.toJson);
+    //   return StoryTile(
+    //     item: item,
+    //     showLeading: false,
+    //     activeUserLink: false,
+    //   );
+    // }
   }
 }

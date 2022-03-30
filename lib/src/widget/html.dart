@@ -18,7 +18,9 @@ class HtmlText extends StatelessWidget {
     // return Text(htmlToText(html));
 
     // NOTE: flutter_html and flutter_widget_from_html packages throw a render exception when trying to build a comment from HTML
-    return SelectableText(htmlToText(html));
+    final text = htmlToText(html);
+    // return SelectableText((text != '') ? text : '[fail to display]');
+    return SelectableText(text);
 
     // final text = unescape
     //     .convert(html)

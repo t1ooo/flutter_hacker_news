@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hacker_news_prototype/src/widget/loading_placeholder.dart';
 import 'package:shimmer/shimmer.dart';
 
 class UserPlaceholder extends StatelessWidget {
@@ -6,6 +7,9 @@ class UserPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // return LoadingPlaceholder(height: 200);
+    // return Padding(padding: storyTilePadding, child: LoadingPlaceholder());
+
     final textStyle = TextStyle(
       color: Colors.white,
       backgroundColor: Colors.white,
@@ -41,7 +45,7 @@ class UserPlaceholder extends StatelessWidget {
           TableRow(
             children: [
               Text('about:', style: textStyle),
-              Text('_' * 10, style: textStyle),
+              Text('_' * 500, style: textStyle),
             ],
           ),
           TableRow(

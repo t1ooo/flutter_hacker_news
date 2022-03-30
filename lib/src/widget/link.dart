@@ -19,10 +19,16 @@ class WebLink extends StatelessWidget {
     //   onPressed: () => launch(url),
     //   child: Tooltip(child: child, message: url),
     // );
+
     return InkWell(
       onTap: () => launch(url),
       child: Tooltip(child: child, message: url),
     );
+
+    // return GestureDetector(
+    //   onTap: () => launch(url),
+    //   child: Tooltip(child: child, message: url),
+    // );
   }
 }
 
@@ -77,5 +83,14 @@ class MaterialAppLink extends StatelessWidget {
           : null,
       child: child,
     );
+
+    // return GestureDetector(
+    //   onTap: active
+    //       ? () {
+    //           Navigator.push(context, MaterialPageRoute(builder: routeBuilder));
+    //         }
+    //       : null,
+    //   child: child,
+    // );
   }
 }
