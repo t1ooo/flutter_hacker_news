@@ -15,7 +15,7 @@ class User {
   final int created;
   final int karma;
   final String? about;
-  final int? delay;
+  // final int? delay;
   final List<int>? submitted;
 
   User({
@@ -23,7 +23,7 @@ class User {
     required this.created,
     required this.karma,
     this.about,
-    this.delay,
+    // this.delay,
     this.submitted,
   });
 

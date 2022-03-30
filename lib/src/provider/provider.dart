@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../clock/clock.dart';
 import '../hacker_news_api/cache.dart';
 import '../hacker_news_api/hacker_news_api.dart';
+import '../hacker_news_api/http_client.dart';
 import '../notifier/comment_notifier.dart';
 import '../notifier/item_notifier.dart';
 import '../notifier/story_notifier.dart';
@@ -21,7 +22,9 @@ Provider<HackerNewsApi> hackerNewsApiProvider() {
         '/home/graibn/GoogleDrive/dev/project/source/flutter_hacker_news_prototype/data/data.json'),
     clock,
   )..load();
-  final hackerNewsApi = HackerNewsApiImpl(Client(), cache);
+  final httpClient = HttpClientImpl(Client(), cache);
+  final hackerNewsApi = HackerNewsApiImplV2(httpClient);
+  // final hackerNewsApi = HackerNewsApiImpl(Client(), cache);
 
   return Provider.value(value: hackerNewsApi);
 }

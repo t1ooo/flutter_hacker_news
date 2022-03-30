@@ -15,7 +15,6 @@ User _$UserFromJson(Map<String, dynamic> json) => $checkedCreate(
           created: $checkedConvert('created', (v) => v as int),
           karma: $checkedConvert('karma', (v) => v as int),
           about: $checkedConvert('about', (v) => v as String?),
-          delay: $checkedConvert('delay', (v) => v as int?),
           submitted: $checkedConvert('submitted',
               (v) => (v as List<dynamic>?)?.map((e) => e as int).toList()),
         );
@@ -28,6 +27,5 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'created': instance.created,
       'karma': instance.karma,
       'about': instance.about,
-      'delay': instance.delay,
       'submitted': instance.submitted,
     };

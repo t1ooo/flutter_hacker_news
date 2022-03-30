@@ -6,6 +6,7 @@ import 'package:retry/retry.dart';
 
 import '../logging/logging.dart';
 import 'cache.dart';
+import 'http_client.dart';
 import 'item.dart';
 import 'story_type.dart';
 import 'updates.dart';
@@ -13,7 +14,7 @@ import 'user.dart';
 
 String _e(String s) => Uri.encodeComponent(s);
 
-class HackerNewsURI {
+class _URI {
   static const String base = 'https://hacker-news.firebaseio.com';
   static String item(int id) => '/v0/item/$id.json?print=pretty';
   static String user(String name) => '/v0/user/${_e(name)}.json?print=pretty';
@@ -25,6 +26,23 @@ class HackerNewsURI {
   static const String showstories = '/v0/showstories.json?print=pretty';
   static const String jobstories = '/v0/jobstories.json?print=pretty';
   static const String updates = '/v0/updates.json?print=pretty';
+}
+
+String _storyPath(StoryType storyType) {
+  switch (storyType) {
+    case StoryType.top:
+      return _URI.topstories;
+    case StoryType.new_:
+      return _URI.newstories;
+    case StoryType.best:
+      return _URI.beststories;
+    case StoryType.ask:
+      return _URI.askstories;
+    case StoryType.show:
+      return _URI.showstories;
+    case StoryType.job:
+      return _URI.jobstories;
+  }
 }
 
 abstract class HackerNewsApi {
@@ -41,8 +59,6 @@ abstract class HackerNewsApi {
   Future<List<int>> stories(StoryType storyType, [bool cached = true]);
 }
 
-// TODO: retry
-// TODO: cache
 class HackerNewsApiImpl implements HackerNewsApi {
   HackerNewsApiImpl(this.client, [this.cache]);
 
@@ -115,38 +131,38 @@ class HackerNewsApiImpl implements HackerNewsApi {
 
   @override
   Future<List<int>> stories(StoryType storyType, [bool cached = true]) async {
-    final uri = Uri.parse(HackerNewsURI.base + _storyPath(storyType));
+    final uri = Uri.parse(_URI.base + _storyPath(storyType));
     final body = await _getBody(uri, _storyCacheMaxAge, cached);
     return (jsonDecode(body) as List).map((v) => v as int).toList();
   }
 
-  String _storyPath(StoryType storyType) {
-    switch (storyType) {
-      case StoryType.top:
-        return HackerNewsURI.topstories;
-      case StoryType.new_:
-        return HackerNewsURI.newstories;
-      case StoryType.best:
-        return HackerNewsURI.beststories;
-      case StoryType.ask:
-        return HackerNewsURI.askstories;
-      case StoryType.show:
-        return HackerNewsURI.showstories;
-      case StoryType.job:
-        return HackerNewsURI.jobstories;
-    }
-  }
+  // String _storyPath(StoryType storyType) {
+  //   switch (storyType) {
+  //     case StoryType.top:
+  //       return _URI.topstories;
+  //     case StoryType.new_:
+  //       return _URI.newstories;
+  //     case StoryType.best:
+  //       return _URI.beststories;
+  //     case StoryType.ask:
+  //       return _URI.askstories;
+  //     case StoryType.show:
+  //       return _URI.showstories;
+  //     case StoryType.job:
+  //       return _URI.jobstories;
+  //   }
+  // }
 
   // @override
   // Future<List<int>> askstories() async {
-  //   final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.askstories);
+  //   final uri = Uri.parse(_URI.base + _URI.askstories);
   //   final body = await _getBody(uri, _storyCacheMaxAge);
   //   return jsonDecode(body) as List<int>;
   // }
 
   // @override
   // Future<List<int>> beststories() async {
-  //   final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.beststories);
+  //   final uri = Uri.parse(_URI.base + _URI.beststories);
   //   final body = await _getBody(uri, _storyCacheMaxAge);
   //   return (jsonDecode(body) as List).map((v) => v as int).toList();
   //   // final response = await _get(uri);
@@ -159,7 +175,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
 
   // @override
   // Future<List<int>> jobstories() async {
-  //   final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.jobstories);
+  //   final uri = Uri.parse(_URI.base + _URI.jobstories);
   //   final response = await _get(uri);
   //   if (response.statusCode == 200) {
   //     return jsonDecode(response.body) as List<int>;
@@ -170,7 +186,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
 
   // @override
   // Future<List<int>> newstories() async {
-  //   final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.newstories);
+  //   final uri = Uri.parse(_URI.base + _URI.newstories);
   //   final response = await _get(uri);
   //   if (response.statusCode == 200) {
   //     return jsonDecode(response.body) as List<int>;
@@ -181,7 +197,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
 
   // @override
   // Future<List<int>> showstories() async {
-  //   final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.showstories);
+  //   final uri = Uri.parse(_URI.base + _URI.showstories);
   //   final response = await _get(uri);
   //   if (response.statusCode == 200) {
   //     return jsonDecode(response.body) as List<int>;
@@ -192,7 +208,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
 
   // @override
   // Future<List<int>> topstories() async {
-  //   final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.topstories);
+  //   final uri = Uri.parse(_URI.base + _URI.topstories);
   //   final body = await _getBody(uri, _storyCacheMaxAge);
   //   return (jsonDecode(body) as List).map((v) => v as int).toList();
   //   // final response = await _get(uri);
@@ -205,7 +221,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
 
   @override
   Future<Item> item(int id, [bool cached = true]) async {
-    final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.item(id));
+    final uri = Uri.parse(_URI.base + _URI.item(id));
     final body = await _getBody(uri, _itemCacheMaxAge, cached);
     return Item.fromJson(jsonDecode(body));
     // final response = await _get(uri);
@@ -218,7 +234,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
 
   // @override
   // Future<int> maxitem() async {
-  //   final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.maxitem);
+  //   final uri = Uri.parse(_URI.base + _URI.maxitem);
   //   final response = await _get(uri);
   //   if (response.statusCode == 200) {
   //     return jsonDecode(response.body) as int;
@@ -229,7 +245,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
 
   // @override
   // Future<Updates> updates() async {
-  //   final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.updates);
+  //   final uri = Uri.parse(_URI.base + _URI.updates);
   //   final response = await _get(uri);
   //   if (response.statusCode == 200) {
   //     return Updates.fromJson(jsonDecode(response.body));
@@ -240,7 +256,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
 
   @override
   Future<User> user(String name, [bool cached = true]) async {
-    final uri = Uri.parse(HackerNewsURI.base + HackerNewsURI.user(name));
+    final uri = Uri.parse(_URI.base + _URI.user(name));
     final body = await _getBody(uri, _itemCacheMaxAge, cached);
     return User.fromJson(jsonDecode(body));
     // final response = await _get(uri);
@@ -249,5 +265,78 @@ class HackerNewsApiImpl implements HackerNewsApi {
     // } else {
     //   throw Exception('failed to load askstories');
     // }
+  }
+}
+
+class HackerNewsApiImplV2 implements HackerNewsApi {
+  HackerNewsApiImplV2(this.client);
+
+  final HttpClient client;
+  static final _log = Logger('HackerNewsApiImplV2');
+
+  @override
+  Future<List<int>> stories(StoryType storyType, [bool cached = true]) async {
+    final uri = Uri.parse(_URI.base + _storyPath(storyType));
+    final body = await client.getBody(
+      uri,
+      maxAge: Duration(minutes: cached ? 5 : 0),
+    );
+    return (jsonDecode(body) as List).map((v) => v as int).toList();
+  }
+
+  @override
+  Future<Item> item(int id, [bool cached = true]) async {
+    final uri = Uri.parse(_URI.base + _URI.item(id));
+    final body = await client.getBody(
+      uri,
+      maxAge: Duration(minutes: cached ? 5 : 0),
+    );
+    return Item.fromJson(jsonDecode(body));
+  }
+
+  @override
+  Future<User> user(String name, [bool cached = true]) async {
+    final uri = Uri.parse(_URI.base + _URI.user(name));
+    final body = await client.getBody(
+      uri,
+      maxAge: Duration(minutes: cached ? 5 : 0),
+    );
+    return User.fromJson(jsonDecode(body));
+  }
+}
+
+class FakeHackerNewsApi implements HackerNewsApi {
+  Future<Item> item(int id, [bool cached = true]) async {
+    return Item(
+      id: 0,
+      deleted: false,
+      type: 'story',
+      by: 'user-name',
+      time: 0,
+      text: 'item-text',
+      dead: false,
+      parent: 0,
+      poll: 234,
+      kids: id < 5 ? [id + 1, id + 2, id + 3] : [],
+      url: 'https://example.com',
+      score: 0,
+      title: 'item-title',
+      parts: 0,
+      descendants: 0,
+    );
+  }
+
+  Future<User> user(String name, [bool cached = true]) async {
+    return User(
+      id: 'user-name',
+      created: 0,
+      karma: 0,
+      about: 'user-about',
+      submitted: [0, 1, 2, 3, 4, 5],
+    );
+  }
+
+  Future<List<int>> stories(StoryType storyType, [bool cached = true]) async {
+    return [1, 2, 3, 4, 5];
   }
 }

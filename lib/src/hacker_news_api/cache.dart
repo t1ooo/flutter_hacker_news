@@ -168,6 +168,7 @@ class EternalFileCache implements Cache {
   final File file;
   final Clock clock;
   final Map<String, String> _data = {};
+  // final _completer = Completer<bool>();
 
   static final _initDateTime = DateTime(1970);
   DateTime _lastUpdate = _initDateTime;
@@ -177,6 +178,8 @@ class EternalFileCache implements Cache {
 
   @override
   Future<String?> get(String key) async {
+    // await _completer.future;
+
     final item = _data[key];
 
     if (item == null) {
@@ -198,6 +201,8 @@ class EternalFileCache implements Cache {
     final Map<String, String> data =
         Map.castFrom(jsonDecode(await file.readAsString()));
     _data.addAll(data);
+
+    // _completer.complete(true);
   }
 
   void _savePeriodic() {
