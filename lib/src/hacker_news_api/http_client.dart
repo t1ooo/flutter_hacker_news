@@ -22,7 +22,7 @@ class HttpClientImpl implements HttpClient {
   final Client client;
   final Cache cache;
   final Throttle? throttle;
-  static final _log = Logger('HttpClient');
+  static final _log = Logger('HttpClientImpl');
 
   @override
   Future<String> getBody(
