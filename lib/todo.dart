@@ -1,4 +1,4 @@
-// TODO: MAYBE: comments prev | next
+// TODO: MAYBE: jump to comments prev | next
 // TODO: replace cache
 // TODO: MAYBE: load story and user titles
 // TODO: static analytics options
