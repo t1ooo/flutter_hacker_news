@@ -5,7 +5,6 @@ import '../clock/clock.dart';
 import '../logging/logging.dart';
 import 'cache.dart';
 
-// TODO: add timeout
 abstract class HttpClient {
   Future<String> getBody(
     Uri uri, {
