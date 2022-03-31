@@ -23,7 +23,7 @@ Future<Provider<HackerNewsApi>> hackerNewsApiProvider() async {
     clock,
   );
   await cache.load();
-  final httpClient = HttpClientImpl(Client(), cache);
+  final httpClient = HttpClientImpl(Client(), cache, Throttle());
   final hackerNewsApi = HackerNewsApiImplV2(httpClient);
   // final hackerNewsApi = HackerNewsApiImpl(Client(), cache);
 

@@ -1,6 +1,7 @@
 import 'package:http/http.dart' show Client, Response;
 import 'package:retry/retry.dart';
 
+import '../clock/clock.dart';
 import '../logging/logging.dart';
 import 'cache.dart';
 
@@ -16,10 +17,11 @@ abstract class HttpClient {
 }
 
 class HttpClientImpl implements HttpClient {
-  HttpClientImpl(this.client, this.cache);
+  HttpClientImpl(this.client, this.cache, [this.throttle]);
 
   final Client client;
   final Cache cache;
+  final Throttle? throttle;
   static final _log = Logger('HttpClient');
 
   @override
@@ -40,6 +42,8 @@ class HttpClientImpl implements HttpClient {
       }
     }
 
+    await throttle?.wait();
+
     return await retry(
       () async {
         // _log.info('request: $uri');
@@ -58,5 +62,56 @@ typedef CheckResponse = Future<void> Function(Response);
 Future<void> defaultCheckResponse(Response response) async {
   if (response.statusCode != 200) {
     throw Exception('statusCode != 200');
+  }
+}
+
+class Throttle<T> {
+  Throttle({
+    this.delay = const Duration(milliseconds: 100),
+    this.minDelay = const Duration(milliseconds: 1),
+    this.clock = const Clock(),
+  });
+
+  final Duration delay;
+  final Duration minDelay;
+  final Clock clock;
+  DateTime _expired = DateTime(1970);
+
+  Future<void> wait() async {
+    final diff = _expired.difference(_now());
+    if (diff > Duration.zero) {
+      await Future.delayed(diff);
+    }
+
+    // int waitCounter = -1;
+    while (true) {
+      // waitCounter++;
+      final diff = _expired.difference(_now());
+      if (diff > Duration.zero) {
+        // if (diff < minDelay) {
+        //   print(diff);
+        // }
+        // print(diff);
+        // await Future.delayed(diff);
+        await Future.delayed(diff.max(minDelay));
+        continue;
+      }
+      break;
+    }
+
+    // if (waitCounter > 0) print('wait: $waitCounter');
+
+    _expired = _now().add(delay);
+  }
+
+  DateTime _now() => clock.now();
+}
+
+extension DurationMath on Duration {
+  Duration max(Duration other) {
+    if (this >= other) {
+      return this;
+    }
+    return other;
   }
 }
