@@ -15,7 +15,7 @@ abstract class Cache {
 
 // TODO: use key value storage
 class FileCache implements Cache {
-  FileCache(int size, this.clock) {
+  FileCache(int size, [this.clock=const Clock()]) {
     // _cacheManager = DefaultCacheManager();
     const key = 'flutter_cache_manager_cache';
     _cacheManager = CacheManager(
@@ -103,7 +103,7 @@ class _CacheItem {
 }
 
 class InMemoryCache implements Cache {
-  InMemoryCache(this.clock);
+  InMemoryCache([this.clock=const Clock()]);
 
   final Map<String, _CacheItem> _data = {};
   final Clock clock;
@@ -136,7 +136,7 @@ class InMemoryCache implements Cache {
 }
 
 class InMemoryLruCache implements Cache {
-  InMemoryLruCache(int size, this.clock) {
+  InMemoryLruCache(int size, [this.clock=const Clock()]) {
     _data = LruMap(maximumSize: size);
   }
 
@@ -173,8 +173,8 @@ class InMemoryLruCache implements Cache {
 class PersistenceLruCache implements Cache {
   PersistenceLruCache(
     int size,
-    this.clock,
     this.file, {
+    this.clock = const Clock(),
     this.saveDelay = const Duration(seconds: 60),
   }) {
     if (saveDelay < Duration.zero) {
@@ -271,7 +271,7 @@ class PersistenceLruCache implements Cache {
 }
 
 class EternalFileCache implements Cache {
-  EternalFileCache(this.file, this.clock) {
+  EternalFileCache(this.file, [this.clock= const Clock()]) {
     _savePeriodic();
   }
 
