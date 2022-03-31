@@ -1,12 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hacker_news_prototype/src/hacker_news_api/hacker_news_api.dart';
-import 'package:http/http.dart';
+
 import 'package:provider/provider.dart';
 
 import 'logger.dart';
-import 'src/hacker_news_api/cache.dart';
-import 'src/clock/clock.dart';
+
 import 'src/provider/provider.dart';
 import 'src/stories/stories_screen.dart';
 

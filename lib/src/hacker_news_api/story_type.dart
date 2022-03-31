@@ -9,6 +9,6 @@ enum StoryType {
 
 extension StoryTypeToText on StoryType {
   String toText() {
-    return this.toString().split('.').last.replaceAll('_', '');
+    return toString().split('.').last.replaceAll('_', '');
   }
 }
