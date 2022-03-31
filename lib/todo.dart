@@ -1,5 +1,5 @@
 // TODO: MAYBE: comments prev | next
-// TODO: replace cache to in memory lru
+// TODO: replace cache
 // TODO: MAYBE: load story and user titles
 // TODO: static analytics options
 // TODO: remove code comments
