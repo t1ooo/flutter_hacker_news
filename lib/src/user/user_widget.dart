@@ -28,7 +28,7 @@ class UserWidget extends StatelessWidget {
         TableRow(
           children: [
             Text('created:'),
-            Text(_formatItemTime(user.created)), // TODO: format
+            Text(_formatItemTime(user.created)),
           ],
         ),
         TableRow(

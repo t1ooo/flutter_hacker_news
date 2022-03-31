@@ -12,13 +12,13 @@ class Stories extends StatelessWidget {
 
   final List<int> storyIds;
 
+  @override
   Widget build(BuildContext context) {
     return ListView.builder(
       itemCount: storyIds.length,
       itemBuilder: (_, int i) {
         final id = storyIds[i];
         return StoryTileLoader(
-          // TODO: remove V1
           id: id,
           onData: (_, Item item) {
             return StoryTile(item: item, rank: i + 1);

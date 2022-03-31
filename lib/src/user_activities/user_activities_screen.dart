@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../hacker_news_api/hacker_news_api.dart';
-import '../notifier/comment_notifier.dart';
-import '../notifier/item_notifier.dart';
-import '../notifier/user_notifier.dart';
 import '../provider/provider.dart';
 import '../style/style.dart';
 import 'user_activities_loader.dart';

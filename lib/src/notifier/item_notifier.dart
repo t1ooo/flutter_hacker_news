@@ -35,21 +35,9 @@ class ItemNotifier extends ChangeNotifier with TryNotifyListeners {
       _items[id] = ItemResult.empty();
       reloadItem(id);
     }
-
-    // for (final id in _items.keys) {
-      // _items[id] = ItemResult.empty();
-    // }
-    // tryNotifyListeners();
-
-    // for (final id in _items.keys) {
-    //   reloadItem(id);
-    // }
   }
 
   Future<void> _loadItem(int id, bool cached) async {
-    // _items[id] = ItemResult.empty();
-    // tryNotifyListeners();
-  
     try {
       final item = await api.item(id, cached);
       _items[id] = ItemResult.value(item);
@@ -57,6 +45,7 @@ class ItemNotifier extends ChangeNotifier with TryNotifyListeners {
       _log.error(e, st);
       _items[id] = ItemResult.error(e);
     }
+
     tryNotifyListeners();
   }
 }

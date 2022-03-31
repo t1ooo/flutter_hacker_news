@@ -59,7 +59,6 @@ class Comment extends StatelessWidget {
                 Text('| ', style: textStyle),
                 MaterialAppLink(
                   child: Text('parent', style: textStyle),
-                  // child: Text('comments'),
                   routeBuilder: (_) => StoryScreen(id: item.parent!),
                 ),
                 Text(' '),
@@ -74,12 +73,10 @@ class Comment extends StatelessWidget {
             ],
           ),
           if (isVisible) ...[
-            // if (item.text != null) ...[
-            // HtmlText(html: item.text!),
-            // ],
             (item.text != null)
                 ? HtmlText(html: item.text!)
                 : Text('[deleted]'),
+            // --------------------------------
             if (showNested && item.kids != null)
               ListView.builder(
                 shrinkWrap: true,

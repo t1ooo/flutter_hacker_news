@@ -10,6 +10,9 @@ class UserActivityPlaceholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(padding: userActivityPadding, child: LoadingPlaceholder());
+    return Padding(
+      padding: userActivityPadding,
+      child: LoadingPlaceholder(),
+    );
   }
 }

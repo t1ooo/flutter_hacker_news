@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -16,30 +15,6 @@ class StoryLoader extends StatelessWidget {
   const StoryLoader({Key? key, required this.id}) : super(key: key);
 
   final int id;
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Loader(
-  //     load: (context) => context.read<ItemNotifier>().loadItem(id),
-  //     builder: builder,
-  //   );
-  // }
-
-  // Widget builder(BuildContext context) {
-  //   final storyR = context.select<ItemNotifier, ItemResult>((v) => v.item(id));
-
-  //   final error = storyR.error;
-  //   if (error != null) {
-  //     return onError(context, error);
-  //   }
-
-  //   final value = storyR.value;
-  //   if (value != null) {
-  //     return onData(context, value);
-  //   }
-
-  //   return onLoading(context);
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +35,7 @@ class StoryLoader extends StatelessWidget {
 
   Widget onLoading(BuildContext context) {
     return ListView(children: [
-      for (int i = 0; i < 20; i++) CommentPlaceholder()
+      for (int i = 0; i < 20; i++) CommentPlaceholder(),
     ]);
   }
 

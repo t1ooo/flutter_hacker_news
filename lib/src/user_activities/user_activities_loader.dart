@@ -15,30 +15,6 @@ class UserActivitiesLoader extends StatelessWidget {
 
   final String name;
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Loader(
-  //     load: (context) => context.read<UserNotifier>().loadUser(name),
-  //     builder: builder,
-  //   );
-  // }
-
-  // Widget builder(BuildContext context) {
-  //   final userR = context.select<UserNotifier, UserResult>((v) => v.user);
-
-  //   final error = userR.error;
-  //   if (error != null) {
-  //     return onError(context, error);
-  //   }
-
-  //   final value = userR.value;
-  //   if (value != null) {
-  //     return onData(context, value);
-  //   }
-
-  //   return onLoading(context);
-  // }
-
   @override
   Widget build(BuildContext context) {
     return ResultBuilder(

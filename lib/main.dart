@@ -14,25 +14,19 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   configureLogger(kDebugMode);
 
-  // final clock = Clock();
-  // // final cache = InMemoryCache(clock);
-  // final cache = InMemoryLruCache(1000, clock);
-  // final hackerNewsApi = HackerNewsApiImpl(Client(), cache);
   final _hackerNewsApiProvider = await hackerNewsApiProvider();
 
   runApp(
     MultiProvider(
       providers: [
-        // Provider<HackerNewsApi>.value(value: hackerNewsApi),
         _hackerNewsApiProvider,
       ],
       child: MyApp(),
     ),
   );
-
-  // runApp(const MyApp());
 }
 
+// TODO: move to file
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 

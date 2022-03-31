@@ -1,7 +1,3 @@
-// const commentMaxDepth = 5;
-// const commentPadding = 10.0;
-// const storyTilePadding = 10.0;
-
 import 'package:flutter/widgets.dart';
 
 EdgeInsets commentPadding([int depth = 0]) {

@@ -15,7 +15,7 @@ abstract class Cache {
 
 // TODO: use key value storage
 class FileCache implements Cache {
-  FileCache(int size, [this.clock=const Clock()]) {
+  FileCache(int size, [this.clock = const Clock()]) {
     // _cacheManager = DefaultCacheManager();
     const key = 'flutter_cache_manager_cache';
     _cacheManager = CacheManager(
@@ -23,9 +23,6 @@ class FileCache implements Cache {
         key,
         stalePeriod: Duration(days: 7),
         maxNrOfCacheObjects: size,
-        // repo: JsonCacheInfoRepository(_databaseName: key),
-        // fileSystem: IOFileSystem(key),
-        // fileService: HttpFileService(),
       ),
     );
   }
@@ -37,13 +34,6 @@ class FileCache implements Cache {
   @override
   Future<String?> get(String key) async {
     final fileInfo = await _cacheManager.getFileFromCache(key);
-    // if (fileInfo != null && fileInfo.validTill.isAfter(clock.now())) {
-    // if (fileInfo != null && fileInfo.validTill.isAfter(DateTime.now())) {
-    // return fileInfo.file.readAsString();
-    // }
-
-    // _log.info('miss: $key');
-    // return null;
 
     if (fileInfo == null) {
       _log.info('miss: $key');
@@ -83,7 +73,6 @@ class NoCache implements Cache {
 
 class _CacheItem {
   final String value;
-  // final Duration maxAge;
   final DateTime expired;
 
   _CacheItem(
@@ -103,7 +92,7 @@ class _CacheItem {
 }
 
 class InMemoryCache implements Cache {
-  InMemoryCache([this.clock=const Clock()]);
+  InMemoryCache([this.clock = const Clock()]);
 
   final Map<String, _CacheItem> _data = {};
   final Clock clock;
@@ -124,7 +113,6 @@ class InMemoryCache implements Cache {
       return null;
     }
 
-    // _log.info('hit: $key');
     return item.value;
   }
 
@@ -136,7 +124,7 @@ class InMemoryCache implements Cache {
 }
 
 class InMemoryLruCache implements Cache {
-  InMemoryLruCache(int size, [this.clock=const Clock()]) {
+  InMemoryLruCache(int size, [this.clock = const Clock()]) {
     _data = LruMap(maximumSize: size);
   }
 
@@ -159,7 +147,6 @@ class InMemoryLruCache implements Cache {
       return null;
     }
 
-    // _log.info('hit: $key');
     return item.value;
   }
 
@@ -222,27 +209,13 @@ class PersistenceLruCache implements Cache {
 
   Future<void> load() async {
     _log.info('load');
-    // final data = (jsonDecode(await file.readAsString())).map((k, v) {
-    //   return MapEntry(k as String, _CacheItem.fromJson(v));
-    // });
-    // _data.addAll(data);
-
     final data = jsonDecode(await file.readAsString()) as Map<String, dynamic>;
     for (final e in data.entries) {
       final k = e.key;
       final v = _CacheItem.fromJson(e.value);
       _data[k] = v;
     }
-    // _data.addAll(data);
   }
-
-  // void _savePeriodic() {
-  //   Timer.periodic(saveDelay, (_) {
-  //     if (_lastSave < _lastUpdate) {
-  //       _save();
-  //     }
-  //   });
-  // }
 
   Future<void> _savePeriodic() async {
     while (true) {
@@ -253,32 +226,22 @@ class PersistenceLruCache implements Cache {
     }
   }
 
-  // bool saving = false;
-
   Future<void> _save() async {
-    // if(saving) {
-    //   return;
-    // }
-    // saving = true;
-
     _log.info('save');
     _lastSave = clock.now();
     final json = jsonEncode(_data);
     await file.writeAsString(json);
-
-    // saving = false;
   }
 }
 
 class EternalFileCache implements Cache {
-  EternalFileCache(this.file, [this.clock= const Clock()]) {
+  EternalFileCache(this.file, [this.clock = const Clock()]) {
     _savePeriodic();
   }
 
   final File file;
   final Clock clock;
   final Map<String, String> _data = {};
-  // final _completer = Completer<bool>();
 
   static final _initDateTime = DateTime(1970);
   DateTime _lastUpdate = _initDateTime;
@@ -288,8 +251,6 @@ class EternalFileCache implements Cache {
 
   @override
   Future<String?> get(String key) async {
-    // await _completer.future;
-
     final item = _data[key];
 
     if (item == null) {
@@ -311,17 +272,7 @@ class EternalFileCache implements Cache {
     final Map<String, String> data =
         Map.castFrom(jsonDecode(await file.readAsString()));
     _data.addAll(data);
-
-    // _completer.complete(true);
   }
-
-  // void _savePeriodic() {
-  //   Timer.periodic(Duration(seconds: 60), (_) {
-  //     if (_lastSave < _lastUpdate) {
-  //       _save();
-  //     }
-  //   });
-  // }
 
   Future<void> _savePeriodic() async {
     while (true) {

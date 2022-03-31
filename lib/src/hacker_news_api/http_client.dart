@@ -82,23 +82,14 @@ class Throttle<T> {
       await Future.delayed(diff);
     }
 
-    // int waitCounter = -1;
     while (true) {
-      // waitCounter++;
       final diff = _expired.difference(_now());
       if (diff > Duration.zero) {
-        // if (diff < minDelay) {
-        //   print(diff);
-        // }
-        // print(diff);
-        // await Future.delayed(diff);
         await Future.delayed(diff.max(minDelay));
         continue;
       }
       break;
     }
-
-    // if (waitCounter > 0) print('wait: $waitCounter');
 
     _expired = _now().add(delay);
   }

@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 
-import 'change_notifier.dart';
 import '../hacker_news_api/hacker_news_api.dart';
 import '../logging/logging.dart';
-import 'result.dart';
 import '../hacker_news_api/user.dart';
+import 'change_notifier.dart';
+import 'result.dart';
 
 typedef UserResult = Result<User, Object>;
 
@@ -28,7 +28,6 @@ class UserNotifier extends ChangeNotifier with TryNotifyListeners {
   }
 
   Future<void> _loadUser(String name, bool cached) async {
-    // _log.info('load: $name');
     try {
       final item = await api.user(name, cached);
       _user = UserResult.value(item);
@@ -36,6 +35,7 @@ class UserNotifier extends ChangeNotifier with TryNotifyListeners {
       _log.error(e, st);
       _user = UserResult.error(e);
     }
+
     tryNotifyListeners();
   }
 }

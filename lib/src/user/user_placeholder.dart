@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hacker_news_prototype/src/widget/loading_placeholder.dart';
+
 import 'package:shimmer/shimmer.dart';
 
 class UserPlaceholder extends StatelessWidget {
-  UserPlaceholder({Key? key}) : super(key: key);
+  const UserPlaceholder({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // return LoadingPlaceholder(height: 200);
-    // return Padding(padding: storyTilePadding, child: LoadingPlaceholder());
-
     final textStyle = TextStyle(
       color: Colors.white,
       backgroundColor: Colors.white,
     );
-    
+
     final text = Text('_' * 8, style: textStyle);
 
     return Shimmer.fromColors(
