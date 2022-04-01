@@ -3,9 +3,9 @@ import 'package:provider/provider.dart';
 
 import '../../hacker_news_api/item.dart';
 import '../../notifier/comment_notifier.dart';
+import '../../user/user_screen.dart';
 import '../../widget/html.dart';
 import '../../widget/link.dart';
-import '../../user/user_screen.dart';
 import '../format_time.dart';
 import '../story_screen.dart';
 import 'comment_loader.dart';
@@ -18,7 +18,7 @@ class Comment extends StatelessWidget {
     this.showNested = true,
     this.depth = 0,
     this.activeUserLink = true,
-    this.collapsable = true,
+    this.collapsible = true,
     this.showParentLink = false,
   }) : super(key: key);
 
@@ -26,7 +26,7 @@ class Comment extends StatelessWidget {
   final bool showNested;
   final int depth;
   final bool activeUserLink;
-  final bool collapsable;
+  final bool collapsible;
   final bool showParentLink;
 
   @override
@@ -45,14 +45,14 @@ class Comment extends StatelessWidget {
             children: [
               if (item.by != null) ...[
                 MaterialAppLink(
-                  child: Text(item.by!, style: textStyle),
                   routeBuilder: (_) => UserScreen(name: item.by!),
                   active: activeUserLink,
+                  child: Text(item.by!, style: textStyle),
                 ),
                 Text(' '),
               ],
               if (item.time != null) ...[
-                Text('${formatItemTime(item.time!)}', style: textStyle),
+                Text(formatItemTime(item.time!), style: textStyle),
                 Text(' '),
               ],
               if (showParentLink && item.parent != null && depth == 0) ...[
@@ -63,7 +63,7 @@ class Comment extends StatelessWidget {
                 ),
                 Text(' '),
               ],
-              if (collapsable) ...[
+              if (collapsible) ...[
                 InkWell(
                   child: Text(isVisible ? '[-]' : '[+]', style: textStyle),
                   onTap: () =>
@@ -73,9 +73,10 @@ class Comment extends StatelessWidget {
             ],
           ),
           if (isVisible) ...[
-            (item.text != null)
-                ? HtmlText(html: item.text!)
-                : Text('[deleted]'),
+            if (item.text != null)
+              HtmlText(html: item.text!)
+            else
+              Text('[deleted]'),
             // --------------------------------
             if (showNested && item.kids != null)
               ListView.builder(

@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-
 import 'package:provider/provider.dart';
 
 import '../hacker_news_api/item.dart';
@@ -34,16 +33,16 @@ class StoryLoader extends StatelessWidget {
   }
 
   Widget onLoading(BuildContext context) {
-    return ListView(children: [
-      for (int i = 0; i < 20; i++) CommentPlaceholder(),
-    ]);
+    return ListView(
+      children: [for (int i = 0; i < 20; i++) CommentPlaceholder()],
+    );
   }
 
   // Widget build(BuildContext context) {
   Widget onData(BuildContext context, Item item) {
     return SwipeToRefresh(
       onRefresh: () async {
-        context.read<ItemNotifier>().reloadItems();
+        await context.read<ItemNotifier>().reloadItems();
       },
       child: Story(item: item),
     );

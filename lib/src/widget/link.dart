@@ -16,7 +16,7 @@ class WebLink extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => launch(url),
-      child: Tooltip(child: child, message: url),
+      child: Tooltip(message: url, child: child),
     );
   }
 }

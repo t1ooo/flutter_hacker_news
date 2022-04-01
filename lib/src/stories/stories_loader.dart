@@ -32,9 +32,9 @@ class StoriesLoader extends StatelessWidget {
   }
 
   Widget onLoading(BuildContext context) {
-    return ListView(children: [
-      for (int i = 0; i < 20; i++) StoryTilePlaceholder(),
-    ]);
+    return ListView(
+      children: [for (int i = 0; i < 20; i++) StoryTilePlaceholder()],
+    );
   }
 
   Widget onData(BuildContext context, List<int> storyIds) {

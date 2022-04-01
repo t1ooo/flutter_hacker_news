@@ -1,3 +1,3 @@
 import 'package:flutter/widgets.dart';
 
-const storyTilePadding = EdgeInsets.symmetric(vertical: 10.0);
+const storyTilePadding = EdgeInsets.symmetric(vertical: 10);

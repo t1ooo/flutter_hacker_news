@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../hacker_news_api/user.dart';
+import '../user_activities/user_activities_screen.dart';
 import '../widget/html.dart';
 import '../widget/link.dart';
-import '../user_activities/user_activities_screen.dart';
 
 class UserWidget extends StatelessWidget {
   const UserWidget({Key? key, required this.user}) : super(key: key);
@@ -40,7 +40,7 @@ class UserWidget extends StatelessWidget {
         TableRow(
           children: [
             Text('about:'),
-            HtmlText(html: (user.about ?? '')),
+            HtmlText(html: user.about ?? ''),
           ],
         ),
         if (user.submitted != null) ...[
@@ -61,10 +61,10 @@ class UserWidget extends StatelessWidget {
     );
   }
 
-  static final _dateFormater = DateFormat('MMMM dd, yyyy');
+  static final _dateFormatter = DateFormat('MMMM dd, yyyy');
 
   String _formatItemTime(int unixTimeS) {
     final dt = DateTime.fromMillisecondsSinceEpoch(unixTimeS * 1000);
-    return _dateFormater.format(dt);
+    return _dateFormatter.format(dt);
   }
 }

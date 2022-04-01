@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hacker_news_prototype/src/widget/loading_placeholder.dart';
 
+import '../../widget/loading_placeholder.dart';
 import 'style.dart';
 
 class CommentPlaceholder extends StatelessWidget {

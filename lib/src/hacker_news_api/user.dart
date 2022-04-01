@@ -11,20 +11,19 @@ part 'user.g.dart';
 
 @JsonSerializable()
 class User {
-  final String id;
-  final int created;
-  final int karma;
-  final String? about;
-
-  final List<int>? submitted;
-
-  User({
+  const User({
     required this.id,
     required this.created,
     required this.karma,
     this.about,
     this.submitted,
   });
+
+  final String id;
+  final int created;
+  final int karma;
+  final String? about;
+  final List<int>? submitted;
 
   // ignore: sort_constructors_first
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);

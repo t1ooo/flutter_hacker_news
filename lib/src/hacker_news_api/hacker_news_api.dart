@@ -42,20 +42,19 @@ String _storyPath(StoryType storyType) {
 }
 
 abstract class HackerNewsApi {
-  Future<Item> item(int id, [bool cached = true]);
-  Future<User> user(String name, [bool cached = true]);
-  Future<List<int>> stories(StoryType storyType, [bool cached = true]);
+  Future<Item> item(int id, {bool cached = true});
+  Future<User> user(String name, {bool cached = true});
+  Future<List<int>> stories(StoryType storyType, {bool cached = true});
 }
 
-// TODO: rename
-class HackerNewsApiImplV2 implements HackerNewsApi {
-  HackerNewsApiImplV2(this.client);
+class HackerNewsApiImpl implements HackerNewsApi {
+  HackerNewsApiImpl(this.client);
 
   final HttpClient client;
-  static final _log = Logger('HackerNewsApiImplV2');
+  static final _log = Logger('HackerNewsApiImpl');
 
   @override
-  Future<List<int>> stories(StoryType storyType, [bool cached = true]) async {
+  Future<List<int>> stories(StoryType storyType, {bool cached = true}) async {
     final uri = Uri.parse(_URI.base + _storyPath(storyType));
     final body = await client.getBody(
       uri,
@@ -65,28 +64,29 @@ class HackerNewsApiImplV2 implements HackerNewsApi {
   }
 
   @override
-  Future<Item> item(int id, [bool cached = true]) async {
+  Future<Item> item(int id, {bool cached = true}) async {
     final uri = Uri.parse(_URI.base + _URI.item(id));
     final body = await client.getBody(
       uri,
       maxAge: Duration(minutes: cached ? 5 : 0),
     );
-    return Item.fromJson(jsonDecode(body));
+    return Item.fromJson(jsonDecode(body) as Map<String, dynamic>);
   }
 
   @override
-  Future<User> user(String name, [bool cached = true]) async {
+  Future<User> user(String name, {bool cached = true}) async {
     final uri = Uri.parse(_URI.base + _URI.user(name));
     final body = await client.getBody(
       uri,
       maxAge: Duration(minutes: cached ? 5 : 0),
     );
-    return User.fromJson(jsonDecode(body));
+    return User.fromJson(jsonDecode(body) as Map<String, dynamic>);
   }
 }
 
 class FakeHackerNewsApi implements HackerNewsApi {
-  Future<Item> item(int id, [bool cached = true]) async {
+  @override
+  Future<Item> item(int id, {bool cached = true}) async {
     return Item(
       id: 0,
       deleted: false,
@@ -106,7 +106,8 @@ class FakeHackerNewsApi implements HackerNewsApi {
     );
   }
 
-  Future<User> user(String name, [bool cached = true]) async {
+  @override
+  Future<User> user(String name, {bool cached = true}) async {
     return User(
       id: 'user-name',
       created: 0,
@@ -116,7 +117,8 @@ class FakeHackerNewsApi implements HackerNewsApi {
     );
   }
 
-  Future<List<int>> stories(StoryType storyType, [bool cached = true]) async {
+  @override
+  Future<List<int>> stories(StoryType storyType, {bool cached = true}) async {
     return [1, 2, 3, 4, 5];
   }
 }

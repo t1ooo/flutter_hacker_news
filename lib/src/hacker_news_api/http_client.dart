@@ -5,6 +5,7 @@ import '../clock/clock.dart';
 import '../logging/logging.dart';
 import 'cache.dart';
 
+// ignore: one_member_abstracts
 abstract class HttpClient {
   Future<String> getBody(
     Uri uri, {
@@ -43,7 +44,7 @@ class HttpClientImpl implements HttpClient {
 
     await throttle?.wait();
 
-    return await retry(
+    return retry(
       () async {
         // _log.info('request: $uri');
         final response = await client.get(uri).timeout(timeout);
@@ -64,7 +65,7 @@ Future<void> defaultCheckResponse(Response response) async {
   }
 }
 
-class Throttle<T> {
+class Throttle {
   Throttle({
     this.delay = const Duration(milliseconds: 100),
     this.minDelay = const Duration(milliseconds: 1),

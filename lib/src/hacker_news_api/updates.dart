@@ -11,13 +11,13 @@ part 'updates.g.dart';
 
 @JsonSerializable()
 class Updates {
-  final List<int> items;
-  final List<String> profiles;
-
   Updates({
     required this.items,
     required this.profiles,
   });
+
+  final List<int> items;
+  final List<String> profiles;
 
   // ignore: sort_constructors_first
   factory Updates.fromJson(Map<String, dynamic> json) =>

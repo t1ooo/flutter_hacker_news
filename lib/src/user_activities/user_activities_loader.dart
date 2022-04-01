@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../hacker_news_api/user.dart';
 import '../notifier/item_notifier.dart';
 import '../notifier/user_notifier.dart';
-
 import '../widget/result_builder.dart';
 import '../widget/swipe_to_refresh.dart';
 import 'user_activities.dart';
@@ -33,9 +32,9 @@ class UserActivitiesLoader extends StatelessWidget {
   }
 
   Widget onLoading(BuildContext context) {
-    return ListView(children: [
-      for (int i = 0; i < 20; i++) UserActivityPlaceholder(),
-    ]);
+    return ListView(
+      children: [for (int i = 0; i < 20; i++) UserActivityPlaceholder()],
+    );
   }
 
   Widget onData(BuildContext context, User user) {
@@ -43,8 +42,8 @@ class UserActivitiesLoader extends StatelessWidget {
 
     return SwipeToRefresh(
       onRefresh: () async {
-        context.read<UserNotifier>().reloadUser(name);
-        context.read<ItemNotifier>().reloadItems();
+        await context.read<UserNotifier>().reloadUser(name);
+        await context.read<ItemNotifier>().reloadItems();
       },
       child: UserActivities(submitted: submitted),
     );

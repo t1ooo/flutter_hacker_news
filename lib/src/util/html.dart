@@ -1,6 +1,6 @@
-import 'package:html/parser.dart';
-import 'package:html/dom_parsing.dart';
 import 'package:html/dom.dart';
+import 'package:html/dom_parsing.dart';
+import 'package:html/parser.dart';
 
 String htmlToText(String html) {
   final prepHtml = html.replaceAll('<p>', '\n\n').replaceAll('<pre>', '\n');
@@ -10,6 +10,7 @@ String htmlToText(String html) {
 }
 
 class _HtmlVisitor extends TreeVisitor {
+  @override
   void visitElement(Element node) {
     switch (node.localName) {
       case 'a':

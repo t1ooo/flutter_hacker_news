@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_hacker_news_prototype/src/logging/logging.dart';
-import 'package:flutter_hacker_news_prototype/src/notifier/result.dart';
 
 import '../hacker_news_api/hacker_news_api.dart';
 import '../hacker_news_api/item.dart';
+import '../logging/logging.dart';
 import 'change_notifier.dart';
+import 'result.dart';
 
 typedef ItemResult = Result<Item, Object>;
 
@@ -33,13 +33,14 @@ class ItemNotifier extends ChangeNotifier with TryNotifyListeners {
     _log.info('reloadItems');
     for (final id in _items.keys) {
       _items[id] = ItemResult.empty();
+      // ignore: unawaited_futures
       reloadItem(id);
     }
   }
 
   Future<void> _loadItem(int id, bool cached) async {
     try {
-      final item = await api.item(id, cached);
+      final item = await api.item(id, cached:cached);
       _items[id] = ItemResult.value(item);
     } on Exception catch (e, st) {
       _log.error(e, st);

@@ -29,7 +29,7 @@ class StoryNotifier extends ChangeNotifier with TryNotifyListeners {
   Future<void> _loadStoryIds(StoryType storyType, bool cached) async {
     _log.info('loadStoryIds: $storyType');
     try {
-      final ids = await api.stories(storyType, cached);
+      final ids = await api.stories(storyType, cached:cached);
       _storyIds = StoryIdsResult.value(ids);
     } on Exception catch (e, st) {
       _log.error(e, st);

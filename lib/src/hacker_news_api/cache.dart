@@ -71,14 +71,15 @@ class NoCache implements Cache {
 }
 
 class _CacheItem {
-  final String value;
-  final DateTime expired;
-
   const _CacheItem(
     this.value,
     this.expired,
   );
 
+  final String value;
+  final DateTime expired;
+
+  // ignore: sort_constructors_first
   factory _CacheItem.fromJson(Map<String, dynamic> json) => _CacheItem(
         json['value'] as String,
         DateTime.parse(json['expired'] as String),
@@ -269,7 +270,8 @@ class EternalFileCache implements Cache {
     _log.info('load');
     // ignore: omit_local_variable_types
     final Map<String, String> data = Map.castFrom(
-        jsonDecode(await file.readAsString()) as Map<dynamic, dynamic>);
+      jsonDecode(await file.readAsString()) as Map<dynamic, dynamic>,
+    );
     _data.addAll(data);
   }
 

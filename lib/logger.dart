@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'src/logging/logging.dart';
 
-final _initLog = Logger('init');
 StreamSubscription<LogRecord>? _loggerSub;
 
 // ignore: avoid_positional_boolean_parameters

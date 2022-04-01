@@ -16,7 +16,7 @@ class UserActivity extends StatelessWidget {
         item: item,
         showNested: false,
         activeUserLink: false,
-        collapsable: false,
+        collapsible: false,
         showParentLink: true,
       );
     } else {

@@ -31,23 +31,7 @@ part 'item.g.dart';
 
 @JsonSerializable()
 class Item {
-  final int id;
-  final bool? deleted;
-  final String? type;
-  final String? by;
-  final int? time;
-  final String? text;
-  final bool? dead;
-  final int? parent;
-  final int? poll;
-  final List<int>? kids;
-  final String? url;
-  final int? score;
-  final String? title;
-  final int? parts;
-  final int? descendants;
-
-  Item({
+  const Item({
     required this.id,
     this.deleted,
     this.type,
@@ -64,6 +48,22 @@ class Item {
     this.parts,
     this.descendants,
   });
+
+  final int id;
+  final bool? deleted;
+  final String? type;
+  final String? by;
+  final int? time;
+  final String? text;
+  final bool? dead;
+  final int? parent;
+  final int? poll;
+  final List<int>? kids;
+  final String? url;
+  final int? score;
+  final String? title;
+  final int? parts;
+  final int? descendants;
 
   // ignore: sort_constructors_first
   factory Item.fromJson(Map<String, dynamic> json) => _$ItemFromJson(json);

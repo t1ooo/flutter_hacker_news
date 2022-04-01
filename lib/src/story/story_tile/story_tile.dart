@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../hacker_news_api/item.dart';
 import '../../story/story_screen.dart';
-import '../../widget/link.dart';
 import '../../user/user_screen.dart';
+import '../../widget/link.dart';
 import '../format_time.dart';
 import 'style.dart';
 
@@ -33,12 +33,12 @@ class StoryTile extends StatelessWidget {
         title: Wrap(
           children: [
             MaterialAppLink(
+              active: activeCommentsLink,
+              routeBuilder: (_) => StoryScreen(id: item.id),
               child: Text(
                 item.title ?? '[deleted]',
                 style: TextStyle(fontSize: 16),
               ),
-              routeBuilder: (_) => StoryScreen(id: item.id),
-              active: activeCommentsLink,
             ),
           ],
         ),
@@ -50,14 +50,14 @@ class StoryTile extends StatelessWidget {
             if (item.by != null) ...[
               Text('by '),
               MaterialAppLink(
-                child: Text(item.by!),
-                routeBuilder: (_) => UserScreen(name: item.by!),
                 active: activeUserLink,
+                routeBuilder: (_) => UserScreen(name: item.by!),
+                child: Text(item.by!),
               ),
               Text(' '),
             ],
             if (item.time != null) ...[
-              Text(formatItemTime(item.time!) + ' | '),
+              Text('${formatItemTime(item.time!)} | '),
             ],
             Text('${item.descendants ?? 0} comments'),
           ],
@@ -68,8 +68,8 @@ class StoryTile extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(right: 20),
                 child: WebLink(
-                  child: Icon(Icons.open_in_new, size: 35),
                   url: item.url!,
+                  child: Icon(Icons.open_in_new, size: 35),
                 ),
               ),
           ],
