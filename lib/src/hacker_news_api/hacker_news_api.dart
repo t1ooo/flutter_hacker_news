@@ -14,32 +14,35 @@ class _URI {
   static const String base = 'https://hacker-news.firebaseio.com/v0';
   static String item(int id) => '/item/$id.json?print=pretty';
   static String user(String name) => '/user/${_e(name)}.json?print=pretty';
-  static const String maxitem = '/maxitem.json?print=pretty';
-  static const String topstories = '/topstories.json?print=pretty';
-  static const String newstories = '/newstories.json?print=pretty';
-  static const String beststories = '/beststories.json?print=pretty';
-  static const String askstories = '/askstories.json?print=pretty';
-  static const String showstories = '/showstories.json?print=pretty';
-  static const String jobstories = '/jobstories.json?print=pretty';
-  static const String updates = '/updates.json?print=pretty';
+  static String stories(StoryType type) =>
+      '/${type.toText()}stories.json?print=pretty';
+  // static const String topstories = '/topstories.json?print=pretty';
+  // static const String newstories = '/newstories.json?print=pretty';
+  // static const String beststories = '/beststories.json?print=pretty';
+  // static const String askstories = '/askstories.json?print=pretty';
+  // static const String showstories = '/showstories.json?print=pretty';
+  // static const String jobstories = '/jobstories.json?print=pretty';
+
+  // static const String maxitem = '/maxitem.json?print=pretty';
+  // static const String updates = '/updates.json?print=pretty';
 }
 
-String _storyPath(StoryType storyType) {
-  switch (storyType) {
-    case StoryType.top:
-      return _URI.topstories;
-    case StoryType.new_:
-      return _URI.newstories;
-    case StoryType.best:
-      return _URI.beststories;
-    case StoryType.ask:
-      return _URI.askstories;
-    case StoryType.show:
-      return _URI.showstories;
-    case StoryType.job:
-      return _URI.jobstories;
-  }
-}
+// String _storyPath(StoryType storyType) {
+//   switch (storyType) {
+//     case StoryType.top:
+//       return _URI.topstories;
+//     case StoryType.new_:
+//       return _URI.newstories;
+//     case StoryType.best:
+//       return _URI.beststories;
+//     case StoryType.ask:
+//       return _URI.askstories;
+//     case StoryType.show:
+//       return _URI.showstories;
+//     case StoryType.job:
+//       return _URI.jobstories;
+//   }
+// }
 
 abstract class HackerNewsApi {
   Future<Item> item(int id, {bool cached = true});
@@ -55,7 +58,8 @@ class HackerNewsApiImpl implements HackerNewsApi {
 
   @override
   Future<List<int>> stories(StoryType storyType, {bool cached = true}) async {
-    final uri = Uri.parse(_URI.base + _storyPath(storyType));
+    // final uri = Uri.parse(_URI.base + _storyPath(storyType));
+    final uri = Uri.parse(_URI.base + _URI.stories(storyType));
     final body = await client.getBody(
       uri,
       maxAge: Duration(minutes: cached ? 5 : 0),
