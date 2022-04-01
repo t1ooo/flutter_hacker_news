@@ -16,6 +16,8 @@ flutter pub add shimmer
 flutter pub add quiver
 flutter pub add intl
 flutter pub add html
+flutter pub add mocktail
+flutter pub add test
 
 flutter pub add build_runner --dev
 flutter pub add json_serializable --dev

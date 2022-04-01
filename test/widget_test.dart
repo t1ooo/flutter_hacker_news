@@ -1,20 +1,38 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility that Flutter provides. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_hacker_news_prototype/logger.dart';
 import 'package:flutter_hacker_news_prototype/src/app.dart';
 import 'package:flutter_hacker_news_prototype/src/hacker_news_api/hacker_news_api.dart';
+import 'package:flutter_hacker_news_prototype/src/hacker_news_api/item.dart';
+import 'package:flutter_hacker_news_prototype/src/hacker_news_api/story_type.dart';
+import 'package:flutter_hacker_news_prototype/src/hacker_news_api/user.dart';
 import 'package:flutter_hacker_news_prototype/src/stories/stories_screen.dart';
 import 'package:flutter_hacker_news_prototype/src/story/story_screen.dart';
 import 'package:flutter_hacker_news_prototype/src/user/user_screen.dart';
 import 'package:flutter_hacker_news_prototype/src/user_activities/user_activities_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
+
+Future<void> main() async {
+  await widgetSmokeTest('MyApp widget smoke test', MyApp());
+
+  // NOTE: throw exception(No MediaQuery widget ancestor found) without Material
+  await widgetSmokeTest(
+    'MyApp widget smoke test',
+    withMaterial(StoriesScreen()),
+  );
+  await widgetSmokeTest(
+    'MyApp widget smoke test',
+    withMaterial(StoryScreen(id: 0)),
+  );
+  await widgetSmokeTest(
+    'MyApp widget smoke test',
+    withMaterial(UserActivitiesScreen(name: 'test-user')),
+  );
+  await widgetSmokeTest(
+    'MyApp widget smoke test',
+    withMaterial(UserScreen(name: 'test-user')),
+  );
+}
 
 Future<Provider<HackerNewsApi>> testHackerNewsApiProvider() async {
   return Provider<HackerNewsApi>.value(value: FakeHackerNewsApi());
@@ -24,7 +42,7 @@ Widget withMaterial(Widget child) {
   return MaterialApp(home: child);
 }
 
-Future<void> widgetTester(String name, Widget child) async {
+Future<void> widgetSmokeTest(String name, Widget child) async {
   testWidgets(name, (WidgetTester tester) async {
     configureLogger(true);
     final _hackerNewsApiProvider = await testHackerNewsApiProvider();
@@ -40,96 +58,41 @@ Future<void> widgetTester(String name, Widget child) async {
   });
 }
 
-Future<void> main() async {
-  await widgetTester('MyApp widget smoke test', MyApp());
+class FakeHackerNewsApi implements HackerNewsApi {
+  @override
+  Future<Item> item(int id, {bool cached = true}) async {
+    return Item(
+      id: 0,
+      deleted: false,
+      type: 'story',
+      by: 'user-name',
+      time: 0,
+      text: 'item-text',
+      dead: false,
+      parent: 0,
+      poll: 234,
+      kids: id < 5 ? [id + 1, id + 2, id + 3] : [],
+      url: 'https://example.com',
+      score: 0,
+      title: 'item-title',
+      parts: 0,
+      descendants: 0,
+    );
+  }
 
-  // NOTE: throw exception(No MediaQuery widget ancestor found) without Material
-  await widgetTester(
-    'MyApp widget smoke test',
-    withMaterial(StoriesScreen()),
-  );
-  await widgetTester(
-    'MyApp widget smoke test',
-    withMaterial(StoryScreen(id: 0)),
-  );
-  await widgetTester(
-    'MyApp widget smoke test',
-    withMaterial(UserActivitiesScreen(name: 'test-user')),
-  );
-  await widgetTester(
-    'MyApp widget smoke test',
-    withMaterial(UserScreen(name: 'test-user')),
-  );
+  @override
+  Future<User> user(String name, {bool cached = true}) async {
+    return User(
+      id: 'user-name',
+      created: 0,
+      karma: 0,
+      about: 'user-about',
+      submitted: [0, 1, 2, 3, 4, 5],
+    );
+  }
 
-  // testWidgets('MyApp widget smoke test', (WidgetTester tester) async {
-  //   configureLogger(true);
-  //   final _hackerNewsApiProvider = await testHackerNewsApiProvider();
-
-  //   await tester.pumpWidget(
-  //     MultiProvider(
-  //       providers: [
-  //         _hackerNewsApiProvider,
-  //       ],
-  //       child: MyApp(),
-  //     ),
-  //   );
-  // });
-
-  // testWidgets('StoriesScreen widget smoke test', (WidgetTester tester) async {
-  //   configureLogger(true);
-  //   final _hackerNewsApiProvider = await testHackerNewsApiProvider();
-
-  //   await tester.pumpWidget(
-  //     MultiProvider(
-  //       providers: [
-  //         _hackerNewsApiProvider,
-  //       ],
-  //       // NOTE: throw exception(No MediaQuery widget ancestor found) without Material
-  //       child: withMaterial(StoriesScreen()),
-  //     ),
-  //   );
-  // });
-
-  // testWidgets('StoryScreen widget smoke test', (WidgetTester tester) async {
-  //   configureLogger(true);
-  //   final _hackerNewsApiProvider = await testHackerNewsApiProvider();
-
-  //   await tester.pumpWidget(
-  //     MultiProvider(
-  //       providers: [
-  //         _hackerNewsApiProvider,
-  //       ],
-  //       child: withMaterial(StoryScreen(id: 0)),
-  //     ),
-  //   );
-  // });
-
-  // testWidgets('UserActivitiesScreen widget smoke test',
-  //     (WidgetTester tester) async {
-  //   configureLogger(true);
-  //   final _hackerNewsApiProvider = await testHackerNewsApiProvider();
-
-  //   await tester.pumpWidget(
-  //     MultiProvider(
-  //       providers: [
-  //         _hackerNewsApiProvider,
-  //       ],
-  //       child: withMaterial(UserActivitiesScreen(name: 'test-user')),
-  //     ),
-  //   );
-  // });
-
-  // testWidgets('UserScreen widget smoke test', (WidgetTester tester) async {
-  //   configureLogger(true);
-  //   final _hackerNewsApiProvider = await testHackerNewsApiProvider();
-
-  //   await tester.pumpWidget(
-  //     MultiProvider(
-  //       providers: [
-  //         _hackerNewsApiProvider,
-  //       ],
-  //       child: withMaterial(UserScreen(name: 'test-user')),
-  //     ),
-  //   );
-  // });
+  @override
+  Future<List<int>> stories(StoryType storyType, {bool cached = true}) async {
+    return [1, 2, 3, 4, 5];
+  }
 }
