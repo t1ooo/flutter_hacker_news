@@ -9,6 +9,7 @@ import 'user.dart';
 
 String _e(String s) => Uri.encodeComponent(s);
 
+// ignore: avoid_classes_with_only_static_members
 class _URI {
   static const String base = 'https://hacker-news.firebaseio.com';
   static String item(int id) => '/v0/item/$id.json?print=pretty';

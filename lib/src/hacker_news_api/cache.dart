@@ -13,7 +13,6 @@ abstract class Cache {
   Future<void> put(String key, String value, Duration maxAge);
 }
 
-// TODO: use key value storage
 class FileCache implements Cache {
   FileCache(int size, [this.clock = const Clock()]) {
     // _cacheManager = DefaultCacheManager();
@@ -42,7 +41,7 @@ class FileCache implements Cache {
 
     if (fileInfo.validTill < clock.now()) {
       _log.info('expired: $key');
-      _cacheManager.removeFile(key);
+      await _cacheManager.removeFile(key);
       return null;
     }
 
@@ -75,7 +74,7 @@ class _CacheItem {
   final String value;
   final DateTime expired;
 
-  _CacheItem(
+  const _CacheItem(
     this.value,
     this.expired,
   );
@@ -197,7 +196,6 @@ class PersistenceLruCache implements Cache {
       return null;
     }
 
-    // _log.info('hit: $key');
     return item.value;
   }
 
@@ -212,7 +210,7 @@ class PersistenceLruCache implements Cache {
     final data = jsonDecode(await file.readAsString()) as Map<String, dynamic>;
     for (final e in data.entries) {
       final k = e.key;
-      final v = _CacheItem.fromJson(e.value);
+      final v = _CacheItem.fromJson(e.value as Map<String, dynamic>);
       _data[k] = v;
     }
   }
@@ -269,8 +267,9 @@ class EternalFileCache implements Cache {
 
   Future<void> load() async {
     _log.info('load');
-    final Map<String, String> data =
-        Map.castFrom(jsonDecode(await file.readAsString()));
+    // ignore: omit_local_variable_types
+    final Map<String, String> data = Map.castFrom(
+        jsonDecode(await file.readAsString()) as Map<dynamic, dynamic>);
     _data.addAll(data);
   }
 
