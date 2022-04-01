@@ -20,9 +20,9 @@ class UserActivitiesScreen extends StatelessWidget {
         padding: pagePadding,
         child: MultiProvider(
           providers: [
-            userProvider(context),
-            itemProvider(context),
-            commentProvider(context),
+            userProvider(),
+            itemProvider(),
+            commentProvider(),
           ],
           child: UserActivitiesLoader(name: name),
         ),

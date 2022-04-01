@@ -21,8 +21,8 @@ class StoryScreen extends StatelessWidget {
         padding: pagePadding,
         child: MultiProvider(
           providers: [
-            itemProvider(context),
-            commentProvider(context),
+            itemProvider(),
+            commentProvider(),
           ],
           child: StoryLoader(id: id),
         ),

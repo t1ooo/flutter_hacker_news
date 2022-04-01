@@ -35,7 +35,6 @@ class HttpClientImpl implements HttpClient {
     final cached = maxAge > Duration.zero;
 
     if (cached) {
-      // print(uri.toString());
       final body = await cache.get(uri.toString());
       if (body != null) {
         return body;
@@ -46,7 +45,7 @@ class HttpClientImpl implements HttpClient {
 
     return retry(
       () async {
-        // _log.info('request: $uri');
+        _log.info('request: $uri');
         final response = await client.get(uri).timeout(timeout);
         await checkResponse(response);
         await cache.put(uri.toString(), response.body, maxAge);

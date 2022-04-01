@@ -21,7 +21,7 @@ class UserScreen extends StatelessWidget {
         padding: pagePadding,
         child: MultiProvider(
           providers: [
-            userProvider(context),
+            userProvider(),
           ],
           child: UserLoader(name: name),
         ),

@@ -13,14 +13,14 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: StoriesScreen(),
-      builder: (BuildContext context, Widget? widget) {
+      /* builder: (BuildContext context, Widget? widget) {
         Widget error = Text('...rendering error...');
         if (widget is Scaffold || widget is Navigator) {
           error = Scaffold(body: Center(child: error));
         }
         ErrorWidget.builder = (FlutterErrorDetails errorDetails) => error;
         return widget ?? Container();
-      },
+      }, */
     );
   }
 }

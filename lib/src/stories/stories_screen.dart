@@ -30,8 +30,8 @@ class StoriesScreen extends StatelessWidget {
                 padding: pagePadding,
                 child: MultiProvider(
                   providers: [
-                    storyProvider(context),
-                    itemProvider(context),
+                    storyProvider(),
+                    itemProvider(),
                   ],
                   child: StoriesLoader(storyType: storyType),
                 ),

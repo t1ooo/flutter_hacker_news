@@ -11,6 +11,7 @@ import '../logging/logging.dart';
 abstract class Cache {
   Future<String?> get(String key);
   Future<void> put(String key, String value, Duration maxAge);
+  void dispose();
 }
 
 class FileCache implements Cache {
@@ -56,6 +57,9 @@ class FileCache implements Cache {
       maxAge: maxAge,
     );
   }
+
+  @override
+  void dispose() {}
 }
 
 class NoCache implements Cache {
@@ -68,6 +72,9 @@ class NoCache implements Cache {
   Future<void> put(String key, String value, Duration maxAge) async {
     return;
   }
+
+  @override
+  void dispose() {}
 }
 
 class _CacheItem {
@@ -121,6 +128,9 @@ class InMemoryCache implements Cache {
     final expired = clock.now().add(maxAge);
     _data[key] = _CacheItem(value, expired);
   }
+
+  @override
+  void dispose() {}
 }
 
 class InMemoryLruCache implements Cache {
@@ -155,6 +165,9 @@ class InMemoryLruCache implements Cache {
     final expired = clock.now().add(maxAge);
     _data[key] = _CacheItem(value, expired);
   }
+
+  @override
+  void dispose() {}
 }
 
 class PersistenceInMemoryLruCache implements Cache {
@@ -208,21 +221,41 @@ class PersistenceInMemoryLruCache implements Cache {
 
   Future<void> load() async {
     _log.info('load');
-    final data = jsonDecode(await file.readAsString()) as Map<String, dynamic>;
+    final data = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
     for (final e in data.entries) {
       final k = e.key;
       final v = _CacheItem.fromJson(e.value as Map<String, dynamic>);
       _data[k] = v;
     }
+    _log.info('load done');
   }
 
+  // Future<void> _savePeriodic() async {
+  //   while (true) {
+  //     if (_lastSave < _lastUpdate) {
+  //       await _save();
+  //     }
+  //     await Future.delayed(saveDelay);
+  //   }
+  // }
+
+  bool _saving = false;
+  Timer? _timer;
+
   Future<void> _savePeriodic() async {
-    while (true) {
-      if (_lastSave < _lastUpdate) {
-        await _save();
+    _timer?.cancel();
+    _timer = Timer.periodic(saveDelay, (_) {
+      if (!_saving && _lastSave < _lastUpdate) {
+        _saving = true;
+        _save();
+        _saving = false;
       }
-      await Future.delayed(saveDelay);
-    }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
   }
 
   Future<void> _save() async {
@@ -234,7 +267,11 @@ class PersistenceInMemoryLruCache implements Cache {
 }
 
 class EternalFileCache implements Cache {
-  EternalFileCache(this.file, [this.clock = const Clock()]) {
+  EternalFileCache(
+    this.file, [
+    this.clock = const Clock(),
+    this.saveDelay = const Duration(seconds: 60),
+  ]) {
     _savePeriodic();
   }
 
@@ -245,6 +282,7 @@ class EternalFileCache implements Cache {
   static final _initDateTime = DateTime(1970);
   DateTime _lastUpdate = _initDateTime;
   DateTime _lastSave = _initDateTime;
+  final Duration saveDelay;
 
   static final _log = Logger('EternalFileCache');
 
@@ -268,20 +306,48 @@ class EternalFileCache implements Cache {
 
   Future<void> load() async {
     _log.info('load');
-    // ignore: omit_local_variable_types
-    final Map<String, String> data = Map.castFrom(
-      jsonDecode(await file.readAsString()) as Map<dynamic, dynamic>,
-    );
-    _data.addAll(data);
+    // // ignore: omit_local_variable_types
+    // final Map<String, String> data = Map.castFrom(
+    //   jsonDecode(await file.readAsString()) as Map<String, dynamic>,
+    // );
+    // _data.addAll(data);
+
+    final data = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
+    for (final e in data.entries) {
+      final k = e.key;
+      final v = e.value as String;
+      _data[k] = v;
+    }
+
+    _log.info('load done');
   }
 
+  // Future<void> _savePeriodic() async {
+  //   while (true) {
+  //     if (_lastSave < _lastUpdate) {
+  //       await _save();
+  //     }
+  //     await Future.delayed(Duration(seconds: 60));
+  //   }
+  // }
+
+  bool _saving = false;
+  Timer? _timer;
+
   Future<void> _savePeriodic() async {
-    while (true) {
-      if (_lastSave < _lastUpdate) {
-        await _save();
+    _timer?.cancel();
+    _timer = Timer.periodic(saveDelay, (_) {
+      if (!_saving && _lastSave < _lastUpdate) {
+        _saving = true;
+        _save();
+        _saving = false;
       }
-      await Future.delayed(Duration(seconds: 60));
-    }
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
   }
 
   Future<void> _save() async {

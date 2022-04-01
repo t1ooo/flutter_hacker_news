@@ -25,7 +25,7 @@ Future<Provider<HackerNewsApi>> hackerNewsApiProvider() async {
   return Provider.value(value: hackerNewsApi);
 }
 
-ChangeNotifierProvider<StoryNotifier> storyProvider(BuildContext context) {
+ChangeNotifierProvider<StoryNotifier> storyProvider() {
   return ChangeNotifierProvider(
     create: (BuildContext context) => StoryNotifier(
       context.read<HackerNewsApi>(),
@@ -33,7 +33,7 @@ ChangeNotifierProvider<StoryNotifier> storyProvider(BuildContext context) {
   );
 }
 
-ChangeNotifierProvider<UserNotifier> userProvider(BuildContext context) {
+ChangeNotifierProvider<UserNotifier> userProvider() {
   return ChangeNotifierProvider(
     create: (BuildContext context) => UserNotifier(
       context.read<HackerNewsApi>(),
@@ -41,7 +41,7 @@ ChangeNotifierProvider<UserNotifier> userProvider(BuildContext context) {
   );
 }
 
-ChangeNotifierProvider<ItemNotifier> itemProvider(BuildContext context) {
+ChangeNotifierProvider<ItemNotifier> itemProvider() {
   return ChangeNotifierProvider(
     create: (BuildContext context) => ItemNotifier(
       context.read<HackerNewsApi>(),
@@ -49,7 +49,7 @@ ChangeNotifierProvider<ItemNotifier> itemProvider(BuildContext context) {
   );
 }
 
-ChangeNotifierProvider<CommentNotifier> commentProvider(BuildContext context) {
+ChangeNotifierProvider<CommentNotifier> commentProvider() {
   return ChangeNotifierProvider(
     create: (BuildContext context) => CommentNotifier(),
   );
