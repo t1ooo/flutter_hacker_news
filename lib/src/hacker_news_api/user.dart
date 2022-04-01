@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'user.g.dart';
@@ -10,7 +11,7 @@ part 'user.g.dart';
 /// submitted: List of the user's stories, polls and comments.
 
 @JsonSerializable()
-class User {
+class User extends Equatable {
   const User({
     required this.id,
     required this.created,
@@ -29,4 +30,13 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserToJson(this);
+
+  @override
+  List<Object?> get props => [
+        id,
+        created,
+        karma,
+        about,
+        submitted,
+      ];
 }

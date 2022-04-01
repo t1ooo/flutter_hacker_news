@@ -4,10 +4,11 @@ import 'package:flutter_hacker_news_prototype/src/hacker_news_api/hacker_news_ap
 import 'package:flutter_hacker_news_prototype/src/hacker_news_api/http_client.dart';
 import 'package:flutter_hacker_news_prototype/src/hacker_news_api/item.dart';
 import 'package:flutter_hacker_news_prototype/src/hacker_news_api/story_type.dart';
+import 'package:flutter_hacker_news_prototype/src/hacker_news_api/user.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class FakeHttpClient extends Mock implements HttpClient {}
+
 
 void main() {
   // test('HackerNewsApi stories test', () async {
@@ -37,6 +38,10 @@ void main() {
 
   testItem(0, Item(id: 0));
   testItem(1, Item(id: 1));
+
+
+  testUser('test-user-0', User(id: 'test-user-0', created: 0, karma: 0));
+  testUser('test-user-1', User(id: 'test-user-1', created: 1, karma: 1));
 }
 
 void testStories(StoryType type) {
@@ -46,14 +51,16 @@ void testStories(StoryType type) {
     final uri = 'https://hacker-news.firebaseio.com/v0/'
         '${type.toText()}stories.json?print=pretty';
 
-    registerFallbackValue(Duration.zero);
+    // registerFallbackValue(Duration.zero);
 
-    final httpClient = FakeHttpClient();
-    when(
-      () => httpClient.getBody(Uri.parse(uri), maxAge: any(named: 'maxAge')),
-    ).thenAnswer(
-      (_) async => jsonEncode(result),
-    );
+    // final httpClient = FakeHttpClient();
+    // when(
+    //   () => httpClient.getBody(Uri.parse(uri), maxAge: any(named: 'maxAge')),
+    // ).thenAnswer(
+    //   (_) async => jsonEncode(result),
+    // );
+    final httpClient = httpClientMock(Uri.parse(uri), jsonEncode(result));
+
 
     final api = HackerNewsApiImpl(httpClient);
 
@@ -67,14 +74,15 @@ void testItem(int id, Item result) {
     final uri =
         'https://hacker-news.firebaseio.com/v0/item/$id.json?print=pretty';
 
-    registerFallbackValue(Duration.zero);
+    // registerFallbackValue(Duration.zero);
 
-    final httpClient = FakeHttpClient();
-    when(
-      () => httpClient.getBody(Uri.parse(uri), maxAge: any(named: 'maxAge')),
-    ).thenAnswer(
-      (_) async => jsonEncode(result.toJson()),
-    );
+    // final httpClient = FakeHttpClient();
+    // when(
+    //   () => httpClient.getBody(Uri.parse(uri), maxAge: any(named: 'maxAge')),
+    // ).thenAnswer(
+    //   (_) async => jsonEncode(result.toJson()),
+    // );
+    final httpClient = httpClientMock(Uri.parse(uri), jsonEncode(result.toJson()));
 
     final api = HackerNewsApiImpl(httpClient);
 
@@ -83,16 +91,42 @@ void testItem(int id, Item result) {
   });
 }
 
-// void mockHttpClient(String uri, String body) {
-//   registerFallbackValue(Duration.zero);
+void testUser(String name, User result) {
+  test('HackerNewsApi item test', () async {
+    final uri =
+        'https://hacker-news.firebaseio.com/v0/user/$name.json?print=pretty';
 
-//   final httpClient = FakeHttpClient();
-//   when(
-//     () => httpClient.getBody(Uri.parse(uri), maxAge: any(named: 'maxAge')),
-//   ).thenAnswer(
-//     (_) async => body,
-//   );
-// }
+    // registerFallbackValue(Duration.zero);
+
+    // final httpClient = FakeHttpClient();
+    // when(
+    //   () => httpClient.getBody(Uri.parse(uri), maxAge: any(named: 'maxAge')),
+    // ).thenAnswer(
+    //   (_) async => jsonEncode(result.toJson()),
+    // );
+    final httpClient = httpClientMock(Uri.parse(uri), jsonEncode(result.toJson()));
+
+    final api = HackerNewsApiImpl(httpClient);
+
+    final item = await api.user(name);
+    expect(item, result);
+  });
+}
+
+class FakeHttpClient extends Mock implements HttpClient {}
+
+HttpClient httpClientMock(Uri uri, String body) {
+  registerFallbackValue(Duration.zero);
+
+  final httpClient = FakeHttpClient();
+  when(
+    () => httpClient.getBody(uri, maxAge: any(named: 'maxAge')),
+  ).thenAnswer(
+    (_) async => body,
+  );
+
+  return httpClient;
+}
 
 
 // class FakeHttpClient implements HttpClient {
