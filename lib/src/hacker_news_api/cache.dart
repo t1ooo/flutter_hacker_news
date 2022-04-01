@@ -157,8 +157,8 @@ class InMemoryLruCache implements Cache {
   }
 }
 
-class PersistenceLruCache implements Cache {
-  PersistenceLruCache(
+class PersistenceInMemoryLruCache implements Cache {
+  PersistenceInMemoryLruCache(
     int size,
     this.file, {
     this.clock = const Clock(),
@@ -180,7 +180,7 @@ class PersistenceLruCache implements Cache {
   late final LruMap<String, _CacheItem> _data;
   late DateTime _lastSave;
   late DateTime _lastUpdate;
-  static final _log = Logger('PersistenceLruCache');
+  static final _log = Logger('PersistenceInMemoryLruCache');
 
   @override
   Future<String?> get(String key) async {
