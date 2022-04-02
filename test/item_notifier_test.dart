@@ -69,51 +69,48 @@ Future<void> main() async {
         ..addListener(notifyListenerCallback);
     });
 
-    // test('should fire notifyListeners', () async {
-    //   verifyNever(notifyListenerCallback);
-
-    //   await itemNotifier.loadItem(id);
-    //   verify(notifyListenerCallback).called(1);
-    // });
+    test('should fire notifyListeners', () async {
+      verifyNever(notifyListenerCallback);
+      await itemNotifier.loadItem(id);
+      verify(notifyListenerCallback).called(1);
+    });
     // testFireNotifyListeners<ItemNotifier>(
     //   'loadItem',
     //   () => ItemNotifier(FakeHackerNewsApi()),
     //   (itemNotifier, _) => itemNotifier.loadItem(id),
     // );
-    test('should fire notifyListeners after loadItem', () async {
-      await testCalled((listener) async {
-        itemNotifier.addListener(listener);
-        await itemNotifier.loadItem(id);
-      });
-    });
-
-    // test('should fire notifyListeners', () async {
-    //   verifyNever(notifyListenerCallback);
-
-    //   await itemNotifier.reloadItem(id);
-    //   verify(notifyListenerCallback).called(1);
+    // test('should fire notifyListeners after loadItem', () async {
+    //   await testCalled((listener) async {
+    //     itemNotifier.addListener(listener);
+    //     await itemNotifier.loadItem(id);
+    //   });
     // });
+
+    test('should fire notifyListeners', () async {
+      verifyNever(notifyListenerCallback);
+      await itemNotifier.reloadItem(id);
+      verify(notifyListenerCallback).called(1);
+    });
     // testFireNotifyListeners<ItemNotifier>(
     //   'reloadItem',
     //   () => ItemNotifier(FakeHackerNewsApi()),
     //   (itemNotifier, _) => itemNotifier.reloadItem(id),
     // );
-    test('should fire notifyListeners after reloadItem', () async {
-      await testCalled((listener) async {
-        itemNotifier.addListener(listener);
-        await itemNotifier.reloadItem(id);
-      });
-    });
-
-    // test('should fire notifyListeners', () async {
-    //   await itemNotifier.loadItem(id);
-    //   reset(notifyListenerCallback);
-
-    //   verifyNever(notifyListenerCallback);
-
-    //   await itemNotifier.reloadItems(awaited: true);
-    //   verify(notifyListenerCallback).called(1);
+    // test('should fire notifyListeners after reloadItem', () async {
+    //   await testCalled((listener) async {
+    //     itemNotifier.addListener(listener);
+    //     await itemNotifier.reloadItem(id);
+    //   });
     // });
+
+    test('should fire notifyListeners', () async {
+      await itemNotifier.loadItem(id);
+      reset(notifyListenerCallback);
+
+      verifyNever(notifyListenerCallback);
+      await itemNotifier.reloadItems(awaited: true);
+      verify(notifyListenerCallback).called(1);
+    });
     // testFireNotifyListeners<ItemNotifier>(
     //   'reloadItems',
     //   () async {
@@ -123,14 +120,14 @@ Future<void> main() async {
     //   },
     //   (itemNotifier, _) => itemNotifier.reloadItems(awaited: true),
     // );
-    test('should fire notifyListeners after reloadItems', () async {
-      await testCalled((listener) async {
-        await itemNotifier.loadItem(id);
+    // test('should fire notifyListeners after reloadItems', () async {
+    //   await testCalled((listener) async {
+    //     await itemNotifier.loadItem(id);
 
-        itemNotifier.addListener(listener);
-        await itemNotifier.reloadItems(awaited: true);
-      });
-    });
+    //     itemNotifier.addListener(listener);
+    //     await itemNotifier.reloadItems(awaited: true);
+    //   });
+    // });
 
     test('item should be not exist by default', () async {
       expect(itemNotifier.item(id), ItemResult.empty());
