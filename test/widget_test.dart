@@ -70,7 +70,7 @@ class FakeHackerNewsApi implements HackerNewsApi {
       text: 'item-text',
       dead: false,
       parent: 0,
-      poll: 234,
+      poll: 0,
       kids: id < 5 ? [id + 1, id + 2, id + 3] : [],
       url: 'https://example.com',
       score: 0,
