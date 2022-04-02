@@ -6,15 +6,17 @@ Future<void> main() async {
   group('CommentNotifier', () {
     const id = 0;
     final notifyListenerCallback = MockCallbackFunction();
-    CommentNotifier create() =>
-        CommentNotifier()..addListener(notifyListenerCallback);
+    late CommentNotifier commentNotifier;
+    // CommentNotifier create() =>
+    // CommentNotifier()..addListener(notifyListenerCallback);
 
     setUp(() {
-      reset(notifyListenerCallback); 
+      reset(notifyListenerCallback);
+      commentNotifier = CommentNotifier()..addListener(notifyListenerCallback);
     });
 
     test('should fire notifyListeners', () async {
-      final commentNotifier = create();
+      // final commentNotifier = create();
 
       verifyNever(() => notifyListenerCallback());
 
@@ -23,22 +25,22 @@ Future<void> main() async {
     });
 
     test('comment should be visible by default', () async {
-      final commentNotifier = create();
+      // final commentNotifier = create();
 
       expect(commentNotifier.isVisible(id), true);
     });
 
     test('comment should be not visible after toggle', () async {
-      final commentNotifier = create();
+      // final commentNotifier = create();
 
       commentNotifier.toggleVisibility(id);
       expect(commentNotifier.isVisible(id), false);
     });
 
     test('comment should be toggle correct', () async {
-      final commentNotifier = create();
+      // final commentNotifier = create();
 
-      bool isVisible = commentNotifier.isVisible(id);
+      final isVisible = commentNotifier.isVisible(id);
 
       commentNotifier.toggleVisibility(id);
       expect(commentNotifier.isVisible(id), !isVisible);
