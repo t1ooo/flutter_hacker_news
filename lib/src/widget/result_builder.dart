@@ -26,9 +26,9 @@ class ResultBuilder<V, E> extends StatelessWidget {
       return onError(context, error);
     }
 
-    final storyIds = r.value;
-    if (storyIds != null) {
-      return onData(context, storyIds);
+    final value = r.value;
+    if (value != null) {
+      return onData(context, value);
     }
 
     return onLoading(context);

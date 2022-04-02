@@ -9,19 +9,21 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 void main() {
-  for (final type in StoryType.values) {
-    testStories(type);
-  }
+  group('HackerNewsApi', () {
+    for (final type in StoryType.values) {
+      testStories(type);
+    }
 
-  testItem(0, Item(id: 0));
-  testItem(1, Item(id: 1));
+    testItem(0, Item(id: 0));
+    testItem(1, Item(id: 1));
 
-  testUser('test-user-0', User(id: 'test-user-0', created: 0, karma: 0));
-  testUser('test-user-1', User(id: 'test-user-1', created: 1, karma: 1));
+    testUser('test-user-0', User(id: 'test-user-0', created: 0, karma: 0));
+    testUser('test-user-1', User(id: 'test-user-1', created: 1, karma: 1));
+  });
 }
 
 void testStories(StoryType type) {
-  test('HackerNewsApi stories:${type.toText()} test', () async {
+  test('get stories:${type.toText()}', () async {
     final result = [1, 2, 3, 4, 5];
 
     final uri = UriBuilder.stories(type);
@@ -34,7 +36,7 @@ void testStories(StoryType type) {
 }
 
 void testItem(int id, Item result) {
-  test('HackerNewsApi item test', () async {
+  test('get item', () async {
     final uri = UriBuilder.item(id);
     final httpClient = httpClientMock(uri, jsonEncode(result.toJson()));
     final api = HackerNewsApiImpl(httpClient);
@@ -45,7 +47,7 @@ void testItem(int id, Item result) {
 }
 
 void testUser(String name, User result) {
-  test('HackerNewsApi item test', () async {
+  test('get user', () async {
     final uri = UriBuilder.user(name);
     final httpClient = httpClientMock(uri, jsonEncode(result.toJson()));
     final api = HackerNewsApiImpl(httpClient);
