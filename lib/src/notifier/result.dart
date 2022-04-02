@@ -1,4 +1,6 @@
-class Result<V, E> {
+import 'package:equatable/equatable.dart';
+
+class Result<V, E> extends Equatable {
   const Result(this.value, this.error);
 
   factory Result.empty() => Result(null, null);
@@ -7,4 +9,10 @@ class Result<V, E> {
 
   final V? value;
   final E? error;
+
+  @override
+  List<Object?> get props => [
+        value,
+        error,
+      ];
 }

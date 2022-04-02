@@ -1,3 +1,4 @@
+import 'package:flutter_hacker_news_prototype/src/clock/clock.dart';
 import 'package:flutter_hacker_news_prototype/src/hacker_news_api/hacker_news_api.dart';
 import 'package:flutter_hacker_news_prototype/src/hacker_news_api/item.dart';
 import 'package:flutter_hacker_news_prototype/src/hacker_news_api/story_type.dart';
@@ -5,14 +6,21 @@ import 'package:flutter_hacker_news_prototype/src/hacker_news_api/user.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class FakeHackerNewsApi implements HackerNewsApi {
+  FakeHackerNewsApi([this.clock = const Clock()]);
+
+  final Clock clock;
+
   @override
   Future<Item> item(int id, {bool cached = true}) async {
+    await Future.delayed(Duration(milliseconds: 100));
     return Item(
-      id: 0,
+      id: id,
       deleted: false,
       type: 'story',
       by: 'user-name',
-      time: 0,
+      time: cached
+          ? 0
+          : DateTime.now().millisecondsSinceEpoch ~/ 1000, // secondsSinceEpoch
       text: 'item-text',
       dead: false,
       parent: 0,

@@ -82,3 +82,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
     return User.fromJson(jsonDecode(body) as Map<String, dynamic>);
   }
 }
+
+DateTime dateTimeUnixTime(int unixTimeSec) {
+  return DateTime.fromMillisecondsSinceEpoch(unixTimeSec * 1000);
+}

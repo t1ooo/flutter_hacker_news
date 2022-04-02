@@ -1,6 +1,8 @@
-String formatItemTime(int unixTimeS) {
+import '../hacker_news_api/hacker_news_api.dart';
+
+String formatItemTime(int unixTimeSec) {
   final diff = DateTime.now().toUtc().difference(
-        DateTime.fromMillisecondsSinceEpoch(unixTimeS * 1000),
+        dateTimeUnixTime(unixTimeSec),
       );
 
   if (diff.inDays > 0) {

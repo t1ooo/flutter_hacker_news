@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../hacker_news_api/hacker_news_api.dart';
 import '../hacker_news_api/user.dart';
 import '../user_activities/user_activities_screen.dart';
 import '../widget/html.dart';
@@ -63,8 +64,8 @@ class UserWidget extends StatelessWidget {
 
   static final _dateFormatter = DateFormat('MMMM dd, yyyy');
 
-  String _formatItemTime(int unixTimeS) {
-    final dt = DateTime.fromMillisecondsSinceEpoch(unixTimeS * 1000);
+  String _formatItemTime(int unixTimeSec) {
+    final dt = dateTimeUnixTime(unixTimeSec);
     return _dateFormatter.format(dt);
   }
 }
