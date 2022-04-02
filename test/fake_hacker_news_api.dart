@@ -3,6 +3,7 @@ import 'package:flutter_hacker_news_prototype/src/hacker_news_api/hacker_news_ap
 import 'package:flutter_hacker_news_prototype/src/hacker_news_api/item.dart';
 import 'package:flutter_hacker_news_prototype/src/hacker_news_api/story_type.dart';
 import 'package:flutter_hacker_news_prototype/src/hacker_news_api/user.dart';
+import 'package:flutter_hacker_news_prototype/src/util/data_time.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class FakeHackerNewsApi implements HackerNewsApi {
@@ -18,9 +19,7 @@ class FakeHackerNewsApi implements HackerNewsApi {
       deleted: false,
       type: 'story',
       by: 'user-name',
-      time: cached
-          ? 0
-          : DateTime.now().millisecondsSinceEpoch ~/ 1000, // secondsSinceEpoch
+      time: cached ? 0 : unixTimeFromDateTime(clock.now()), // secondsSinceEpoch
       text: 'item-text',
       dead: false,
       parent: 0,

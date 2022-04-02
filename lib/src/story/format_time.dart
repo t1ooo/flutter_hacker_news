@@ -1,9 +1,9 @@
 import '../hacker_news_api/hacker_news_api.dart';
+import '../util/data_time.dart';
 
 String formatItemTime(int unixTimeSec) {
-  final diff = DateTime.now().toUtc().difference(
-        dateTimeUnixTime(unixTimeSec),
-      );
+  final diff =
+      DateTime.now().toUtc().difference(dateTimeFromUnixTime(unixTimeSec));
 
   if (diff.inDays > 0) {
     return '${diff.inDays} days ago';
