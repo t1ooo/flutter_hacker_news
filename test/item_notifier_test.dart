@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/widgets.dart';
 import 'package:flutter_hacker_news_prototype/src/notifier/item_notifier.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';

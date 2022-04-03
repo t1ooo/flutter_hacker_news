@@ -10,9 +10,7 @@ import 'package:mocktail/mocktail.dart';
 
 void main() {
   group('HackerNewsApi', () {
-    for (final type in StoryType.values) {
-      testStories(type);
-    }
+    StoryType.values.forEach(testStories);
 
     testItem(0, Item(id: 0));
     testItem(1, Item(id: 1));

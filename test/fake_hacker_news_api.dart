@@ -40,7 +40,7 @@ class FakeHackerNewsApi implements HackerNewsApi {
       created: 0,
       karma: 0,
       about: 'user-about',
-      submitted: [0, 1, 2, 3, 4, 5],
+      submitted: const [0, 1, 2, 3, 4, 5],
     );
   }
 

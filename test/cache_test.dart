@@ -4,13 +4,12 @@ import 'package:flutter_hacker_news_prototype/src/hacker_news_api/cache.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:test/test.dart';
 
-// TODO: test cache size
-
 const size = 100;
 const key = 'k1';
 const value = 'v1';
 const maxAge = Duration(seconds: 1);
 
+// TODO: test cache size
 Future<void> main() async {
   final file = await cacheFile();
 

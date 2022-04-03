@@ -23,7 +23,6 @@ class UriBuilder {
       uri('$base/${type.toText()}stories.json');
 
   // static const String maxitem = '/maxitem.json';
-
   // static const String updates = '/updates.json';
 }
 
@@ -37,6 +36,7 @@ class HackerNewsApiImpl implements HackerNewsApi {
   HackerNewsApiImpl(this.client);
 
   final HttpClient client;
+  // ignore: unused_field
   static final _log = Logger('HackerNewsApiImpl');
 
   @override
