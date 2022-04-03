@@ -1,7 +1,7 @@
 import 'dart:io';
 
+import 'package:file/memory.dart';
 import 'package:flutter_hacker_news_prototype/src/hacker_news_api/cache.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:test/test.dart';
 
 const size = 100;
@@ -75,8 +75,7 @@ void testCache(String name, Cache Function() createCache) {
 }
 
 Future<File> cacheFile() async {
-  final tmpPath = (await getTemporaryDirectory()).path;
-  final file = File('$tmpPath/flutter_test_cache.json');
+  final file = MemoryFileSystem().file('flutter_test_cache.json');
   await file.writeAsString(''); // truncate file
   return file;
 }

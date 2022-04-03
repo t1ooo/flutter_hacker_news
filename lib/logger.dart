@@ -6,13 +6,10 @@ StreamSubscription<LogRecord>? _loggerSub;
 
 // ignore: avoid_positional_boolean_parameters
 void configureLogger(bool debugMode) {
-  if (!debugMode) {
-    return;
-  }
   if (_loggerSub != null) {
     return;
   }
-  Logger.root.level = Level.ALL;
+  Logger.root.level = debugMode ? Level.ALL : Level.WARNING;
   _loggerSub = Logger.root.onRecord.listen((LogRecord record) {
     // ignore: avoid_print
     print(

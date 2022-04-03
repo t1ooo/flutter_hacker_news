@@ -226,7 +226,7 @@ class PersistenceInMemoryLruCache implements Cache {
       final v = _CacheItem.fromJson(e.value as Map<String, dynamic>);
       _data[k] = v;
     }
-    _log.info('load done');
+    _log.info('load done: ${_data.length}');
   }
 
   bool _saving = false;
@@ -304,7 +304,7 @@ class EternalFileCache implements Cache {
       _data[k] = v;
     }
 
-    _log.info('load done');
+    _log.info('load done: ${_data.length}');
   }
 
   bool _saving = false;

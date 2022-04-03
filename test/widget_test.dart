@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hacker_news_prototype/logger.dart';
 import 'package:flutter_hacker_news_prototype/src/app.dart';
 import 'package:flutter_hacker_news_prototype/src/hacker_news_api/hacker_news_api.dart';
 import 'package:flutter_hacker_news_prototype/src/stories/stories_screen.dart';
@@ -43,7 +42,6 @@ Widget withMaterial(Widget child) {
 
 void renderWidget(String name, Widget child) {
   testWidgets(name, (WidgetTester tester) async {
-    configureLogger(true);
     final _hackerNewsApiProvider = await testHackerNewsApiProvider();
 
     await tester.pumpWidget(
@@ -54,5 +52,7 @@ void renderWidget(String name, Widget child) {
         child: child,
       ),
     );
+
+    await tester.pumpAndSettle();
   });
 }
