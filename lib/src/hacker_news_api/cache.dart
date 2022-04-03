@@ -16,7 +16,6 @@ abstract class Cache {
 
 class FileCache implements Cache {
   FileCache(int size, [this.clock = const Clock()]) {
-    // _cacheManager = DefaultCacheManager();
     const key = 'flutter_cache_manager_cache';
     _cacheManager = CacheManager(
       Config(
@@ -230,15 +229,6 @@ class PersistenceInMemoryLruCache implements Cache {
     _log.info('load done');
   }
 
-  // Future<void> _savePeriodic() async {
-  //   while (true) {
-  //     if (_lastSave < _lastUpdate) {
-  //       await _save();
-  //     }
-  //     await Future.delayed(saveDelay);
-  //   }
-  // }
-
   bool _saving = false;
   Timer? _timer;
 
@@ -306,11 +296,6 @@ class EternalFileCache implements Cache {
 
   Future<void> load() async {
     _log.info('load');
-    // // ignore: omit_local_variable_types
-    // final Map<String, String> data = Map.castFrom(
-    //   jsonDecode(await file.readAsString()) as Map<String, dynamic>,
-    // );
-    // _data.addAll(data);
 
     final data = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
     for (final e in data.entries) {
@@ -321,15 +306,6 @@ class EternalFileCache implements Cache {
 
     _log.info('load done');
   }
-
-  // Future<void> _savePeriodic() async {
-  //   while (true) {
-  //     if (_lastSave < _lastUpdate) {
-  //       await _save();
-  //     }
-  //     await Future.delayed(Duration(seconds: 60));
-  //   }
-  // }
 
   bool _saving = false;
   Timer? _timer;

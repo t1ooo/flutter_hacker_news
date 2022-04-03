@@ -9,41 +9,23 @@ import 'user.dart';
 
 String _e(String s) => Uri.encodeComponent(s);
 
+Uri uri(String uri) => Uri.parse(uri);
+
 // ignore: avoid_classes_with_only_static_members
 class UriBuilder {
   static const String base = 'https://hacker-news.firebaseio.com/v0';
-  static Uri item(int id) => Uri.parse('$base/item/$id.json?print=pretty');
-  static Uri user(String name) =>
-      Uri.parse('$base/user/${_e(name)}.json?print=pretty');
+
+  static Uri item(int id) => uri('$base/item/$id.json');
+
+  static Uri user(String name) => uri('$base/user/${_e(name)}.json');
+
   static Uri stories(StoryType type) =>
-      Uri.parse('$base/${type.toText()}stories.json?print=pretty');
-  // static const String topstories = '/topstories.json?print=pretty';
-  // static const String newstories = '/newstories.json?print=pretty';
-  // static const String beststories = '/beststories.json?print=pretty';
-  // static const String askstories = '/askstories.json?print=pretty';
-  // static const String showstories = '/showstories.json?print=pretty';
-  // static const String jobstories = '/jobstories.json?print=pretty';
+      uri('$base/${type.toText()}stories.json');
 
-  // static const String maxitem = '/maxitem.json?print=pretty';
-  // static const String updates = '/updates.json?print=pretty';
+  // static const String maxitem = '/maxitem.json';
+
+  // static const String updates = '/updates.json';
 }
-
-// String _storyPath(StoryType storyType) {
-//   switch (storyType) {
-//     case StoryType.top:
-//       return UriBuilder.topstories;
-//     case StoryType.new_:
-//       return UriBuilder.newstories;
-//     case StoryType.best:
-//       return UriBuilder.beststories;
-//     case StoryType.ask:
-//       return UriBuilder.askstories;
-//     case StoryType.show:
-//       return UriBuilder.showstories;
-//     case StoryType.job:
-//       return UriBuilder.jobstories;
-//   }
-// }
 
 abstract class HackerNewsApi {
   Future<Item> item(int id, {bool cached = true});
@@ -59,7 +41,6 @@ class HackerNewsApiImpl implements HackerNewsApi {
 
   @override
   Future<List<int>> stories(StoryType storyType, {bool cached = true}) async {
-    // final uri = Uri.parse(UriBuilder.base + _storyPath(storyType));
     final uri = UriBuilder.stories(storyType);
     final maxAge = Duration(minutes: cached ? 5 : 0);
     final body = await client.getBody(uri, maxAge: maxAge);

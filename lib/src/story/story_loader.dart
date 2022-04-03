@@ -38,7 +38,6 @@ class StoryLoader extends StatelessWidget {
     );
   }
 
-  // Widget build(BuildContext context) {
   Widget onData(BuildContext context, Item item) {
     return SwipeToRefresh(
       onRefresh: () async {

@@ -56,8 +56,6 @@ Future<void> main() async {
       await itemNotifier.loadItem(id);
       final time1 = itemNotifier.item(id).value!.time;
 
-      // await Future.delayed(Duration(seconds: 1));
-
       await itemNotifier.loadItem(id);
       final time2 = itemNotifier.item(id).value!.time;
 
@@ -67,8 +65,6 @@ Future<void> main() async {
     test('should be use new item after reloadItem', () async {
       await itemNotifier.loadItem(id);
       final time1 = itemNotifier.item(id).value!.time;
-
-      // await Future.delayed(Duration(seconds: 1));
 
       await itemNotifier.reloadItem(id);
       final time2 = itemNotifier.item(id).value!.time;
@@ -80,27 +76,10 @@ Future<void> main() async {
       await itemNotifier.loadItem(id);
       final time1 = itemNotifier.item(id).value!.time;
 
-      // await Future.delayed(Duration(seconds: 1));
-
       await itemNotifier.reloadItems(awaited: true);
       final time2 = itemNotifier.item(id).value!.time;
 
       expect(time1, isNot(equals(time2)));
     });
-
-    // test('comment should be not visible after toggle', () async {
-    //   commentNotifier.toggleVisibility(id);
-    //   expect(commentNotifier.isVisible(id), false);
-    // });
-
-    // test('comment should be toggle correct', () async {
-    //   final isVisible = commentNotifier.isVisible(id);
-
-    //   commentNotifier.toggleVisibility(id);
-    //   expect(commentNotifier.isVisible(id), !isVisible);
-
-    //   commentNotifier.toggleVisibility(id);
-    //   expect(commentNotifier.isVisible(id), isVisible);
-    // });
   });
 }
