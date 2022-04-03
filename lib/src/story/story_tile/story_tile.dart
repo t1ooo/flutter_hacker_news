@@ -28,7 +28,10 @@ class StoryTile extends StatelessWidget {
     return Padding(
       padding: storyTilePadding,
       child: ListTile(
+        // dense: true,
+        horizontalTitleGap: 0,
         contentPadding: EdgeInsets.all(0),
+        minLeadingWidth: 30,
         leading: showLeading ? Text('$rank.') : null,
         title: Wrap(
           children: [
@@ -62,17 +65,9 @@ class StoryTile extends StatelessWidget {
             Text('${item.descendants ?? 0} comments'),
           ],
         ),
-        trailing: Column(
-          children: [
-            if (item.url != null)
-              Padding(
-                padding: EdgeInsets.only(right: 20),
-                child: WebLink(
-                  url: item.url!,
-                  child: Icon(Icons.open_in_new, size: 35),
-                ),
-              ),
-          ],
+        trailing: WebLink(
+          url: item.url!,
+          child: Icon(Icons.open_in_new, size: 30),
         ),
       ),
     );

@@ -20,6 +20,9 @@ const _cacheBasename = 'flutter_hacker_news_cache.json';
 Future<File> _cacheFile() async {
   final tmpPath = (await getTemporaryDirectory()).path;
   final file = File('$tmpPath/$_cacheBasename');
+  if (!await file.exists()) {
+    await file.create();
+  }
   return file;
 }
 

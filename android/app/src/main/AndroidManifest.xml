@@ -1,6 +1,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.flutter_hacker_news_prototype">
-   <application
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+   <!-- url_launcher -->
+   <queries>
+    <!-- If your app opens https URLs -->
+    <intent>
+        <action android:name="android.intent.action.VIEW" />
+        <data android:scheme="https" />
+    </intent>
+    </queries>
+   <!-- url_launcher end-->
+   
+    <application
         android:label="flutter_hacker_news_prototype"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">

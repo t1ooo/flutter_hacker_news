@@ -216,11 +216,12 @@ class PersistenceInMemoryLruCache implements Cache {
   Future<void> put(String key, String value, Duration maxAge) async {
     final expired = clock.now().add(maxAge);
     _data[key] = _CacheItem(value, expired);
+    _lastUpdate = clock.now();
   }
 
   Future<void> load() async {
     _log.info('load');
-    final data = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
+    final data = _readJsonFileSync(file);
     for (final e in data.entries) {
       final k = e.key;
       final v = _CacheItem.fromJson(e.value as Map<String, dynamic>);
@@ -297,7 +298,7 @@ class EternalFileCache implements Cache {
   Future<void> load() async {
     _log.info('load');
 
-    final data = jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
+    final data = _readJsonFileSync(file);
     for (final e in data.entries) {
       final k = e.key;
       final v = e.value as String;
@@ -337,4 +338,12 @@ class EternalFileCache implements Cache {
 extension T on DateTime {
   bool operator <(DateTime other) => isBefore(other);
   bool operator >(DateTime other) => isAfter(other);
+}
+
+Map<String, dynamic> _readJsonFileSync(File file) {
+  final data = file.readAsStringSync();
+  if (data == '') {
+    return <String, dynamic>{};
+  }
+  return jsonDecode(data) as Map<String, dynamic>;
 }
