@@ -10,17 +10,20 @@ class FakeHackerNewsApi implements HackerNewsApi {
   FakeHackerNewsApi([this.clock = const Clock()]);
 
   final Clock clock;
+  final _delay = Duration(milliseconds: 200);
+
+  int _time(bool cached) =>
+      cached ? 0 : unixTimeFromDateTime(clock.now()); // secondsSinceEpoch
 
   @override
   Future<Item> item(int id, {bool cached = true}) async {
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(_delay);
     return Item(
       id: id,
       deleted: false,
       type: 'story',
       by: 'user-name',
-      time: cached ? 0 : unixTimeFromDateTime(clock.now()), // secondsSinceEpoch
-      text: 'item-text',
+      time: _time(cached),
       dead: false,
       parent: 0,
       poll: 0,
@@ -35,6 +38,7 @@ class FakeHackerNewsApi implements HackerNewsApi {
 
   @override
   Future<User> user(String name, {bool cached = true}) async {
+    await Future.delayed(_delay);
     return User(
       id: 'user-name',
       created: 0,
@@ -46,6 +50,7 @@ class FakeHackerNewsApi implements HackerNewsApi {
 
   @override
   Future<List<int>> stories(StoryType storyType, {bool cached = true}) async {
+    await Future.delayed(_delay);
     return [1, 2, 3, 4, 5];
   }
 }
